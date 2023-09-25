@@ -16,16 +16,21 @@ struct DBUser {
     let photoUrl: String?
     let isAnonymous: Bool
 
-    // Initializer from AuthDataResultModel
+    init(uid: String, email: String?, photoUrl: String?, isAnonymous: Bool) {
+        self.uid = uid
+        self.email = email
+        self.photoUrl = photoUrl
+        self.isAnonymous = isAnonymous
+    }
+
     init(auth: AuthDataResultModel) {
         self.uid = auth.uid
         self.email = auth.email
         self.photoUrl = auth.photoUrl
         self.isAnonymous = auth.isAnonymous
     }
-    
-    // You might also want initializers from the database representation if it's different from AuthDataResultModel.
 }
+
 
 
 final class UserManager {

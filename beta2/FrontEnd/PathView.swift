@@ -7,10 +7,14 @@
 
 import SwiftUI
 
+
+
 struct PathView: View {
     @ObservedObject var challengeData: ChallengeData
     @ObservedObject var achievementData: AchievementData
     @State private var currentImageIndex = 0
+
+    
     var selectedCategory: ChallengeCategory
     
     var body: some View {

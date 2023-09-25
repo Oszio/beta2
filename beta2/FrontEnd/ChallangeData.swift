@@ -11,20 +11,7 @@
  import Combine
  import UIKit
 
-import Foundation
-import FirebaseFirestoreSwift
 
-struct ChallengeFirestoreModel: Identifiable, Codable {
-    @DocumentID var id: String?
-    let title: String
-    let description: String
-    let category: String
-    var isCompleted: Bool = false
-    var isUnlocked: Bool = false
-    var evidenceURL: String? // You can store the evidence image URL here
-    var comment: String?
-    var points: Int = 10
-}
  
  enum ChallengeCategory: String, CaseIterable {
  case daily = "Daily"
@@ -118,63 +105,6 @@ struct ChallengeFirestoreModel: Identifiable, Codable {
  Challenge(id: 24, title: "Go for a walk outside and take a picture of a dog.", description: "daily", category: .daily),
  ]    ]) {
  self.challengesByCategory = challengesByCategory
-     
-     private let firestoreManager = FirestoreManager.shared
-        
-        // Initialize the ChallengeData with data from Firestore
-        init() {
-            fetchChallengesFromFirestore()
-        }
-
-        // Fetch challenges from Firestore
-        func fetchChallengesFromFirestore() {
-            firestoreManager.fetchChallenges { result in
-                switch result {
-                case .success(let firestoreChallenges):
-                    // Convert Firestore challenges to your local Challenge struct and update challengesByCategory
-                    self.updateChallengesWithFirestoreData(firestoreChallenges)
-                case .failure(let error):
-                    print("Error fetching challenges from Firestore: \(error)")
-                }
-            }
-        }
-        
-        // Add a challenge to Firestore
-        func addChallengeToFirestore(_ challenge: ChallengeFirestoreModel) {
-            firestoreManager.createChallenge(challenge) { result in
-                switch result {
-                case .success:
-                    // Challenge added to Firestore, you can update your local data if needed
-                case .failure(let error):
-                    print("Error adding challenge to Firestore: \(error)")
-                }
-            }
-        }
-        
-        // Update a challenge in Firestore
-        func updateChallengeInFirestore(_ challenge: ChallengeFirestoreModel) {
-            firestoreManager.updateChallenge(challenge) { result in
-                switch result {
-                case .success:
-                    // Challenge updated in Firestore, you can update your local data if needed
-                case .failure(let error):
-                    print("Error updating challenge in Firestore: \(error)")
-                }
-            }
-        }
-        
-        // Delete a challenge from Firestore
-        func deleteChallengeFromFirestore(_ challengeID: String) {
-            firestoreManager.deleteChallenge(challengeID) { result in
-                switch result {
-                case .success:
-                    // Challenge deleted from Firestore, you can update your local data if needed
-                case .failure(let error):
-                    print("Error deleting challenge from Firestore: \(error)")
-                }
-            }
-        }
-        
  }
  
  func addComment(id: Int, comment: String) {

@@ -12,12 +12,12 @@ import SwiftUI
 
 struct RootView: View {
     
-    @State private var showSignInView: Bool = false
+    @State private var showSignInView: Bool = true
     
     var body: some View {
         ZStack {
             if !showSignInView {
-                PathView(showSignInView: $showSignInView)
+                TabbarView(showSignInView: $showSignInView)
             }
         }
         .onAppear {
@@ -37,3 +37,4 @@ struct RootView_Previews: PreviewProvider {
         RootView()
     }
 }
+
