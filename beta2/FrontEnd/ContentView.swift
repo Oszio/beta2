@@ -1,26 +1,40 @@
 //
 //  ContentView.swift
-//  beta2
+//  test2
 //
-//  Created by Oskar Almå on 2023-09-23.
+//  Created by Petter Uvdal on 2023-08-27.
 //
 
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
-        }
-        .padding()
-    }
-}
+    @State private var activeView: ActiveView = .category
+    @ObservedObject var achievementData: AchievementData = AchievementData()
+    @ObservedObject var challengeData: ChallengeData = ChallengeData() // Create an instance here
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+    @Binding var showSignInView: Bool
+    
+    var body: some View {
+        NavigationView {
+            TabView {
+                CategoryView(challengeData: challengeData, achievementData: achievementData, activeView: $activeView, showSignInView: $showSignInView)
+                    .tabItem {
+                        Image(systemName: "house")
+                        Text("Challenges")
+                    }
+                InfoView(activeView: $activeView, challengeData: challengeData, achievementData: achievementData)
+                    .tabItem {
+                        Image(systemName: "info.circle")
+                        Text("FAQ")
+                    }
+                UserView(achievementData: achievementData, challengeData: challengeData, activeView: $activeView)
+                    .tabItem {
+                        Image(systemName: "person.circle")
+                        Text("Profile")
+                    }
+            }
+                
+                //Divider() // Optional divider line
+        }
     }
 }
