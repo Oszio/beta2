@@ -63,5 +63,10 @@ final class UserManager {
         )
     }
     
-    // You can continue with more functions like updateUser, deleteUser, etc.
+    func updateUserPhotoURL(uid: String, photoUrl: String) async throws {
+        let documentRef = db.collection("users").document(uid)
+        try await documentRef.updateData([
+            "photoUrl": photoUrl
+        ])
+    }
 }

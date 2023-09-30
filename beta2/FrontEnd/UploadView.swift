@@ -18,6 +18,8 @@ struct UploadView: View {
     @State private var selectedImage2: UIImage? = nil
     @State private var comment: String = ""
     @State private var showImageSourceSelection: Bool = true
+    @State private var authenticatedUserId: String? = nil
+
     
     var body: some View {
         ScrollView {
@@ -188,7 +190,7 @@ struct UploadView: View {
         if let selectedImage = self.selectedImage {
             FirebaseManager.shared.uploadEvidence(image: selectedImage, comment: comment, challengeId: challengeId) { result in
                 switch result {
-                case .success:
+                case .success(let imageURL):
                     // Evidence details stored in Firestore
                     challengeData.addEvidence(id: challengeId, image: selectedImage)
 
@@ -203,6 +205,8 @@ struct UploadView: View {
             }
         }
     }
+
+    
 
 
 
