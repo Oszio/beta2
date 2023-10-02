@@ -19,7 +19,7 @@ struct UploadView: View {
     @State private var comment: String = ""
     @State private var showImageSourceSelection: Bool = true
     @State private var authenticatedUserId: String? = nil
-
+    
     
     var body: some View {
         ScrollView {
@@ -65,38 +65,38 @@ struct UploadView: View {
                             .font(.custom("Avenir", size: 20))
                             .foregroundColor(.gray)
                             .onAppear {
-                                generateHapticFeedback()
+                                
                             }
                     }
                 }
                 
                 // Comment TextField
                 VStack {
-                        ZStack(alignment: .trailing) {
-                            TextField("Edit caption...", text: $comment)
-                                .padding()
-                                .background(Color.gray.opacity(0.1))
-                                .cornerRadius(8)
-                            
-                            Button(action: saveComment) {
-                                Text("Submit")
-                                    .padding(.horizontal)
-                                    .padding(.vertical, 8)
-                                    .frame(height: 50) // Match the height of the text field
-                                    .background(Color.primary) // Set background color
-                                    .foregroundColor(Color.secondary) // Text color
-                                    .cornerRadius(8) // Apply corner radius
-                            }
-                            .disabled(comment.isEmpty) // Disable the button if comment is empty
-                            .opacity(comment.isEmpty ? 0.5 : 1.0) // Adjust opacity when disabled
+                    ZStack(alignment: .trailing) {
+                        TextField("Edit caption...", text: $comment)
+                            .padding()
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(8)
+                        
+                        Button(action: saveComment) {
+                            Text("Submit")
+                                .padding(.horizontal)
+                                .padding(.vertical, 8)
+                                .frame(height: 50) // Match the height of the text field
+                                .background(Color.primary) // Set background color
+                                .foregroundColor(Color.secondary) // Text color
+                                .cornerRadius(8) // Apply corner radius
                         }
+                        .disabled(comment.isEmpty) // Disable the button if comment is empty
+                        .opacity(comment.isEmpty ? 0.5 : 1.0) // Adjust opacity when disabled
                     }
-                    .padding(.horizontal)
-                    .onTapGesture {
-                        // This will open the keyboard when the TextField is tapped
-                        UIApplication.shared.sendAction(#selector(UIResponder.becomeFirstResponder), to: nil, from: nil, for: nil)
-                        generateHapticFeedback()
-                    }
+                }
+                .padding(.horizontal)
+                .onTapGesture {
+                    // This will open the keyboard when the TextField is tapped
+                    UIApplication.shared.sendAction(#selector(UIResponder.becomeFirstResponder), to: nil, from: nil, for: nil)
+                    
+                }
                 .padding(.horizontal)
             } else {
                 HStack {
@@ -180,7 +180,7 @@ struct UploadView: View {
         }
         .onChange(of: selectedImage) { _ in
             saveChallengeDetails()
-            generateHapticFeedback()
+            
         }
     }
     func saveChallengeDetails() {
@@ -189,30 +189,48 @@ struct UploadView: View {
 
         if let selectedImage = self.selectedImage {
             FirebaseManager.shared.uploadEvidence(image: selectedImage, comment: comment, challengeId: challengeId) { result in
-                switch result {
-                case .success(let imageURL):
-                    // Evidence details stored in Firestore
-                    challengeData.addEvidence(id: challengeId, image: selectedImage)
+                Task {
+                    do {
+                        let imageURL = try await withCheckedThrowingContinuation { continuation in
+                            switch result {
+                            case .success(let imageURL):
+                                continuation.resume(returning: imageURL)
+                            case .failure(let error):
+                                continuation.resume(throwing: error)
+                            }
+                        }
+                        
+                        // Evidence details stored in Firestore
+                        challengeData.addEvidence(id: challengeId, image: selectedImage)
+                        
+                        // Associate evidence with user
+                        if let userId = authenticatedUserId {
+                            try await UserManager.shared.addUserEvidence(uid: userId, imageUrl: imageURL)
+                        }
 
-                    // Award points once evidence is uploaded and challenge is completed
-                    if let challenge = challengeData.getChallengeById(id: challengeId) {
-                        challengeData.addPoints(points: challenge.points)
-                        achievementData.checkForAchievements(totalPoints: challengeData.totalPoints)
+                        // Award points once evidence is uploaded and challenge is completed
+                        if let challenge = challengeData.getChallengeById(id: challengeId) {
+                            challengeData.addPoints(points: challenge.points)
+                            achievementData.checkForAchievements(totalPoints: challengeData.totalPoints)
+                        }
+                    } catch {
+                        print("Error: \(error)")
                     }
-                case .failure(let error):
-                    print("Error uploading evidence: \(error)")
                 }
             }
         }
     }
 
+        
+        
+        
+        
+        func saveComment() {
+            let challengeId = challenge.id
+            challengeData.addComment(id: challengeId, comment: comment)
+        }
+        
+        
+        
     
-
-
-
-
-    func saveComment() {
-        let challengeId = challenge.id
-        challengeData.addComment(id: challengeId, comment: comment)
-    }
 }

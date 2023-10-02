@@ -51,7 +51,7 @@ struct UserView: View {
                                 )
                                 .frame(width: UIScreen.main.bounds.width - 20, height: 80) // Adjust the width and height as desired
                                 .onTapGesture {
-                                    generateHapticFeedback()
+                                   
                                 }
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 20)

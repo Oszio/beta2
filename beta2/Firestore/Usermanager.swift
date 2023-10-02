@@ -15,12 +15,14 @@ struct DBUser {
     let email: String?
     let photoUrl: String?
     let isAnonymous: Bool
+    var evidence: [String]?
 
-    init(uid: String, email: String?, photoUrl: String?, isAnonymous: Bool) {
+    init(uid: String, email: String?, photoUrl: String?, isAnonymous: Bool, evidence:  [String]?) {
         self.uid = uid
         self.email = email
         self.photoUrl = photoUrl
         self.isAnonymous = isAnonymous
+        self.evidence = evidence
     }
 
     init(auth: AuthDataResultModel) {
@@ -28,6 +30,7 @@ struct DBUser {
         self.email = auth.email
         self.photoUrl = auth.photoUrl
         self.isAnonymous = auth.isAnonymous
+        
     }
 }
 
@@ -45,7 +48,9 @@ final class UserManager {
         try await documentRef.setData([
             "email": user.email,
             "photoUrl": user.photoUrl,
-            "isAnonymous": user.isAnonymous
+            "isAnonymous": user.isAnonymous,
+            "evidence": user.evidence ?? []
+       
         ])
     }
     
@@ -59,7 +64,8 @@ final class UserManager {
             uid: uid,
             email: data["email"] as? String,
             photoUrl: data["photoUrl"] as? String,
-            isAnonymous: data["isAnonymous"] as? Bool ?? false
+            isAnonymous: data["isAnonymous"] as? Bool ?? false,
+            evidence: data["evidence"] as? [String]
         )
     }
     
@@ -68,5 +74,14 @@ final class UserManager {
         try await documentRef.updateData([
             "photoUrl": photoUrl
         ])
+        
     }
+    
+    func addUserEvidence(uid: String, imageUrl: String) async throws {
+        let documentRef = db.collection("users").document(uid)
+        try await documentRef.updateData([
+            "evidence": FieldValue.arrayUnion([imageUrl])
+        ])
+    }
+
 }

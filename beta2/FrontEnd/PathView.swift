@@ -13,7 +13,7 @@ struct PathView: View {
     @ObservedObject var challengeData: ChallengeData
     @ObservedObject var achievementData: AchievementData
     @State private var currentImageIndex = 0
-
+    
     
     var selectedCategory: ChallengeCategory
     
@@ -80,7 +80,7 @@ struct ChallengeListView: View {
                             .fill(Color(red: 240/255, green: 240/255, blue: 240/255))
                             .frame(width: 150, height: 150)
                             .onTapGesture {
-                                generateHapticFeedback()
+                                
                             }
                         Image(systemName: "lock")
                             .resizable()
@@ -88,7 +88,7 @@ struct ChallengeListView: View {
                             .frame(width: 40, height: 40)
                             .foregroundColor(Color.black)
                             .onTapGesture {
-                                generateHapticFeedback()
+                                
                             }
                     }
                     Rectangle()
@@ -101,7 +101,7 @@ struct ChallengeListView: View {
                     .fill(Color(red: 240/255, green: 240/255, blue: 240/255))
                     .frame(width: 150, height: 150)
                     .onTapGesture {
-                        generateHapticFeedback()
+                        
                     }
                 
                 if !allChallengesAreCompleted {
@@ -121,7 +121,7 @@ struct ChallengeListView: View {
                                     withAnimation(Animation.easeInOut(duration: 1.5)) {
                                         currentImageIndex += 1
                                         showText = true  // Show the text after animation
-                                        generateHapticFeedback()
+                                        
                                     }
                                 }
                             } else {
@@ -142,9 +142,9 @@ struct ChallengeListView: View {
                     .foregroundColor(Color.primary)
                     .multilineTextAlignment(.center)
                     .onTapGesture {
-                        generateHapticFeedback()
+                        
                     }
-                    
+                
             }
             Spacer()
         }
@@ -153,11 +153,12 @@ struct ChallengeListView: View {
         let challenge: Challenge
         let category: ChallengeCategory
         @State private var isTextVisible = false
-
+        @State private var evidenceImage: UIImage?
+        
         var body: some View {
-            if let evidence = challenge.evidence, challenge.isCompleted {
+            if let image = evidenceImage, challenge.isCompleted {
                 VStack(spacing: 0) {
-                    Image(uiImage: evidence)
+                    Image(uiImage: image)
                         .resizable()
                         .scaledToFill()
                         .frame(width: 150, height: 150)
@@ -166,7 +167,7 @@ struct ChallengeListView: View {
                         .onTapGesture {
                             withAnimation {
                                 isTextVisible.toggle()
-                                generateHapticFeedback()
+                                
                             }
                         }
                     if isTextVisible {
@@ -200,12 +201,42 @@ struct ChallengeListView: View {
                         .fill(Color(red: 240/255, green: 240/255, blue: 240/255))
                         .frame(width: 5, height: 20)
                 }
+                
+                
+                
+                
+                .onAppear {
+                    FirebaseManager.shared.fetchEvidence(for: challenge.id) { result in
+                        switch result {
+                        case .success(let evidence):
+                            if let url = URL(string: evidence.imageUrl) {
+                                downloadImage(from: url) { image in
+                                    self.evidenceImage = image
+                                }
+                            }
+                        case .failure(let error):
+                            print("Error fetching evidence: \(error)")
+                        }
+                    }
+                    
+                    
+                    func downloadImage(from url: URL, completion: @escaping (UIImage?) -> Void) {
+                        URLSession.shared.dataTask(with: url) { data, response, error in
+                            if let data = data, let image = UIImage(data: data) {
+                                DispatchQueue.main.async {
+                                    completion(image)
+                                }
+                            } else {
+                                print("Error downloading image: \(error?.localizedDescription ?? "Unknown error")")
+                                completion(nil)
+                            }
+                        }.resume()
+                    }
+                }
+                
+                
             }
         }
+        
     }
-}
-func generateHapticFeedback() {
-    let impactFeedbackgenerator = UIImpactFeedbackGenerator(style: .medium)
-    impactFeedbackgenerator.prepare()
-    impactFeedbackgenerator.impactOccurred()
 }

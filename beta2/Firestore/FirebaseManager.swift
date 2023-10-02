@@ -10,6 +10,13 @@
 import FirebaseFirestore
 import FirebaseStorage
 
+struct Evidence {
+    var comment: String
+    var imageUrl: String
+    // Add other fields as needed
+}
+
+
 class FirebaseManager {
     // Singleton instance
     static let shared = FirebaseManager()
@@ -84,4 +91,28 @@ class FirebaseManager {
             completion(.success(()))
         }
     }
+    
+    func fetchEvidence(for challengeId: Int, completion: @escaping (Result<Evidence, Error>) -> Void) {
+        let evidenceDocRef = db.collection("evidence").document("\(challengeId)")
+        
+        evidenceDocRef.getDocument { (document, error) in
+            if let error = error {
+                print("Error fetching evidence: \(error.localizedDescription)")
+                completion(.failure(error))
+                return
+            }
+            
+            if let document = document, document.exists, let data = document.data() {
+                let comment = data["comment"] as? String ?? ""
+                let imageUrl = data["imageUrl"] as? String ?? ""
+                
+                let evidence = Evidence(comment: comment, imageUrl: imageUrl)
+                completion(.success(evidence))
+            } else {
+                print("Document does not exist")
+                completion(.failure(NSError(domain: "com.yourapp", code: -1, userInfo: [NSLocalizedDescriptionKey: "Document does not exist"])))
+            }
+        }
+    }
+
 }

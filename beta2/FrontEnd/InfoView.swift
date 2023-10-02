@@ -43,14 +43,14 @@ struct InfoView: View {
                     if showPopup {
                         RoundedBoxView(content: "We are attempting to build a healthy social media app. This means that you won't get lost in an endless feed of content.")
                             .onTapGesture {
-                                generateHapticFeedback()
+                                
                             }
                     }
                     QuestionButton(question: "What sets it apart from others?", isExpanded: $showSecondPopup)
                     if showSecondPopup {
                         RoundedBoxView(content: "We focus on providing meaningful interactions and experiences. This Beta-version serves as a testing ground for the key feature of challenges for well-being.")
                             .onTapGesture {
-                                generateHapticFeedback()
+                               
                             }
                     }
                     
@@ -59,14 +59,14 @@ struct InfoView: View {
                     if showFirstPopup {
                         RoundedBoxView(content: "Our approach is rooted in transparency: there won't be any tailored algorithms for ads or content.")
                             .onTapGesture {
-                                generateHapticFeedback()
+                                
                             }
                     }
                     QuestionButton(question: "What do I need to do?", isExpanded: $showThirdPopup)
                     if showThirdPopup {
                         RoundedBoxView(content: "Enjoy the app, and kindly participate in the survey at ... \n\nWith regards,\nThe SideQuest Team.")
                             .onTapGesture {
-                                generateHapticFeedback()
+                                
                             }
                     }
                     

@@ -24,7 +24,7 @@ struct CategoryView: View {
                     Spacer()
                     Button(action: {
                         showCategoryBoxes.toggle()
-                        generateHapticFeedback()
+                        
                     }) {
                         Image(systemName: "chevron.down")
                             .font(.title)
@@ -39,7 +39,7 @@ struct CategoryView: View {
                                     CategoryBoxView(category: category)
                                         .onTapGesture {
                                             selectedCategory = category
-                                            generateHapticFeedback()
+                                            
                                         }
                                 }
                             }
