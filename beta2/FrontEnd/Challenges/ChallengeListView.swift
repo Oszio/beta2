@@ -5,17 +5,19 @@
 //  Created by Oskar Almå on 2023-10-03.
 //
 
-import Foundation
+import SwiftUI
 
 struct ChallengeListView: View {
     var category: ChallengeCategory
-    var challenges: [Challenge]
+    @ObservedObject var challengeData: ChallengeData
     
     var body: some View {
-        List(challenges) { challenge in
-            VStack(alignment: .leading) {
-                Text(challenge.title).font(.headline)
-                Text(challenge.description).font(.subheadline)
+        List(challengeData.challengesByCategory[category] ?? []) { challenge in
+            NavigationLink(destination: ChallengeDetailView(challenge: challenge)) {
+                VStack(alignment: .leading) {
+                    Text(challenge.title).font(.headline)
+                    Text(challenge.description).font(.subheadline)
+                }
             }
         }
         .navigationTitle(category.displayName)

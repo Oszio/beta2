@@ -34,8 +34,5 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     }
 }
 
-enum ActiveView {
-    case category, info, user
-}
 
 

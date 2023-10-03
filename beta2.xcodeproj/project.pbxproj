@@ -32,17 +32,14 @@
 		D7A016DD2AC0DAAD0097A989 /* AuthyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A016DC2AC0DAAD0097A989 /* AuthyView.swift */; };
 		D7A016E02AC0DB000097A989 /* SignInEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A016DF2AC0DB000097A989 /* SignInEmailView.swift */; };
 		D7A016E22AC0DB190097A989 /* SignInEmailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A016E12AC0DB190097A989 /* SignInEmailViewModel.swift */; };
-		D7A016E62AC0DCBD0097A989 /* PathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A016E52AC0DCBD0097A989 /* PathView.swift */; };
 		D7A016E92AC0DD170097A989 /* ChallangeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A016E82AC0DD170097A989 /* ChallangeData.swift */; };
-		D7A016EB2AC0DD310097A989 /* AchivementData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A016EA2AC0DD310097A989 /* AchivementData.swift */; };
-		D7A016ED2AC0DD4F0097A989 /* UploadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A016EC2AC0DD4F0097A989 /* UploadView.swift */; };
-		D7A016EF2AC0DD600097A989 /* UserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A016EE2AC0DD600097A989 /* UserView.swift */; };
-		D7A016F12AC0DD710097A989 /* GradientProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A016F02AC0DD710097A989 /* GradientProgressBar.swift */; };
-		D7A016F32AC0DD850097A989 /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A016F22AC0DD850097A989 /* CategoryView.swift */; };
-		D7A016F52AC0DDC70097A989 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A016F42AC0DDC70097A989 /* ImagePicker.swift */; };
-		D7A016F72AC0DE6A0097A989 /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A016F62AC0DE6A0097A989 /* InfoView.swift */; };
 		D7A017022AC1F0BB0097A989 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = D7A017012AC1F0BB0097A989 /* FirebaseStorage */; };
 		D7A017042AC1F6F40097A989 /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A017032AC1F6F40097A989 /* FirebaseManager.swift */; };
+		D7A0170D2ACC44720097A989 /* UploadEvidenceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A0170C2ACC44720097A989 /* UploadEvidenceView.swift */; };
+		D7A0170F2ACC57E30097A989 /* imagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A0170E2ACC57E30097A989 /* imagePicker.swift */; };
+		D7A017112ACC5BDB0097A989 /* ChallengeListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A017102ACC5BDB0097A989 /* ChallengeListView.swift */; };
+		D7A017142ACC5C730097A989 /* ChallengeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A017132ACC5C730097A989 /* ChallengeDetailView.swift */; };
+		D7A017162ACC81C20097A989 /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A017152ACC81C20097A989 /* UserProfileView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,16 +83,13 @@
 		D7A016DC2AC0DAAD0097A989 /* AuthyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthyView.swift; sourceTree = "<group>"; };
 		D7A016DF2AC0DB000097A989 /* SignInEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInEmailView.swift; sourceTree = "<group>"; };
 		D7A016E12AC0DB190097A989 /* SignInEmailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInEmailViewModel.swift; sourceTree = "<group>"; };
-		D7A016E52AC0DCBD0097A989 /* PathView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathView.swift; sourceTree = "<group>"; };
 		D7A016E82AC0DD170097A989 /* ChallangeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallangeData.swift; sourceTree = "<group>"; };
-		D7A016EA2AC0DD310097A989 /* AchivementData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchivementData.swift; sourceTree = "<group>"; };
-		D7A016EC2AC0DD4F0097A989 /* UploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadView.swift; sourceTree = "<group>"; };
-		D7A016EE2AC0DD600097A989 /* UserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserView.swift; sourceTree = "<group>"; };
-		D7A016F02AC0DD710097A989 /* GradientProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientProgressBar.swift; sourceTree = "<group>"; };
-		D7A016F22AC0DD850097A989 /* CategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryView.swift; sourceTree = "<group>"; };
-		D7A016F42AC0DDC70097A989 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
-		D7A016F62AC0DE6A0097A989 /* InfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
 		D7A017032AC1F6F40097A989 /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
+		D7A0170C2ACC44720097A989 /* UploadEvidenceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadEvidenceView.swift; sourceTree = "<group>"; };
+		D7A0170E2ACC57E30097A989 /* imagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = imagePicker.swift; sourceTree = "<group>"; };
+		D7A017102ACC5BDB0097A989 /* ChallengeListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeListView.swift; sourceTree = "<group>"; };
+		D7A017132ACC5C730097A989 /* ChallengeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDetailView.swift; sourceTree = "<group>"; };
+		D7A017152ACC81C20097A989 /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -244,18 +238,31 @@
 			isa = PBXGroup;
 			children = (
 				D7A0165A2ABF587B0097A989 /* ContentView.swift */,
+				D7A017072ACC40450097A989 /* userProfile */,
+				D7A017122ACC5C4F0097A989 /* Challenges */,
+				D7A0170C2ACC44720097A989 /* UploadEvidenceView.swift */,
+				D7A0170E2ACC57E30097A989 /* imagePicker.swift */,
 				D7A016D02AC0AD530097A989 /* RootView.swift */,
-				D7A016EA2AC0DD310097A989 /* AchivementData.swift */,
-				D7A016F42AC0DDC70097A989 /* ImagePicker.swift */,
-				D7A016E52AC0DCBD0097A989 /* PathView.swift */,
-				D7A016E82AC0DD170097A989 /* ChallangeData.swift */,
-				D7A016F62AC0DE6A0097A989 /* InfoView.swift */,
-				D7A016F22AC0DD850097A989 /* CategoryView.swift */,
-				D7A016EC2AC0DD4F0097A989 /* UploadView.swift */,
-				D7A016EE2AC0DD600097A989 /* UserView.swift */,
-				D7A016F02AC0DD710097A989 /* GradientProgressBar.swift */,
 			);
 			path = FrontEnd;
+			sourceTree = "<group>";
+		};
+		D7A017072ACC40450097A989 /* userProfile */ = {
+			isa = PBXGroup;
+			children = (
+				D7A017152ACC81C20097A989 /* UserProfileView.swift */,
+			);
+			path = userProfile;
+			sourceTree = "<group>";
+		};
+		D7A017122ACC5C4F0097A989 /* Challenges */ = {
+			isa = PBXGroup;
+			children = (
+				D7A017102ACC5BDB0097A989 /* ChallengeListView.swift */,
+				D7A017132ACC5C730097A989 /* ChallengeDetailView.swift */,
+				D7A016E82AC0DD170097A989 /* ChallangeData.swift */,
+			);
+			path = Challenges;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -403,26 +410,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D7A0170D2ACC44720097A989 /* UploadEvidenceView.swift in Sources */,
 				D7A016D72AC0D9DD0097A989 /* GoogleSignInHelper.swift in Sources */,
 				D7A016CB2AC0991E0097A989 /* Utilities.swift in Sources */,
-				D7A016F12AC0DD710097A989 /* GradientProgressBar.swift in Sources */,
+				D7A017142ACC5C730097A989 /* ChallengeDetailView.swift in Sources */,
+				D7A017112ACC5BDB0097A989 /* ChallengeListView.swift in Sources */,
+				D7A017162ACC81C20097A989 /* UserProfileView.swift in Sources */,
 				D7A0165B2ABF587B0097A989 /* ContentView.swift in Sources */,
 				D7A016D92AC0DA380097A989 /* AuthyManager.swift in Sources */,
-				D7A016F32AC0DD850097A989 /* CategoryView.swift in Sources */,
 				D7A016CD2AC0A4CD0097A989 /* Usermanager.swift in Sources */,
-				D7A016E62AC0DCBD0097A989 /* PathView.swift in Sources */,
 				D7A016E22AC0DB190097A989 /* SignInEmailViewModel.swift in Sources */,
 				D7A016D12AC0AD530097A989 /* RootView.swift in Sources */,
 				D7A016DD2AC0DAAD0097A989 /* AuthyView.swift in Sources */,
 				D7A016E02AC0DB000097A989 /* SignInEmailView.swift in Sources */,
 				D7A016592ABF587B0097A989 /* beta2App.swift in Sources */,
-				D7A016F72AC0DE6A0097A989 /* InfoView.swift in Sources */,
-				D7A016ED2AC0DD4F0097A989 /* UploadView.swift in Sources */,
-				D7A016EB2AC0DD310097A989 /* AchivementData.swift in Sources */,
-				D7A016EF2AC0DD600097A989 /* UserView.swift in Sources */,
 				D7A016E92AC0DD170097A989 /* ChallangeData.swift in Sources */,
-				D7A016F52AC0DDC70097A989 /* ImagePicker.swift in Sources */,
 				D7A017042AC1F6F40097A989 /* FirebaseManager.swift in Sources */,
+				D7A0170F2ACC57E30097A989 /* imagePicker.swift in Sources */,
 				D7A016DB2AC0DA4E0097A989 /* AppleSignInHelper.swift in Sources */,
 				D7A016D52AC0D9B50097A989 /* AuthyViewModel.swift in Sources */,
 			);

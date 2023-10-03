@@ -8,33 +8,42 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var activeView: ActiveView = .category
-    @ObservedObject var achievementData: AchievementData = AchievementData()
-    @ObservedObject var challengeData: ChallengeData = ChallengeData() // Create an instance here
-
     @Binding var showSignInView: Bool
-    
+    @ObservedObject var challengeData = ChallengeData()
+    @State private var showUserProfile: Bool = false
+    @State private var userId: String? = nil
+
     var body: some View {
         NavigationView {
-            TabView {
-                CategoryView(challengeData: challengeData, achievementData: achievementData, activeView: $activeView, showSignInView: $showSignInView)
-                    .tabItem {
-                        Image(systemName: "house")
-                        Text("Challenges")
-                    }
-                InfoView(activeView: $activeView, challengeData: challengeData, achievementData: achievementData)
-                    .tabItem {
-                        Image(systemName: "info.circle")
-                        Text("FAQ")
-                    }
-                UserView(achievementData: achievementData, challengeData: challengeData, activeView: $activeView)
-                    .tabItem {
-                        Image(systemName: "person.circle")
-                        Text("Profile")
-                    }
+            List(ChallengeCategory.allCases, id: \.self) { category in
+                NavigationLink(destination: ChallengeListView(category: category, challengeData: challengeData)) {
+                    Text(category.displayName)
+                }
             }
-                
-                //Divider() // Optional divider line
+            .navigationTitle("Challenges")
+            .navigationBarItems(leading: Button(action: {
+                showUserProfile.toggle()
+            }) {
+                Image(systemName: "person.circle")
+            }, trailing: Button(action: signOut) {
+                Text("Sign Out")
+            })
+            .sheet(isPresented: $showUserProfile) {
+                if let userId = userId {
+                    UserProfileView(userId: userId)
+                }
+            }
+            .onAppear {
+                if let authUser = try? AuthenticationManager.shared.getAuthenticatedUser() {
+                    self.userId = authUser.uid
+                }
+            }
         }
+    }
+    
+    func signOut() {
+        // Call your authentication manager's sign-out function here
+        // For now, I'll just set showSignInView to true to simulate a sign-out
+        showSignInView = true
     }
 }

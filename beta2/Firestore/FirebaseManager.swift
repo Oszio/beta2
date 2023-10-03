@@ -33,7 +33,8 @@ class FirebaseManager {
     ///   - imuage: The image to upload.
     ///   - comment: Comment associated with the evidence.
     ///   - challengeId: The ID of the challenge to associate the evidence with.
-    func uploadEvidence(for userId: String, image: UIImage, comment: String, challengeId: Int, completion: @escaping (Result<String, Error>) -> Void) {
+    func uploadEvidence(userId: String, image: UIImage, comment: String, challengeId: String, completion: @escaping (Result<String, Error>) -> Void) {
+
         // 1. Upload image to Firebase Storage
         let storageRef = storage.reference().child("evidence/\(challengeId).jpg")
         
@@ -72,7 +73,7 @@ class FirebaseManager {
         }
     }
     
-    private func updateFirestoreWithEvidence(userId: Int, challengeId: Int, comment: String, imageUrl: String, completion: @escaping (Result<Void, Error>) -> Void) {
+    private func updateFirestoreWithEvidence(userId: String, challengeId: String, comment: String, imageUrl: String, completion: @escaping (Result<Void, Error>) -> Void) {
         let evidenceDocRef = db.collection("evidence").document("\(challengeId)")
         
         let evidenceData: [String: Any] = [
