@@ -5,4 +5,56 @@
 //  Created by Oskar Almå on 2023-10-12.
 //
 
-import Foundation
+import FirebaseFirestore
+import FirebaseFirestoreSwift
+
+final class ChallengeManager {
+    static let shared = ChallengeManager()
+    private let db = Firestore.firestore()
+    
+    private init() {}
+    
+    // Fetch all categories
+    func fetchCategories() async throws -> [ChallengeCategory] {
+        let querySnapshot = try await db.collection("categories").getDocuments()
+        return querySnapshot.documents.compactMap { try? $0.data(as: ChallengeCategory.self) }
+    }
+    
+    // Fetch challenges for a specific category up to a certain sequence
+    func fetchChallenges(inCategory categoryID: String, upToSequence sequence: Int) async throws -> [Challenge] {
+        let query = db.collection("categories").document(categoryID).collection("challenges")
+            .whereField("sequence", isLessThanOrEqualTo: sequence)
+            .order(by: "sequence")
+        
+        let querySnapshot = try await query.getDocuments()
+        return querySnapshot.documents.compactMap { try? $0.data(as: Challenge.self) }
+    }
+    
+    // Upload a new challenge to a specific category
+    func uploadChallenge(_ challenge: Challenge, toCategory categoryID: String) async throws {
+        let documentRef = db.collection("categories").document(categoryID).collection("challenges").document(challenge.id)
+        try await documentRef.setData(from: challenge)
+    }
+    
+    // Fetch completed challenges for a user in a specific category
+    func fetchCompletedChallenges(for userID: String, inCategory categoryID: String) async throws -> [Challenge] {
+        let query = db.collection("users").document(userID).collection("CompletedChallenges")
+            .whereField("categoryID", isEqualTo: categoryID)
+        
+        let querySnapshot = try await query.getDocuments()
+        return querySnapshot.documents.compactMap { try? $0.data(as: Challenge.self) }
+    }
+    
+    // Mark a challenge as completed for a user
+    func completeChallenge(_ challengeID: String, for userID: String, inCategory categoryID: String) async throws {
+        let documentRef = db.collection("users").document(userID).collection("CompletedChallenges").document(challengeID)
+        try await documentRef.setData(["challengeID": challengeID, "categoryID": categoryID])
+    }
+    // Fetch a single challenge by its ID
+    func fetchChallenge(byID challengeID: String) async throws -> Challenge? {
+        let documentRef = db.collection("challenges").document(challengeID)
+        let snapshot = try await documentRef.getDocument()
+        return try? snapshot.data(as: Challenge.self)
+    }
+
+}

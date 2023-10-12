@@ -9,34 +9,49 @@ import SwiftUI
 
 struct ContentView: View {
     @Binding var showSignInView: Bool
-    @ObservedObject var challengeData = ChallengeData()
-    @State private var showUserProfile: Bool = false
     @State private var userId: String? = nil
+    @State private var showCreateChallengeView: Bool = false
+    @State private var showChallengeListView: Bool = false
 
     var body: some View {
         NavigationView {
-            List(ChallengeCategory.allCases, id: \.self) { category in
-                NavigationLink(destination: ChallengeListView(category: category, challengeData: challengeData)) {
-                    Text(category.displayName)
+            VStack(spacing: 20) {
+                if let userId = userId {
+                    UserProfileView(uid: userId)
+                } else {
+                    Text("Loading user profile...")
+                }
+                
+                Button("Create Challenge") {
+                    showCreateChallengeView.toggle()
+                }
+                .padding()
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(8)
+                .sheet(isPresented: $showCreateChallengeView) {
+                    CreateChallengeView()
+                }
+                
+                Button("View Challenges") {
+                    showChallengeListView.toggle()
+                }
+                .padding()
+                .background(Color.green)
+                .foregroundColor(.white)
+                .cornerRadius(8)
+                .sheet(isPresented: $showChallengeListView) {
+                    ChallengeListView() // You might need to pass required parameters here
                 }
             }
-            .navigationTitle("Challenges")
-            .navigationBarItems(leading: Button(action: {
-                showUserProfile.toggle()
-            }) {
-                Image(systemName: "person.circle")
-            }, trailing: Button(action: signOut) {
+            .padding()
+            .navigationBarItems(trailing: Button(action: signOut) {
                 Text("Sign Out")
             })
-            .sheet(isPresented: $showUserProfile) {
-                if let userId = userId {
-                    UserProfileView(userId: userId)
-                }
-            }
-            .onAppear {
-                if let authUser = try? AuthenticationManager.shared.getAuthenticatedUser() {
-                    self.userId = authUser.uid
-                }
+        }
+        .onAppear {
+            if let authUser = try? AuthenticationManager.shared.getAuthenticatedUser() {
+                self.userId = authUser.uid
             }
         }
     }
@@ -47,3 +62,4 @@ struct ContentView: View {
         showSignInView = true
     }
 }
+
