@@ -10,13 +10,12 @@
 import FirebaseFirestore
 import FirebaseStorage
 
-struct Evidence {
-    var userId: String
+struct CompletedChallenge: Codable {
+    var challengeId: String
     var comment: String
     var imageUrl: String
-    // Add other fields as needed
-}
 
+}
 
 class FirebaseManager {
     // Singleton instance
@@ -28,14 +27,7 @@ class FirebaseManager {
     
     // MARK: - Evidence Upload
     
-    /// Uploads evidence image to Firebase Storage and updates Firestore.
-    /// - Parameters:
-    ///   - imuage: The image to upload.
-    ///   - comment: Comment associated with the evidence.
-    ///   - challengeId: The ID of the challenge to associate the evidence with.
     func uploadEvidence(userId: String, image: UIImage, comment: String, challengeId: String, completion: @escaping (Result<String, Error>) -> Void) {
-
-        // 1. Upload image to Firebase Storage
         let storageRef = storage.reference().child("evidence/\(challengeId).jpg")
         
         if let imageData = image.jpegData(compressionQuality: 0.8) {
@@ -49,7 +41,6 @@ class FirebaseManager {
                     return
                 }
                 
-                // 2. Get download URL
                 storageRef.downloadURL { (url, error) in
                     if let error = error {
                         print("Error getting download URL: \(error.localizedDescription)")
@@ -58,61 +49,55 @@ class FirebaseManager {
                     }
                     
                     if let downloadURL = url?.absoluteString {
-                        // 3. Once upload is successful and download URL is retrieved, update Firestore with evidence details
-                        self.updateFirestoreWithEvidence(userId: userId, challengeId: challengeId, comment: comment, imageUrl: downloadURL) { result in
-                            switch result {
-                            case .success:
-                                completion(.success(downloadURL))
-                            case .failure(let error):
-                                completion(.failure(error))
-                            }
-                        }
+                        self.addCompletedChallengeToUser(userId: userId, challengeId: challengeId, comment: comment, imageUrl: downloadURL, completion: completion)
                     }
                 }
             }
         }
     }
     
-    private func updateFirestoreWithEvidence(userId: String, challengeId: String, comment: String, imageUrl: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        let evidenceDocRef = db.collection("evidence").document("\(challengeId)")
+    func fetchEvidence(for userId: String, challengeId: String) async throws -> CompletedChallenge {
+        let docRef = db.collection("users").document(userId).collection("CompletedChallenges").document(challengeId)
+        let snapshot = try await docRef.getDocument()
         
-        let evidenceData: [String: Any] = [
-                   "userId": userId,
-                   "comment": comment,
-                   "imageUrl": imageUrl
-            // Add other evidence-related fields as needed
+        guard let data = snapshot.data() else {
+            throw NSError(domain: "DataError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to fetch evidence data"])
+        }
+        
+        let challengeId = data["challengeId"] as? String ?? ""
+        let comment = data["comment"] as? String ?? ""
+        let imageUrl = data["imageUrl"] as? String ?? ""
+        
+        return CompletedChallenge(challengeId: challengeId, comment: comment, imageUrl: imageUrl)
+    }
+    
+    func fetchCompletedChallenges(forUID uid: String) async throws -> [CompletedChallenge] {
+        let challengesCollection = db.collection("users").document(uid).collection("CompletedChallenges")
+        let snapshots = try await challengesCollection.getDocuments()
+        return snapshots.documents.compactMap { try? $0.data(as: CompletedChallenge.self) }
+    }
+
+
+
+    
+    private func addCompletedChallengeToUser(userId: String, challengeId: String, comment: String, imageUrl: String, completion: @escaping (Result<String, Error>) -> Void) {
+        let challengeDocRef = db.collection("users").document(userId).collection("CompletedChallenges").document(challengeId)
+        
+        let completedChallengeData: [String: Any] = [
+            "challengeId": challengeId,
+            "comment": comment,
+            "imageUrl": imageUrl
         ]
         
-        evidenceDocRef.setData(evidenceData, merge: true) { error in
+        challengeDocRef.setData(completedChallengeData) { error in
             if let error = error {
-                print("Error updating Firestore with evidence: \(error.localizedDescription)")
+                print("Error adding completed challenge to user: \(error.localizedDescription)")
                 completion(.failure(error))
                 return
             }
             
-            print("Firestore updated with evidence details.")
-            completion(.success(()))
+            print("Completed challenge added to user.")
+            completion(.success(imageUrl))
         }
     }
-    
-    func fetchEvidence(for userId: String, challengeId: Int, completion: @escaping (Result<Evidence, Error>) -> Void) {
-            let evidenceDocRef = db.collection("evidence").document("\(userId)_\(challengeId)")
-            
-            evidenceDocRef.getDocument { (document, error) in
-                // ... (rest of the code remains unchanged)
-                
-                if let document = document, document.exists, let data = document.data() {
-                    let userId = data["userId"] as? String ?? ""
-                    let comment = data["comment"] as? String ?? ""
-                    let imageUrl = data["imageUrl"] as? String ?? ""
-                    
-                    let evidence = Evidence(userId: userId, comment: comment, imageUrl: imageUrl)
-                    completion(.success(evidence))
-                } else {
-                print("Document does not exist")
-                completion(.failure(NSError(domain: "com.yourapp", code: -1, userInfo: [NSLocalizedDescriptionKey: "Document does not exist"])))
-            }
-        }
-    }
-
 }

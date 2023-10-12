@@ -70,7 +70,15 @@ struct CreateChallengeView: View {
     }
 
     func uploadChallenge() {
-        let challenge = Challenge(id: UUID().uuidString, name: name, description: description, points: points, evidenceRequired: evidenceRequired, sequence: sequence)
+        let challenge = Challenge(
+            id: UUID().uuidString,
+            name: name,
+            description: description,
+            points: points,
+            evidenceRequired: evidenceRequired,
+            sequence: sequence,
+            categoryID: selectedCategory.rawValue  // Set the categoryID
+        )
 
         isUploading = true
         Task {
@@ -85,4 +93,5 @@ struct CreateChallengeView: View {
             isUploading = false
         }
     }
+
 }

@@ -72,21 +72,30 @@ struct ChallengeDetailView: View {
         }
     }
         
-        func uploadEvidence() {
-            guard let image = selectedImage, let userId = currentUser?.uid else { return }
-            isUploading = true
+    func uploadEvidence() {
+        guard let image = selectedImage, let userId = currentUser?.uid else { return }
+        isUploading = true
 
-            FirebaseManager.shared.uploadEvidence(userId: userId, image: image, comment: comment, challengeId: challenge.id) { result in
-                switch result {
-                case .success(let url):
-                    self.alertMessage = "Evidence uploaded successfully!"
-                case .failure(let error):
-                    self.alertMessage = "Failed to upload evidence: \(error.localizedDescription)"
+        FirebaseManager.shared.uploadEvidence(userId: userId, image: image, comment: comment, challengeId: challenge.id) { result in
+            switch result {
+            case .success(let url):
+                // After successfully uploading the evidence, mark the challenge as completed
+                Task {
+                    do {
+                        try await ChallengeManager.shared.completeChallenge(challenge.id, for: userId, inCategory: challenge.categoryID)
+                        self.alertMessage = "Evidence uploaded and challenge marked as completed!"
+                    } catch {
+                        self.alertMessage = "Evidence uploaded, but failed to mark challenge as completed: \(error.localizedDescription)"
+                    }
                 }
-                self.showAlert = true
-                self.isUploading = false
+            case .failure(let error):
+                self.alertMessage = "Failed to upload evidence: \(error.localizedDescription)"
             }
+            self.showAlert = true
+            self.isUploading = false
         }
+    }
+
 
            
         func fetchCurrentUserDetails() {
