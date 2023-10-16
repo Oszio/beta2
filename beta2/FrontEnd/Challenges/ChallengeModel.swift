@@ -20,5 +20,5 @@ struct Challenge: Identifiable, Codable, Hashable {
     var points: Int
     var evidenceRequired: Bool
     var sequence: Int
-    var categoryID: String // Add this line
+    var categoryId: String // Add this line
 }

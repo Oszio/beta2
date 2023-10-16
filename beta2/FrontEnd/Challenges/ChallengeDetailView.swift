@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ChallengeDetailView: View {
     var challenge: Challenge
+
     @State private var selectedImage: UIImage?
     @State private var comment: String = ""
     @State private var isUploading: Bool = false
@@ -16,8 +17,6 @@ struct ChallengeDetailView: View {
     @State private var alertMessage: String = ""
     @State private var currentUser: DBUser?
     @State private var isImagePickerPresented: Bool = false
-
-    
     
     var body: some View {
         VStack(spacing: 20) {
@@ -42,7 +41,6 @@ struct ChallengeDetailView: View {
             .sheet(isPresented: $isImagePickerPresented) {
                 ImagePicker(selectedImage: $selectedImage)
             }
-
             .padding()
             .background(Color.blue)
             .foregroundColor(.white)
@@ -61,8 +59,11 @@ struct ChallengeDetailView: View {
             .background(Color.green)
             .foregroundColor(.white)
             .cornerRadius(8)
+            
+            if isUploading {
+                ProgressView("Uploading...")
+            }
         }
-        
         .onAppear {
             fetchCurrentUserDetails()
         }
@@ -76,13 +77,13 @@ struct ChallengeDetailView: View {
         guard let image = selectedImage, let userId = currentUser?.uid else { return }
         isUploading = true
 
-        FirebaseManager.shared.uploadEvidence(userId: userId, image: image, comment: comment, challengeId: challenge.id) { result in
+        FirebaseManager.shared.uploadEvidence(userId: userId, image: image, comment: comment, challengeID: challenge.id, categoryId: challenge.categoryId) { result in
+
             switch result {
-            case .success(let url):
-                // After successfully uploading the evidence, mark the challenge as completed
+            case .success(let (evidenceId, downloadURL)):
                 Task {
                     do {
-                        try await ChallengeManager.shared.completeChallenge(challenge.id, for: userId, inCategory: challenge.categoryID)
+                        try await ChallengeManager.shared.completeChallenge(challenge.id, for: userId, inCategory: challenge.categoryId, evidenceId: evidenceId, imageUrl: downloadURL, comment: comment)
                         self.alertMessage = "Evidence uploaded and challenge marked as completed!"
                     } catch {
                         self.alertMessage = "Evidence uploaded, but failed to mark challenge as completed: \(error.localizedDescription)"
@@ -95,21 +96,17 @@ struct ChallengeDetailView: View {
             self.isUploading = false
         }
     }
-
-
            
-        func fetchCurrentUserDetails() {
-            Task {
-                do {
-                    if let authUser = try? AuthenticationManager.shared.getAuthenticatedUser() {
-                        let user = try await UserManager.shared.fetchUser(byUID: authUser.uid)
-                        self.currentUser = user
-                    }
-                } catch {
-                    print("Failed to fetch user details: \(error.localizedDescription)")
+    func fetchCurrentUserDetails() {
+        Task {
+            do {
+                if let authUser = try? AuthenticationManager.shared.getAuthenticatedUser() {
+                    let user = try await UserManager.shared.fetchUser(byUID: authUser.uid)
+                    self.currentUser = user
                 }
+            } catch {
+                print("Failed to fetch user details: \(error.localizedDescription)")
             }
         }
     }
-    
-
+}

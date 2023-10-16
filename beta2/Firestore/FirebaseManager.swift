@@ -9,26 +9,36 @@
 
 import FirebaseFirestore
 import FirebaseStorage
+import UIKit
 
 struct CompletedChallenge: Codable {
-    var challengeId: String
-    var comment: String
+    var challengeID: String
+    var evidenceId: String
     var imageUrl: String
-
+    var comment: String
+    var categoryId: String
+    
+    
+    
+    enum CodingKeys: String, CodingKey {
+        case challengeID = "challengeID"
+        case evidenceId
+        case imageUrl
+        case comment
+        case categoryId
+        
+    }
 }
 
 class FirebaseManager {
-    // Singleton instance
+    
     static let shared = FirebaseManager()
     
-    // Firebase services
     private let db = Firestore.firestore()
     private let storage = Storage.storage()
     
-    // MARK: - Evidence Upload
-    
-    func uploadEvidence(userId: String, image: UIImage, comment: String, challengeId: String, completion: @escaping (Result<String, Error>) -> Void) {
-        let storageRef = storage.reference().child("evidence/\(challengeId).jpg")
+    func uploadEvidence(userId: String, image: UIImage, comment: String, challengeID: String, categoryId: String,  completion: @escaping (Result<(String, String), Error>) -> Void) {
+        let storageRef = storage.reference().child("evidence/\(challengeID).jpg")
         
         if let imageData = image.jpegData(compressionQuality: 0.8) {
             let metadata = StorageMetadata()
@@ -49,55 +59,62 @@ class FirebaseManager {
                     }
                     
                     if let downloadURL = url?.absoluteString {
-                        self.addCompletedChallengeToUser(userId: userId, challengeId: challengeId, comment: comment, imageUrl: downloadURL, completion: completion)
+                        self.addEvidenceToFirestore(userId: userId, challengeID: challengeID, comment: comment, imageUrl: downloadURL, categoryId: categoryId, completion: completion)
                     }
                 }
             }
         }
     }
     
-    func fetchEvidence(for userId: String, challengeId: String) async throws -> CompletedChallenge {
-        let docRef = db.collection("users").document(userId).collection("CompletedChallenges").document(challengeId)
+    private func addEvidenceToFirestore(userId: String, challengeID: String, comment: String, imageUrl: String, categoryId: String, completion: @escaping (Result<(String, String), Error>) -> Void) {
+        let evidenceCollectionRef = db.collection("evidence")
+
+        let evidenceData: [String: Any] = [
+            "userId": userId,
+            "challengeID": challengeID,
+            "comment": comment,
+            "imageUrl": imageUrl,
+            "categoryId": categoryId
+        ]
+
+        evidenceCollectionRef.addDocument(data: evidenceData) { error in
+            if let error = error {
+                print("Error adding evidence to Firestore: \(error.localizedDescription)")
+                completion(.failure(error))
+                return
+            }
+            // Return both the evidenceId and the imageUrl
+            completion(.success((challengeID, imageUrl)))
+        }
+    }
+    
+    
+    func fetchEvidence(for userId: String, challengeID: String) async throws -> CompletedChallenge {
+        let docRef = db.collection("users").document(userId).collection("CompletedChallenges").document(challengeID)
         let snapshot = try await docRef.getDocument()
         
         guard let data = snapshot.data() else {
             throw NSError(domain: "DataError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to fetch evidence data"])
         }
         
-        let challengeId = data["challengeId"] as? String ?? ""
-        let comment = data["comment"] as? String ?? ""
-        let imageUrl = data["imageUrl"] as? String ?? ""
+        guard
+            let fetchedChallengeID = data["challengeID"] as? String,
+            let evidenceId = data["evidenceId"] as? String,
+            let imageUrl = data["imageUrl"] as? String,
+            let comment = data["comment"] as? String,
+            let categoryId = data["categoryId"] as? String // Add this line
+        else {
+            throw NSError(domain: "DataError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Incomplete evidence data"])
+        }
         
-        return CompletedChallenge(challengeId: challengeId, comment: comment, imageUrl: imageUrl)
+        return CompletedChallenge(challengeID: fetchedChallengeID, evidenceId: evidenceId, imageUrl: imageUrl, comment: comment, categoryId: categoryId)
     }
+
     
     func fetchCompletedChallenges(forUID uid: String) async throws -> [CompletedChallenge] {
         let challengesCollection = db.collection("users").document(uid).collection("CompletedChallenges")
         let snapshots = try await challengesCollection.getDocuments()
         return snapshots.documents.compactMap { try? $0.data(as: CompletedChallenge.self) }
     }
-
-
-
-    
-    private func addCompletedChallengeToUser(userId: String, challengeId: String, comment: String, imageUrl: String, completion: @escaping (Result<String, Error>) -> Void) {
-        let challengeDocRef = db.collection("users").document(userId).collection("CompletedChallenges").document(challengeId)
-        
-        let completedChallengeData: [String: Any] = [
-            "challengeId": challengeId,
-            "comment": comment,
-            "imageUrl": imageUrl
-        ]
-        
-        challengeDocRef.setData(completedChallengeData) { error in
-            if let error = error {
-                print("Error adding completed challenge to user: \(error.localizedDescription)")
-                completion(.failure(error))
-                return
-            }
-            
-            print("Completed challenge added to user.")
-            completion(.success(imageUrl))
-        }
-    }
 }
+

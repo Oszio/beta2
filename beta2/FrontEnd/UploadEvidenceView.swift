@@ -17,6 +17,7 @@ struct UploadEvidenceView: View {
     @State private var uploadSuccess: Bool = false
     @State private var errorMessage: String?
     @State private var userId: String?
+    @State private var categoryId: String
 
     @Binding var uploadedImage: UIImage?
 
@@ -88,7 +89,7 @@ struct UploadEvidenceView: View {
         
         isLoading = true
         
-        FirebaseManager.shared.uploadEvidence(userId: userId, image: image, comment: comment, challengeId: "\(challenge.id)") { result in
+        FirebaseManager.shared.uploadEvidence(userId: userId, image: image, comment: comment,  challengeID: "\(challenge.id)", categoryId:categoryId) { result in
             isLoading = false
             switch result {
             case .success:

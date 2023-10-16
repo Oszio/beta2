@@ -43,17 +43,26 @@ final class ChallengeManager {
         return snapshots.documents.compactMap { try? $0.data(as: CompletedChallenge.self) }
     }
     
-    // Mark a challenge as completed for a user
-    func completeChallenge(_ challengeID: String, for userID: String, inCategory categoryID: String) async throws {
+    // Mark a challenge as completed for a user with evidence details
+    func completeChallenge(_ challengeID: String, for userID: String, inCategory categoryID: String, evidenceId: String, imageUrl: String, comment: String) async throws {
         let documentRef = db.collection("users").document(userID).collection("CompletedChallenges").document(challengeID)
-        try await documentRef.setData(["challengeID": challengeID, "categoryID": categoryID])
+
+        let completedChallengeData: [String: Any] = [
+            "challengeID": challengeID,
+            "categoryID": categoryID,
+            "evidenceId": evidenceId,
+            "imageUrl": imageUrl,
+            "comment": comment
+        ]
+        
+        try await documentRef.setData(completedChallengeData)
     }
     
     // Fetch a single challenge by its ID
-    func fetchChallenge(byID challengeID: String) async throws -> Challenge? {
-        let documentRef = db.collection("challenges").document(challengeID)
+    func fetchChallenge(byID challengeID: String, inCategory categoryID: String) async throws -> Challenge? {
+        let documentRef = db.collection("categories").document(categoryID).collection("challenges").document(challengeID)
         let snapshot = try await documentRef.getDocument()
         return try? snapshot.data(as: Challenge.self)
     }
-}
 
+}

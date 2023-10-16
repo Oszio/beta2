@@ -77,7 +77,7 @@ struct CreateChallengeView: View {
             points: points,
             evidenceRequired: evidenceRequired,
             sequence: sequence,
-            categoryID: selectedCategory.rawValue  // Set the categoryID
+            categoryId: selectedCategory.rawValue  // Set the categoryID
         )
 
         isUploading = true

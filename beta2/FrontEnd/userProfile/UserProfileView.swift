@@ -7,11 +7,19 @@
 
 import SwiftUI
 
+// This SwiftUI view displays the profile of a user, including their personal info and completed challenges.
 struct UserProfileView: View {
-    let uid: String
-    @State private var user: DBUser?
-    @State private var completedChallengeInfos: [CompletedChallengeInfo] = []  // Updated to use the combined structure
     
+    // The unique identifier for the user
+    let uid: String
+    
+    // Current user details fetched from the database
+    @State private var user: DBUser?
+    
+    // List of completed challenges along with associated evidence for the user
+    @State private var completedChallengeInfos: [CompletedChallengeInfo] = []
+    
+    // Initializer accepting the user ID
     init(uid: String) {
         self.uid = uid
     }
@@ -19,12 +27,13 @@ struct UserProfileView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .center, spacing: 20) {
-                // Profile Picture
+                
+                // Display user's profile picture if available, otherwise show a placeholder
                 if let photoUrl = user?.photoUrl, let url = URL(string: photoUrl) {
                     AsyncImage(url: url) { image in
                         image.resizable()
                     } placeholder: {
-                        ProgressView()
+                        ProgressView() // Placeholder for image load
                     }
                     .frame(width: 100, height: 100)
                     .clipShape(Circle())
@@ -37,7 +46,7 @@ struct UserProfileView: View {
                         .foregroundColor(.gray)
                 }
                 
-                // User Information
+                // Display user's email and anonymity status
                 Text(user?.email ?? "No Email")
                     .font(.title2)
                     .padding(.bottom)
@@ -45,13 +54,14 @@ struct UserProfileView: View {
                 Text("Anonymous: \(user?.isAnonymous ?? false ? "Yes" : "No")")
                     .font(.subheadline)
                 
-                // Completed Challenges
+                // List out all the challenges completed by the user
                 if !completedChallengeInfos.isEmpty {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Completed Challenges")
                             .font(.headline)
                             .padding(.leading)
                         
+                        // Displaying each challenge in a card
                         ForEach(completedChallengeInfos, id: \.challenge.id) { challengeInfo in
                             ChallengeCard(challenge: challengeInfo.challenge, evidence: challengeInfo.evidence)
                         }
@@ -62,60 +72,59 @@ struct UserProfileView: View {
             .navigationBarTitle("Profile", displayMode: .inline)
             .task {
                 do {
-                    print("hello")
-                    
-                    // Fetching user
                     user = try await UserManager.shared.fetchUser(byUID: uid)
-                    print("User fetched successfully")
-                    
-                    // Fetching completed challenges
+                    print("Fetched user: \(String(describing: user))")  // Print here
+
                     let challenges = try await UserManager.shared.fetchCompletedChallenges(forUID: uid)
-                    print("Fetched \(challenges.count) completed challenges for user")
-                    
+                    print("Fetched challenges: \(challenges)")  // And here
+
                     for challenge in challenges {
-                        print("Processing challenge with ID: \(challenge.challengeId)")
-                        
-                        if let challengeDetail = try? await ChallengeManager.shared.fetchChallenge(byID: challenge.challengeId) {
+                        if let challengeDetail = try? await ChallengeManager.shared.fetchChallenge(byID: challenge.challengeID, inCategory: challenge.categoryId) {
                             let challengeInfo = CompletedChallengeInfo(challenge: challengeDetail, evidence: challenge)
                             completedChallengeInfos.append(challengeInfo)
-                            print("Added challenge: \(challengeDetail.name)")
+                            print("Mapped challenge info: \(challengeInfo)")
                         } else {
-                            print("Failed to fetch challenge detail for ID: \(challenge.challengeId)")
+                            print("Failed to fetch challenge detail for ID: \(challenge.challengeID)")
                         }
                     }
-                } catch {
+
+                       } catch {
                     print("Failed to fetch user or challenges: \(error)")
                 }
             }
 
-
         }
     }
     
+    // A card-style view to display individual challenges completed by the user
     struct ChallengeCard: View {
+        
+        // Challenge information
         var challenge: Challenge
-        var evidence: CompletedChallenge  // Add this line
+        
+        // Proof or evidence of challenge completion
+        var evidence: CompletedChallenge
         
         var body: some View {
             VStack {
                 HStack {
-                    // If you have icons for challenges, you can use them here
+                    // Displaying an icon for the challenge (you can customize this part based on your app's design)
                     Image(systemName: "checkmark.circle.fill")
                         .resizable()
                         .frame(width: 40, height: 40)
                         .foregroundColor(.green)
                     
+                    // Challenge title and description
                     VStack(alignment: .leading, spacing: 5) {
                         Text(challenge.name)
                             .font(.headline)
-                        // If challenges have descriptions, display them
                         Text(challenge.description)
                             .font(.subheadline)
                             .foregroundColor(.gray)
                     }
                 }
                 
-                // Display evidence image
+                // Show the evidence image if available
                 if let imageUrl = URL(string: evidence.imageUrl) {
                     AsyncImage(url: imageUrl) { image in
                         image.resizable()
@@ -126,7 +135,7 @@ struct UserProfileView: View {
                     .cornerRadius(10)
                 }
                 
-                // Display evidence comment
+                // Show the user's comment on the challenge
                 Text(evidence.comment)
                     .font(.caption)
                     .padding(.top, 5)
@@ -139,9 +148,9 @@ struct UserProfileView: View {
         }
     }
     
+    // Structure to combine a challenge and its corresponding evidence
     struct CompletedChallengeInfo {
         var challenge: Challenge
         var evidence: CompletedChallenge
-        
     }
 }
