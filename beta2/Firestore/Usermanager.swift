@@ -54,49 +54,10 @@ final class UserManager {
     func fetchCompletedChallenges(forUID uid: String) async throws -> [CompletedChallenge] {
         let challengesCollection = db.collection("users").document(uid).collection("CompletedChallenges")
         let snapshots = try await challengesCollection.getDocuments()
-        
-        var challenges: [CompletedChallenge] = []
-        
-        for document in snapshots.documents {
-            let data = document.data()
-            
-            // Check if required fields are present
-            if let challengeID = data["challengeID"] as? String,
-               let evidenceId = data["evidenceId"] as? String,
-               let imageUrl = data["imageUrl"] as? String,
-               let comment = data["comment"] as? String,
-                let category = data["categoryid"] as? String {
-
-                let challenge = CompletedChallenge(
-                    challengeID: challengeID,
-                    evidenceId: evidenceId,
-                    imageUrl: imageUrl,
-                    comment: comment,
-                    categoryId: category
-                
-
-                )
-                
-                challenges.append(challenge)
-            } else {
-                if data["challengeID"] as? String == nil {
-                    print("challengeId is missing or not a string in document: \(document.documentID)")
-                }
-                if data["evidenceId"] as? String == nil {
-                    print("evidenceId is missing or not a string in document: \(document.documentID)")
-                }
-                if data["imageUrl"] as? String == nil {
-                    print("imageUrl is missing or not a string in document: \(document.documentID)")
-                }
-                if data["comment"] as? String == nil {
-                    print("comment is missing or not a string in document: \(document.documentID)")
-                }
-
-            }
-        }
- 
-        return challenges
+        return snapshots.documents.compactMap { try? $0.data(as: CompletedChallenge.self) }
     }
+
+       
 
 
 
