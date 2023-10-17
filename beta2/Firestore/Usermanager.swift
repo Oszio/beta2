@@ -46,7 +46,7 @@ final class UserManager {
     // Create a new user in the database
     func createNewUser(user: DBUser) async throws {
         let documentRef = db.collection("users").document(user.uid)
-        try await documentRef.setData(from: user)
+        try  documentRef.setData(from: user)
         
         
     }

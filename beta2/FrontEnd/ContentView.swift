@@ -12,6 +12,8 @@ struct ContentView: View {
     @State private var userId: String? = nil
     @State private var showCreateChallengeView: Bool = false
     @State private var showChallengeListView: Bool = false
+    @State private var showFriendSearchView: Bool = false
+
 
     var body: some View {
         NavigationView {
@@ -36,6 +38,18 @@ struct ContentView: View {
                 Button("View Challenges") {
                     showChallengeListView.toggle()
                 }
+                
+                Button("Search Friends") {
+                    showFriendSearchView.toggle()
+                }
+                .padding()
+                .background(Color.orange) // You can choose a different color
+                .foregroundColor(.white)
+                .cornerRadius(8)
+                .sheet(isPresented: $showFriendSearchView) {
+                    FriendSearchView()
+                }
+
                 .padding()
                 .background(Color.green)
                 .foregroundColor(.white)

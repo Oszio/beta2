@@ -10,12 +10,13 @@ import FirebaseStorage
 import UIKit
 
 struct CompletedChallenge: Codable {
+    var categoryID: String
     var challengeID: String
+    var comment: String
     var evidenceId: String
     var imageUrl: String
-    var comment: String
-    var categoryId: String
 }
+
 
 class FirebaseManager {
     

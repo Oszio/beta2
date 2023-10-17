@@ -33,7 +33,7 @@ final class ChallengeManager {
     // Upload a new challenge to a specific category
     func uploadChallenge(_ challenge: Challenge, toCategory categoryID: String) async throws {
         let documentRef = db.collection("categories").document(categoryID).collection("challenges").document(challenge.id)
-        try await documentRef.setData(from: challenge)
+        try  documentRef.setData(from: challenge)
     }
     
     // Fetch completed challenges for a user
