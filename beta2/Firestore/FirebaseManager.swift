@@ -9,14 +9,14 @@ import FirebaseFirestore
 import FirebaseStorage
 import UIKit
 
-struct CompletedChallenge: Codable {
+struct CompletedChallenge: Codable, Identifiable {
+    var id: String { challengeID } // This makes CompletedChallenge conform to Identifiable
     var categoryID: String
     var challengeID: String
     var comment: String
     var evidenceId: String
     var imageUrl: String
 }
-
 
 class FirebaseManager {
     

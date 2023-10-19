@@ -12,6 +12,8 @@
 		D760C2B72AD75EE000538A8E /* ChallengeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D760C2B62AD75EE000538A8E /* ChallengeModel.swift */; };
 		D760C2D82ADEE33C00538A8E /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D760C2D72ADEE33C00538A8E /* UserProfileView.swift */; };
 		D760C2DA2ADF052E00538A8E /* FriendSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = D760C2D92ADF052E00538A8E /* FriendSearch.swift */; };
+		D760C2DC2AE1681100538A8E /* FriendListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D760C2DB2AE1681100538A8E /* FriendListView.swift */; };
+		D760C2DE2AE16FD800538A8E /* FriendProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D760C2DD2AE16FD800538A8E /* FriendProfileView.swift */; };
 		D7A016592ABF587B0097A989 /* beta2App.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A016582ABF587B0097A989 /* beta2App.swift */; };
 		D7A0165B2ABF587B0097A989 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A0165A2ABF587B0097A989 /* ContentView.swift */; };
 		D7A0165D2ABF587C0097A989 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D7A0165C2ABF587C0097A989 /* Assets.xcassets */; };
@@ -68,6 +70,8 @@
 		D760C2B62AD75EE000538A8E /* ChallengeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeModel.swift; sourceTree = "<group>"; };
 		D760C2D72ADEE33C00538A8E /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
 		D760C2D92ADF052E00538A8E /* FriendSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendSearch.swift; sourceTree = "<group>"; };
+		D760C2DB2AE1681100538A8E /* FriendListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendListView.swift; sourceTree = "<group>"; };
+		D760C2DD2AE16FD800538A8E /* FriendProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendProfileView.swift; sourceTree = "<group>"; };
 		D7A016552ABF587B0097A989 /* beta2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = beta2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7A016582ABF587B0097A989 /* beta2App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = beta2App.swift; sourceTree = "<group>"; };
 		D7A0165A2ABF587B0097A989 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -131,6 +135,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D760C2DF2AE17A5600538A8E /* Friends */ = {
+			isa = PBXGroup;
+			children = (
+				D760C2D92ADF052E00538A8E /* FriendSearch.swift */,
+				D760C2DB2AE1681100538A8E /* FriendListView.swift */,
+				D760C2DD2AE16FD800538A8E /* FriendProfileView.swift */,
+			);
+			path = Friends;
+			sourceTree = "<group>";
+		};
 		D7A0164C2ABF587B0097A989 = {
 			isa = PBXGroup;
 			children = (
@@ -158,7 +172,7 @@
 				D7A0165E2ABF587C0097A989 /* beta2.entitlements */,
 				D7A016B62AC0692B0097A989 /* Info.plist */,
 				D7A016582ABF587B0097A989 /* beta2App.swift */,
-				D760C2D92ADF052E00538A8E /* FriendSearch.swift */,
+				D760C2DF2AE17A5600538A8E /* Friends */,
 				D7A016E72AC0DCF40097A989 /* FrontEnd */,
 				D7A016DE2AC0DAC30097A989 /* SignInEmail */,
 				D7A016C92AC0982D0097A989 /* Firestore */,
@@ -425,8 +439,10 @@
 				D760C2DA2ADF052E00538A8E /* FriendSearch.swift in Sources */,
 				D7A016D12AC0AD530097A989 /* RootView.swift in Sources */,
 				D7A016DD2AC0DAAD0097A989 /* AuthyView.swift in Sources */,
+				D760C2DE2AE16FD800538A8E /* FriendProfileView.swift in Sources */,
 				D7A016E02AC0DB000097A989 /* SignInEmailView.swift in Sources */,
 				D7A016592ABF587B0097A989 /* beta2App.swift in Sources */,
+				D760C2DC2AE1681100538A8E /* FriendListView.swift in Sources */,
 				D760C2B72AD75EE000538A8E /* ChallengeModel.swift in Sources */,
 				D7A017042AC1F6F40097A989 /* FirebaseManager.swift in Sources */,
 				D7A0170F2ACC57E30097A989 /* imagePicker.swift in Sources */,

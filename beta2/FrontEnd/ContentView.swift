@@ -4,7 +4,6 @@
 //
 //  Created by Petter Uvdal on 2023-08-27.
 //
-
 import SwiftUI
 
 struct ContentView: View {
@@ -13,13 +12,25 @@ struct ContentView: View {
     @State private var showCreateChallengeView: Bool = false
     @State private var showChallengeListView: Bool = false
     @State private var showFriendSearchView: Bool = false
-
+    @State private var showUserProfileView: Bool = false
+    @State private var showFriendListView: Bool = false
 
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
                 if let userId = userId {
-                    UserProfileView(uid: userId)
+                    Button(action: {
+                        showUserProfileView.toggle()
+                    }) {
+                        Text("View Profile")
+                    }
+                    .sheet(isPresented: $showUserProfileView) {
+                        UserProfileView(uid: userId)
+                    }
+                    .padding()
+                    .background(Color.purple)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
                 } else {
                     Text("Loading user profile...")
                 }
@@ -38,24 +49,34 @@ struct ContentView: View {
                 Button("View Challenges") {
                     showChallengeListView.toggle()
                 }
-                
-                Button("Search Friends") {
-                    showFriendSearchView.toggle()
-                }
-                .padding()
-                .background(Color.orange) // You can choose a different color
-                .foregroundColor(.white)
-                .cornerRadius(8)
-                .sheet(isPresented: $showFriendSearchView) {
-                    FriendSearchView()
-                }
-
                 .padding()
                 .background(Color.green)
                 .foregroundColor(.white)
                 .cornerRadius(8)
                 .sheet(isPresented: $showChallengeListView) {
-                    ChallengeListView() // You might need to pass required parameters here
+                    ChallengeListView()
+                }
+                
+                Button("Search Friends") {
+                    showFriendSearchView.toggle()
+                }
+                .padding()
+                .background(Color.orange)
+                .foregroundColor(.white)
+                .cornerRadius(8)
+                .sheet(isPresented: $showFriendSearchView) {
+                    FriendSearchView()
+                }
+                
+                Button("Friend List") {
+                    showFriendListView.toggle()
+                }
+                .padding()
+                .background(Color.yellow) // Choose a color that you like
+                .foregroundColor(.white)
+                .cornerRadius(8)
+                .sheet(isPresented: $showFriendListView) {
+                    FriendListView()
                 }
             }
             .padding()
@@ -72,8 +93,6 @@ struct ContentView: View {
     
     func signOut() {
         // Call your authentication manager's sign-out function here
-        // For now, I'll just set showSignInView to true to simulate a sign-out
         showSignInView = true
     }
 }
-

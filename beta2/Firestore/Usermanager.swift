@@ -39,10 +39,10 @@ struct DBUser: Codable {
 
 final class UserManager {
     static let shared = UserManager()
-
+    
     private let db = Firestore.firestore()
     private init() {}
-
+    
     // Create a new user in the database
     func createNewUser(user: DBUser) async throws {
         let documentRef = db.collection("users").document(user.uid)
@@ -50,20 +50,20 @@ final class UserManager {
         
         
     }
-
+    
     func fetchCompletedChallenges(forUID uid: String) async throws -> [CompletedChallenge] {
         let challengesCollection = db.collection("users").document(uid).collection("CompletedChallenges")
         let snapshots = try await challengesCollection.getDocuments()
         return snapshots.documents.compactMap { try? $0.data(as: CompletedChallenge.self) }
     }
-
-       
-
-
-
-
-
-
+    
+    
+    
+    
+    
+    
+    
+    
     // Update user's photo URL
     func updateUserPhotoURL(uid: String, photoUrl: String) async throws {
         let documentRef = db.collection("users").document(uid)
@@ -71,22 +71,71 @@ final class UserManager {
             "photoUrl": photoUrl
         ])
     }
-
+    
     // Fetch a user from the database
     func fetchUser(byUID uid: String) async throws -> DBUser? {
         let documentRef = db.collection("users").document(uid)
         let snapshot = try await documentRef.getDocument()
-
+        
         // Debugging: Print the raw data
         print("Raw data from Firestore: \(String(describing: snapshot.data()))")
-
+        
         let user = try snapshot.data(as: DBUser.self)
-
+        
         // Debugging: Print the decoded user
         print("Decoded user: \(String(describing: user))")
-
+        
         return user
     }
+}
+    
+    extension UserManager {
+        
+        // Add a friend to the user's friend list and vice versa
+        func addFriend(currentUserID: String, friendID: String) async throws {
+            let timestamp = Timestamp(date: Date())
+            
+            // Add friendID to currentUser's friends list
+            try await db.collection("users").document(currentUserID).collection("friends").document(friendID).setData([
+                "friendID": friendID,
+                "timestamp": timestamp
+            ])
+            
+            // Add currentUserID to friend's friends list
+            try await db.collection("users").document(friendID).collection("friends").document(currentUserID).setData([
+                "friendID": currentUserID,
+                "timestamp": timestamp
+                
+            ])
+        }
+        
+        // Fetch all friends of a user
+        func fetchFriends(for userID: String) async throws -> [DBUser] {
+            var friends: [DBUser] = []
+            
+            let friendDocuments = try await db.collection("users").document(userID).collection("friends").getDocuments()
+            
+            for document in friendDocuments.documents {
+                let friendID = document.documentID
+                let friendDocument = try await db.collection("users").document(friendID).getDocument()
+                if let friend = try? friendDocument.data(as: DBUser.self) {
+                    friends.append(friend)
+                }
+            }
+            
+            return friends
+        }
+        
+        // Remove a friend from the user's friend list and vice versa
+        func removeFriend(currentUserID: String, friendID: String) async throws {
+            // Remove friendID from currentUser's friends list
+            try await db.collection("users").document(currentUserID).collection("friends").document(friendID).delete()
+            
+            // Remove currentUserID from friend's friends list
+            try await db.collection("users").document(friendID).collection("friends").document(currentUserID).delete()
+        }
+    
+
     
     
 }
