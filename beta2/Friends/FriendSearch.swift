@@ -17,7 +17,8 @@ struct FriendSearchView: View {
     @State private var errorMessage: String? = nil
     @State private var successMessage: String? = nil
     @State private var currentUserId: String?
-    
+    @State private var addedFriends: Set<String> = []
+
     var body: some View {
         NavigationView {
             VStack {
@@ -49,8 +50,12 @@ struct FriendSearchView: View {
                         HStack {
                             Text(user.email ?? "No Email")
                             Spacer()
-                            Button("Add Friend") {
-                                addFriend(user)
+                            if addedFriends.contains(user.uid) {
+                                Text("Added")
+                            } else {
+                                Button("Add Friend") {
+                                    addFriend(user)
+                                }
                             }
                         }
                     }
@@ -58,22 +63,34 @@ struct FriendSearchView: View {
             }
             .navigationBarTitle("Friend Search", displayMode: .inline)
             .onAppear {
-                do {
-                    let currentUser = try AuthenticationManager.shared.getAuthenticatedUser()
-                    currentUserId = currentUser.uid
-                } catch {
-                    print("Failed to fetch current user: \(error)")
-                }
+                getCurrentUser()
             }
         }
     }
     
+    func getCurrentUser() {
+        do {
+            let currentUser = try AuthenticationManager.shared.getAuthenticatedUser()
+            currentUserId = currentUser.uid
+        } catch {
+            errorMessage = "Failed to fetch current user: \(error.localizedDescription)"
+        }
+    }
+    
     func searchForUser() {
+        guard searchText.count > 2 else {
+            errorMessage = "Please enter at least 3 characters for search."
+            return
+        }
+        
         isLoading = true
         errorMessage = nil
         let db = Firestore.firestore()
         
-        db.collection("users").whereField("email", isEqualTo: searchText).getDocuments { (snapshot, error) in
+        db.collection("users")
+          .whereField("email", isEqualTo: searchText)
+          .getDocuments { (snapshot, error) in
+            // Further logic can be added here to also search by username.
             isLoading = false
             if let error = error {
                 errorMessage = "Error searching for user: \(error.localizedDescription)"
@@ -95,10 +112,16 @@ struct FriendSearchView: View {
             return
         }
         
+        guard !addedFriends.contains(user.uid) else {
+            errorMessage = "User already added as a friend!"
+            return
+        }
+        
         Task {
             do {
                 try await UserManager.shared.addFriend(currentUserID: currentUserID, friendID: user.uid)
                 successMessage = "Friend added successfully!"
+                addedFriends.insert(user.uid)
             } catch {
                 errorMessage = "Failed to add friend: \(error.localizedDescription)"
             }

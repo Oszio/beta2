@@ -12,7 +12,8 @@ struct FriendProfileView: View {
     
     @State private var completedChallenges: [CompletedChallenge] = []
     @State private var isLoading: Bool = true
-    
+    @State private var errorMessage: String? = nil
+
     var body: some View {
         VStack(spacing: 20) {
             if let url = friend.photoUrl, let imageUrl = URL(string: url) {
@@ -35,6 +36,9 @@ struct FriendProfileView: View {
             
             if isLoading {
                 ProgressView()
+            } else if let error = errorMessage {
+                Text(error)
+                    .foregroundColor(.red)
             } else {
                 List(completedChallenges) { challenge in
                     VStack(alignment: .leading) {
@@ -52,7 +56,8 @@ struct FriendProfileView: View {
             }
             
             Button("Remove Friend") {
-                // Implement remove friend functionality here
+                // Prompt the user to confirm before removing
+                // If confirmed, implement the remove friend functionality here
             }
             .padding()
             .background(Color.red)
@@ -69,7 +74,8 @@ struct FriendProfileView: View {
                 self.completedChallenges = try await FirebaseManager.shared.fetchCompletedChallenges(forUID: friend.id)
                 self.isLoading = false
             } catch {
-                print("Error fetching completed challenges: \(error.localizedDescription)")
+                self.isLoading = false
+                errorMessage = "Error fetching completed challenges: \(error.localizedDescription)"
             }
         }
     }
