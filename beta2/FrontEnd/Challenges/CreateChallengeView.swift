@@ -30,6 +30,8 @@ struct CreateChallengeView: View {
     @State private var isUploading: Bool = false
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
+    @State private var lastUsedSequence: Int = 0  // Add this line to track the last used sequence
+
 
     var body: some View {
         Form {
@@ -42,9 +44,10 @@ struct CreateChallengeView: View {
                 Toggle(isOn: $evidenceRequired) {
                     Text("Evidence Required")
                 }
-                Stepper(value: $sequence, in: 1...100) {
-                    Text("Sequence: \(sequence)")
+                Stepper(value: $points, in: 10...1000, step: 10) {
+                    Text("Points: \(points)")
                 }
+
             }
 
             Section(header: Text("Category")) {
@@ -70,28 +73,29 @@ struct CreateChallengeView: View {
     }
 
     func uploadChallenge() {
-        let challenge = Challenge(
-            id: UUID().uuidString,
-            name: name,
-            description: description,
-            points: points,
-            evidenceRequired: evidenceRequired,
-            sequence: sequence,
-            categoryId: selectedCategory.rawValue  // Set the categoryID
-        )
+           let challenge = Challenge(
+               id: UUID().uuidString,
+               name: name,
+               description: description,
+               points: points,
+               evidenceRequired: evidenceRequired,
+               sequence: lastUsedSequence + 1,  // Set sequence to last used + 1
+               categoryId: selectedCategory.rawValue
+           )
 
-        isUploading = true
-        Task {
-            do {
-                try await ChallengeManager.shared.uploadChallenge(challenge, toCategory: selectedCategory.rawValue)
-                alertMessage = "Challenge uploaded successfully!"
-                showAlert = true
-            } catch {
-                alertMessage = "Failed to upload challenge: \(error.localizedDescription)"
-                showAlert = true
-            }
-            isUploading = false
-        }
-    }
+           isUploading = true
+           Task {
+               do {
+                   try await ChallengeManager.shared.uploadChallenge(challenge, toCategory: selectedCategory.rawValue)
+                   lastUsedSequence += 1  // Update last used sequence after successful upload
+                   alertMessage = "Challenge uploaded successfully!"
+                   showAlert = true
+               } catch {
+                   alertMessage = "Failed to upload challenge: \(error.localizedDescription)"
+                   showAlert = true
+               }
+               isUploading = false
+           }
+       }
+   }
 
-}
