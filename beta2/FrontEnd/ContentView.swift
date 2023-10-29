@@ -9,11 +9,6 @@ import SwiftUI
 struct ContentView: View {
     @Binding var showSignInView: Bool
     @State private var userId: String? = nil
-    @State private var showCreateChallengeView: Bool = false
-    @State private var showChallengeListView: Bool = false
-    @State private var showFriendSearchView: Bool = false
-    @State private var showUserProfileView: Bool = false
-    @State private var showFriendListView: Bool = false
     
     var body: some View {
         NavigationView {
@@ -39,34 +34,25 @@ struct ContentView: View {
                         Text("Create")
                     }
                 if let userId = userId {
-                    UserProfileView(uid: userId)
+                    UserProfileView(uid: userId, showSignInView: $showSignInView)
                         .tabItem {
                             Image(systemName: "person.circle")
                             Text("Profile")
                         }
                 } else {
                     Text("Loading user profile...")
+                        .tabItem {
+                            Image(systemName: "person.circle")
+                            Text("Profile")
+                        }
                 }
             }
-            VStack(spacing: 20) {
-            }
-            .padding()
-            .navigationBarItems(trailing: Button(action: signOut) {
-                Text("Sign Out")
-            })
-        
         }
         .onAppear {
             if let authUser = try? AuthenticationManager.shared.getAuthenticatedUser() {
                 self.userId = authUser.uid
             }
         }
-        
-    }
-    
-    func signOut() {
-        // Call your authentication manager's sign-out function here
-        showSignInView = true
     }
 }
 
