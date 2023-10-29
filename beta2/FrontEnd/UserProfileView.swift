@@ -64,25 +64,26 @@ struct UserProfileView: View {
        }
     
     func loadUserProfile() async {
-        do {
-            user = try await UserManager.shared.fetchUser(byUID: uid)
-            let challenges = try await UserManager.shared.fetchCompletedChallenges(forUID: uid)
+            // Clear the array before loading new data
+            completedChallengeInfos = []
             
-            for challenge in challenges {
-                if let challengeDetail = try? await ChallengeManager.shared.fetchChallenge(byID: challenge.challengeID, inCategory: challenge.categoryID) {
-                    let challengeInfo = CompletedChallengeInfo(challenge: challengeDetail, evidence: challenge)
-                    completedChallengeInfos.append(challengeInfo)
-                } else {
-                    print("Failed to fetch challenge detail for ID: \(challenge.challengeID)")
+            do {
+                user = try await UserManager.shared.fetchUser(byUID: uid)
+                let challenges = try await UserManager.shared.fetchCompletedChallenges(forUID: uid)
+                
+                for challenge in challenges {
+                    if let challengeDetail = try? await ChallengeManager.shared.fetchChallenge(byID: challenge.challengeID, inCategory: challenge.categoryID) {
+                        let challengeInfo = CompletedChallengeInfo(challenge: challengeDetail, evidence: challenge)
+                        completedChallengeInfos.append(challengeInfo)
+                    } else {
+                        print("Failed to fetch challenge detail for ID: \(challenge.challengeID)")
+                    }
                 }
+            } catch {
+                print("Failed to fetch user or challenges: \(error)")
             }
-        } catch {
-            print("Failed to fetch user or challenges: \(error)")
         }
     }
-
-    
-}
 
     
     // A card-style view to display individual challenges completed by the user
