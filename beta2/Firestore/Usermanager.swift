@@ -8,12 +8,14 @@
 import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
+import FirebaseStorage
 
 struct DBUser: Codable {
     var uid: String
     var email: String?
     var photoUrl: String?
     var isAnonymous: Bool
+    var username: String?
 
     enum CodingKeys: String, CodingKey {
         case uid
@@ -89,54 +91,75 @@ final class UserManager {
     }
 }
     
-    extension UserManager {
-        
-        // Add a friend to the user's friend list and vice versa
-        func addFriend(currentUserID: String, friendID: String) async throws {
-            let timestamp = Timestamp(date: Date())
-            
-            // Add friendID to currentUser's friends list
-            try await db.collection("users").document(currentUserID).collection("friends").document(friendID).setData([
-                "friendID": friendID,
-                "timestamp": timestamp
-            ])
-            
-            // Add currentUserID to friend's friends list
-            try await db.collection("users").document(friendID).collection("friends").document(currentUserID).setData([
-                "friendID": currentUserID,
-                "timestamp": timestamp
-                
-            ])
-        }
-        
-        // Fetch all friends of a user
-        func fetchFriends(for userID: String) async throws -> [DBUser] {
-            var friends: [DBUser] = []
-            
-            let friendDocuments = try await db.collection("users").document(userID).collection("friends").getDocuments()
-            
-            for document in friendDocuments.documents {
-                let friendID = document.documentID
-                let friendDocument = try await db.collection("users").document(friendID).getDocument()
-                if let friend = try? friendDocument.data(as: DBUser.self) {
-                    friends.append(friend)
-                }
-            }
-            
-            return friends
-        }
-        
-        // Remove a friend from the user's friend list and vice versa
-        func removeFriend(currentUserID: String, friendID: String) async throws {
-            // Remove friendID from currentUser's friends list
-            try await db.collection("users").document(currentUserID).collection("friends").document(friendID).delete()
-            
-            // Remove currentUserID from friend's friends list
-            try await db.collection("users").document(friendID).collection("friends").document(currentUserID).delete()
-        }
+extension UserManager {
     
-
+    // Add a friend to the user's friend list and vice versa
+    func addFriend(currentUserID: String, friendID: String) async throws {
+        let timestamp = Timestamp(date: Date())
+        
+        // Add friendID to currentUser's friends list
+        try await db.collection("users").document(currentUserID).collection("friends").document(friendID).setData([
+            "friendID": friendID,
+            "timestamp": timestamp
+        ])
+        
+        // Add currentUserID to friend's friends list
+        try await db.collection("users").document(friendID).collection("friends").document(currentUserID).setData([
+            "friendID": currentUserID,
+            "timestamp": timestamp
+            
+        ])
+    }
+    
+    // Fetch all friends of a user
+    func fetchFriends(for userID: String) async throws -> [DBUser] {
+        var friends: [DBUser] = []
+        
+        let friendDocuments = try await db.collection("users").document(userID).collection("friends").getDocuments()
+        
+        for document in friendDocuments.documents {
+            let friendID = document.documentID
+            let friendDocument = try await db.collection("users").document(friendID).getDocument()
+            if let friend = try? friendDocument.data(as: DBUser.self) {
+                friends.append(friend)
+            }
+        }
+        
+        return friends
+    }
+    
+    // Remove a friend from the user's friend list and vice versa
+    func removeFriend(currentUserID: String, friendID: String) async throws {
+        // Remove friendID from currentUser's friends list
+        try await db.collection("users").document(currentUserID).collection("friends").document(friendID).delete()
+        
+        // Remove currentUserID from friend's friends list
+        try await db.collection("users").document(friendID).collection("friends").document(currentUserID).delete()
+    }
+    
     
     
 }
+        extension UserManager {
+            
+            // Update user's username
+            func updateUsername(uid: String, username: String) async throws {
+                let documentRef = db.collection("users").document(uid)
+                try await documentRef.updateData([
+                    "username": username
+                ])
+            }
+            
+            // Upload profile picture to Firebase Storage
+            func uploadProfilePicture(uid: String, imageData: Data) async throws -> URL {
+                let storageRef = Storage.storage().reference().child("profile_pictures/\(uid).jpg")
+                let metadata = StorageMetadata()
+                metadata.contentType = "image/jpeg"
+                
+                let _ = try await storageRef.putDataAsync(imageData, metadata: metadata)
+                return try await storageRef.downloadURL()
+            }
+        }
+    
+
 
