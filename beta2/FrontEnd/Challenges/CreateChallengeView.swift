@@ -31,8 +31,7 @@ struct CreateChallengeView: View {
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
     @State private var lastUsedSequence: Int = 0  // Add this line to track the last used sequence
-
-
+    
     var body: some View {
         Form {
             Section(header: Text("Challenge Details")) {

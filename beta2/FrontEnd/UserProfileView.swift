@@ -93,9 +93,10 @@ struct UserProfileView: View {
                     print("Failed to fetch user or challenges: \(error)")
                 }
             }
-
         }
     }
+    
+    
     
     // A card-style view to display individual challenges completed by the user
     struct ChallengeCard: View {

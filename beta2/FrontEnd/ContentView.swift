@@ -14,7 +14,64 @@ struct ContentView: View {
     @State private var showFriendSearchView: Bool = false
     @State private var showUserProfileView: Bool = false
     @State private var showFriendListView: Bool = false
+    
+    var body: some View {
+        NavigationView {
+            TabView {
+                FriendListView()
+                    .tabItem {
+                        Image(systemName: "house")
+                        Text("Friends")
+                    }
+                FriendSearchView()
+                    .tabItem {
+                        Image(systemName: "magnifyingglass")
+                        Text("Search")
+                    }
+                ChallengeListView()
+                    .tabItem {
+                        Image(systemName: "plus")
+                        Text("Challenges")
+                    }
+                CreateChallengeView()
+                    .tabItem {
+                        Image(systemName: "gear")
+                        Text("Create")
+                    }
+                if let userId = userId {
+                    UserProfileView(uid: userId)
+                        .tabItem {
+                            Image(systemName: "person.circle")
+                            Text("Profile")
+                        }
+                } else {
+                    Text("Loading user profile...")
+                }
+            }
+            VStack(spacing: 20) {
+            }
+            .padding()
+            .navigationBarItems(trailing: Button(action: signOut) {
+                Text("Sign Out")
+            })
+        
+        }
+        .onAppear {
+            if let authUser = try? AuthenticationManager.shared.getAuthenticatedUser() {
+                self.userId = authUser.uid
+            }
+        }
+        
+    }
+    
+    func signOut() {
+        // Call your authentication manager's sign-out function here
+        showSignInView = true
+    }
+}
 
+
+/*
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
@@ -96,3 +153,4 @@ struct ContentView: View {
         showSignInView = true
     }
 }
+*/
