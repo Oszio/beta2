@@ -50,7 +50,6 @@ struct FriendListView: View {
                        }
                    }
                }
-               .navigationBarTitle("Friends", displayMode: .inline)
                .onAppear(perform: loadFriends)
            }
        }

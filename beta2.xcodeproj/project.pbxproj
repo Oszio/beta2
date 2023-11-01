@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B88CDAD32AF304AE00C7980A /* FriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B88CDAD22AF304AE00C7980A /* FriendView.swift */; };
+		B88CDAD52AF30E6100C7980A /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B88CDAD42AF30E6100C7980A /* FeedView.swift */; };
 		D760C2B32AD75E3300538A8E /* CreateChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D760C2B22AD75E3300538A8E /* CreateChallengeView.swift */; };
 		D760C2B52AD75E5A00538A8E /* ChallengeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D760C2B42AD75E5A00538A8E /* ChallengeManager.swift */; };
 		D760C2B72AD75EE000538A8E /* ChallengeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D760C2B62AD75EE000538A8E /* ChallengeModel.swift */; };
@@ -67,6 +68,7 @@
 
 /* Begin PBXFileReference section */
 		B88CDAD22AF304AE00C7980A /* FriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendView.swift; sourceTree = "<group>"; };
+		B88CDAD42AF30E6100C7980A /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 		D760C2B22AD75E3300538A8E /* CreateChallengeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateChallengeView.swift; sourceTree = "<group>"; };
 		D760C2B42AD75E5A00538A8E /* ChallengeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeManager.swift; sourceTree = "<group>"; };
 		D760C2B62AD75EE000538A8E /* ChallengeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeModel.swift; sourceTree = "<group>"; };
@@ -142,6 +144,7 @@
 			children = (
 				D760C2D92ADF052E00538A8E /* FriendSearch.swift */,
 				D760C2DB2AE1681100538A8E /* FriendListView.swift */,
+				B88CDAD42AF30E6100C7980A /* FeedView.swift */,
 				B88CDAD22AF304AE00C7980A /* FriendView.swift */,
 				D760C2DD2AE16FD800538A8E /* FriendProfileView.swift */,
 			);
@@ -438,6 +441,7 @@
 				D760C2D82ADEE33C00538A8E /* UserProfileView.swift in Sources */,
 				B88CDAD32AF304AE00C7980A /* FriendView.swift in Sources */,
 				D7A016D92AC0DA380097A989 /* AuthyManager.swift in Sources */,
+				B88CDAD52AF30E6100C7980A /* FeedView.swift in Sources */,
 				D7A016CD2AC0A4CD0097A989 /* Usermanager.swift in Sources */,
 				D7A016E22AC0DB190097A989 /* SignInEmailViewModel.swift in Sources */,
 				D760C2DA2ADF052E00538A8E /* FriendSearch.swift in Sources */,
