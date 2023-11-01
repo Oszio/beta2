@@ -61,7 +61,6 @@ struct FriendSearchView: View {
                     }
                 }
             }
-            .navigationBarTitle("Friend Search", displayMode: .inline)
             .onAppear {
                 getCurrentUser()
             }
