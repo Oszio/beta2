@@ -85,20 +85,21 @@ struct FriendSearchView: View {
         
         isLoading = true
         errorMessage = nil
+        successMessage = nil // Clear previous success message if any
         let db = Firestore.firestore()
         
+        let searchQuery = searchText.lowercased()
         db.collection("users")
-          .whereField("email", isEqualTo: searchText)
+            .whereField("email", isEqualTo: searchText)
           .getDocuments { (snapshot, error) in
-            // Further logic can be added here to also search by username.
             isLoading = false
             if let error = error {
                 errorMessage = "Error searching for user: \(error.localizedDescription)"
                 return
             }
             
-            guard let documents = snapshot?.documents else {
-                errorMessage = "No users found with the given email or username."
+            guard let documents = snapshot?.documents, !documents.isEmpty else {
+                errorMessage = "No users found with the given search term."
                 return
             }
             
@@ -122,6 +123,10 @@ struct FriendSearchView: View {
                 try await UserManager.shared.addFriend(currentUserID: currentUserID, friendID: user.uid)
                 successMessage = "Friend added successfully!"
                 addedFriends.insert(user.uid)
+                
+                // Reset search results and search text
+                searchResults = []
+                searchText = ""
             } catch {
                 errorMessage = "Failed to add friend: \(error.localizedDescription)"
             }
