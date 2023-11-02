@@ -87,7 +87,7 @@ struct FriendSearchView: View {
         successMessage = nil // Clear previous success message if any
         let db = Firestore.firestore()
         
-        let searchQuery = searchText.lowercased()
+        _ = searchText.lowercased()
         db.collection("users")
             .whereField("email", isEqualTo: searchText)
           .getDocuments { (snapshot, error) in

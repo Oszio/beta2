@@ -20,15 +20,17 @@ struct DBUser: Codable {
     enum CodingKeys: String, CodingKey {
         case uid
         case email
-        case photoUrl = "photoUrl"
+        case photoUrl
         case isAnonymous
+        case username // This line is added to include username in Codable operations
     }
 
-    init(uid: String, email: String?, photoUrl: String?, isAnonymous: Bool) {
+    init(uid: String, email: String?, photoUrl: String?, isAnonymous: Bool, username: String? = nil) {
         self.uid = uid
         self.email = email
         self.photoUrl = photoUrl
         self.isAnonymous = isAnonymous
+        self.username = username
     }
 
     init(auth: AuthDataResultModel) {

@@ -33,6 +33,8 @@ struct UserProfileView: View {
         ScrollView {
             VStack(alignment: .center, spacing: 20) {
                 // User Profile UI
+                
+                
                 Group {
                     if let photoUrl = user?.photoUrl, let url = URL(string: photoUrl) {
                         KFImage(url)
@@ -136,25 +138,35 @@ struct UserProfileView: View {
     }
     
     func loadUserProfile() async {
+        print("loadUserProfile is called")
         completedChallengeInfos.removeAll()  // Clear the array to prevent duplicates
         
         do {
+            print("Attempting to fetch user for UID: \(uid)")
             user = try await UserManager.shared.fetchUser(byUID: uid)
+            print("User fetched: \(String(describing: user))")
             username = user?.username ?? ""
+            print("Loaded username: \(username)")
+            
+            print("Attempting to fetch completed challenges for UID: \(uid)")
             let challenges = try await UserManager.shared.fetchCompletedChallenges(forUID: uid)
+            print("Challenges fetched: \(challenges)")
             
             for challenge in challenges {
+                print("Fetching details for challenge ID: \(challenge.challengeID)")
                 if let challengeDetail = try? await ChallengeManager.shared.fetchChallenge(byID: challenge.challengeID, inCategory: challenge.categoryID) {
                     let challengeInfo = CompletedChallengeInfo(challenge: challengeDetail, evidence: challenge)
                     completedChallengeInfos.append(challengeInfo)
+                    print("Challenge details fetched and added: \(challengeInfo)")
                 } else {
                     print("Failed to fetch challenge detail for ID: \(challenge.challengeID)")
                 }
             }
         } catch {
-            print("Failed to fetch user or challenges: \(error)")
+            print("An error occurred while fetching user profile: \(error.localizedDescription)")
         }
     }
+
     
     
     func updateProfile() async {
