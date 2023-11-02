@@ -8,6 +8,7 @@
 
 import SwiftUI
 import FirebaseStorage
+import Kingfisher
 
 struct UserProfileView: View {
     let uid: String
@@ -33,28 +34,26 @@ struct UserProfileView: View {
             VStack(alignment: .center, spacing: 20) {
                 // User Profile UI
                 Group {
-                    if let user = user {
-                        Text(user.email ?? "No email")
-                            .font(.headline)
-                        
-                        if let photoUrl = user.photoUrl, let url = URL(string: photoUrl) {
-                            AsyncImage(url: url) { image in
-                                image.resizable()
-                            } placeholder: {
+                    if let photoUrl = user?.photoUrl, let url = URL(string: photoUrl) {
+                        KFImage(url)
+                            .resizable()
+                            .loadDiskFileSynchronously() // This will load the image from the disk if available, synchronously.
+                            .cacheMemoryOnly() // This will store the fetched image in memory cache only.
+                            .fade(duration: 0.25) // Adds a fade animation when the image gets loaded.
+                            .onProgress { receivedSize, totalSize in  // If you want to handle progress.
+                              // Handle progress here
+                            }
+                            .onSuccess { result in  // If you want to handle success.
+                              // Handle success here
+                            }
+                            .onFailure { error in  // If you want to handle failure.
+                              // Handle error here
+                            }
+                            .placeholder { // Placeholder while loading or if there's an error
                                 ProgressView()
                             }
                             .frame(width: 100, height: 100)
                             .clipShape(Circle())
-                        } else {
-                            Image(systemName: "person.circle.fill")
-                                .resizable()
-                                .frame(width: 100, height: 100)
-                                .foregroundColor(.gray)
-                        }
-                        
-                        Text(user.username ?? "No username")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
                     } else {
                         Text("Loading user profile...")
                     }
@@ -144,20 +143,13 @@ struct UserProfileView: View {
             username = user?.username ?? ""
             let challenges = try await UserManager.shared.fetchCompletedChallenges(forUID: uid)
             
-            do {
-                user = try await UserManager.shared.fetchUser(byUID: uid)
-                let challenges = try await UserManager.shared.fetchCompletedChallenges(forUID: uid)
-                
-                for challenge in challenges {
-                    if let challengeDetail = try? await ChallengeManager.shared.fetchChallenge(byID: challenge.challengeID, inCategory: challenge.categoryID) {
-                        let challengeInfo = CompletedChallengeInfo(challenge: challengeDetail, evidence: challenge)
-                        completedChallengeInfos.append(challengeInfo)
-                    } else {
-                        print("Failed to fetch challenge detail for ID: \(challenge.challengeID)")
-                    }
+            for challenge in challenges {
+                if let challengeDetail = try? await ChallengeManager.shared.fetchChallenge(byID: challenge.challengeID, inCategory: challenge.categoryID) {
+                    let challengeInfo = CompletedChallengeInfo(challenge: challengeDetail, evidence: challenge)
+                    completedChallengeInfos.append(challengeInfo)
+                } else {
+                    print("Failed to fetch challenge detail for ID: \(challenge.challengeID)")
                 }
-            } catch {
-                print("Failed to fetch user or challenges: \(error)")
             }
         } catch {
             print("Failed to fetch user or challenges: \(error)")
@@ -175,7 +167,7 @@ struct UserProfileView: View {
             }
             
             // Update Profile Picture
-            if let selectedImage = selectedImage?.resized(toWidth: 300),
+            if let selectedImage = selectedImage,
                let imageData = selectedImage.jpegData(compressionQuality: 0.5) {
                 let photoUrl = try await UserManager.shared.uploadProfilePicture(uid: uid, imageData: imageData)
                 try await UserManager.shared.updateUserPhotoURL(uid: uid, photoUrl: photoUrl.absoluteString)
@@ -186,7 +178,6 @@ struct UserProfileView: View {
             print("Failed to update profile: \(error)")
         }
     }
-
 }
 
 struct ChallengeCard: View {
@@ -213,13 +204,14 @@ struct ChallengeCard: View {
             
             // Show the evidence image if available
             if let imageUrl = URL(string: evidence.imageUrl) {
-                AsyncImage(url: imageUrl) { image in
-                    image.resizable()
-                } placeholder: {
-                    ProgressView()
-                }
-                .frame(width: 300, height: 200)
-                .cornerRadius(10)
+                KFImage(imageUrl)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 300, height: 200)
+                    .cornerRadius(10)
+                // Replace `placeholder` with actual implementation
+           
+               
             }
             
             // Show the user's comment on the challenge

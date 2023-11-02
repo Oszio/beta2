@@ -1,5 +1,6 @@
 import SwiftUI
 import Firebase
+import Kingfisher
 
 struct FeedView: View {
     @State private var friends: [Friend] = []
@@ -125,12 +126,14 @@ struct FriendProfilePicture: View {
     var body: some View {
         Group {
             if let urlString = url, let imageUrl = URL(string: urlString) {
-                AsyncImage(url: imageUrl) { image in
-                    image.resizable()
-                } placeholder: {
-                    ProgressView()
-                }
-                .clipShape(Circle())
+                KFImage(imageUrl)
+                    .resizable()
+                    .placeholder {
+                        Image(systemName: "person.circle.fill")
+                            .resizable()
+                            .foregroundColor(.gray)
+                    }
+                    .fade(duration: 0.25) // Fade-in effect with duration
             } else {
                 Image(systemName: "person.circle.fill")
                     .resizable()
@@ -138,6 +141,7 @@ struct FriendProfilePicture: View {
             }
         }
         .frame(width: 40, height: 40)
+        .clipShape(Circle())
     }
 }
 
@@ -146,13 +150,14 @@ struct CompletedChallengeImage: View {
 
     var body: some View {
         if let imageUrl = URL(string: url) {
-            AsyncImage(url: imageUrl) { image in
-                image.resizable()
-            } placeholder: {
-                ProgressView()
-            }
-            .cornerRadius(8)
-            .frame(height: 200)
+            KFImage(imageUrl)
+                .resizable()
+                .placeholder {
+                    ProgressView()
+                }
+                .fade(duration: 0.25) // Fade-in effect with duration
+                .cornerRadius(8)
+                .frame(height: 200)
         }
     }
 }
