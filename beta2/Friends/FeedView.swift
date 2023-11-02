@@ -19,12 +19,12 @@ struct FeedView: View {
                 } else {
                     List(friends) { friend in
                         NavigationLink(destination: FriendProfileView(friend: friend)) {
-                            FriendRow(friend: friend)
+                            FriendProfileInfoRow(friend: friend)
                         }
+                        FriendRow(friend: friend)
                         .listRowBackground(Color(UIColor.systemGroupedBackground))
                     }
                     .listStyle(InsetGroupedListStyle())
-                    .navigationTitle("Friends")
                     .navigationBarTitleDisplayMode(.large)
                 }
             }
@@ -73,8 +73,7 @@ struct FriendRow: View {
                     .foregroundColor(.red)
             } else {
                 ForEach(completedChallenges) { challenge in
-                    FriendChallengeRow(friend: friend, challenge: challenge)
-                        .padding(.vertical, 8)
+                    CompletedChallengeRow(challenge: challenge)
                 }
             }
         }
@@ -96,26 +95,30 @@ struct FriendRow: View {
     }
 }
 
-
-
-struct FriendChallengeRow: View {
+struct FriendProfileInfoRow: View {
     var friend: Friend
+
+    var body: some View {
+        HStack(spacing: 12) {
+            FriendProfilePicture(url: friend.photoUrl)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(friend.email ?? "No Email")
+                    .font(.headline)
+                    .foregroundColor(.primary)
+            }
+        }
+    }
+}
+
+struct CompletedChallengeRow: View {
     var challenge: CompletedChallenge
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 12) {
-                FriendProfilePicture(url: friend.photoUrl)
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(friend.email ?? "No Email")
-                        .font(.headline)
-                        .foregroundColor(.primary)
-                    Text(challenge.comment)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
-            }
             CompletedChallengeImage(url: challenge.imageUrl)
+            Text(challenge.comment)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
         }
     }
 }
