@@ -51,6 +51,7 @@
 		D7FA3CBF2AF4065B007E6DE4 /* DataCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA3CBE2AF4065B007E6DE4 /* DataCache.swift */; };
 		D7FA3CC72AF4322C007E6DE4 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA3CC62AF4322C007E6DE4 /* ImageCache.swift */; };
 		D7FA3CCA2AF435D2007E6DE4 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = D7FA3CC92AF435D2007E6DE4 /* Kingfisher */; };
+		D7FA3CCC2AF45D04007E6DE4 /* FriendRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA3CCB2AF45D04007E6DE4 /* FriendRequestModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -110,6 +111,7 @@
 		D7A017132ACC5C730097A989 /* ChallengeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDetailView.swift; sourceTree = "<group>"; };
 		D7FA3CBE2AF4065B007E6DE4 /* DataCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCache.swift; sourceTree = "<group>"; };
 		D7FA3CC62AF4322C007E6DE4 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
+		D7FA3CCB2AF45D04007E6DE4 /* FriendRequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,6 +189,7 @@
 				D7A016B62AC0692B0097A989 /* Info.plist */,
 				D7A016582ABF587B0097A989 /* beta2App.swift */,
 				D7FA3CBE2AF4065B007E6DE4 /* DataCache.swift */,
+				D7FA3CCB2AF45D04007E6DE4 /* FriendRequestModel.swift */,
 				D7FA3CC62AF4322C007E6DE4 /* ImageCache.swift */,
 				D760C2DF2AE17A5600538A8E /* Friends */,
 				D7A016E72AC0DCF40097A989 /* FrontEnd */,
@@ -445,6 +448,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D7A0170D2ACC44720097A989 /* UploadEvidenceView.swift in Sources */,
+				D7FA3CCC2AF45D04007E6DE4 /* FriendRequestModel.swift in Sources */,
 				D7A016D72AC0D9DD0097A989 /* GoogleSignInHelper.swift in Sources */,
 				D7A016CB2AC0991E0097A989 /* Utilities.swift in Sources */,
 				D760C2B52AD75E5A00538A8E /* ChallengeManager.swift in Sources */,

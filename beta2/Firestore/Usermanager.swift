@@ -10,7 +10,7 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 import FirebaseStorage
 
-struct DBUser: Codable {
+struct DBUser: Codable, Hashable {
     var uid: String
     var email: String?
     var photoUrl: String?
@@ -161,6 +161,68 @@ extension UserManager {
                 return try await storageRef.downloadURL()
             }
         }
+
+// Extension of your UserManager to handle friend requests
+extension UserManager {
+    
+    // Function to send a friend request
+    func sendFriendRequest(from currentUserID: String, to friendID: String) async throws {
+        let timestamp = Timestamp(date: Date())
+        let friendRequestRef = db.collection("users").document(friendID).collection("friendRequests").document()
+        
+        try await friendRequestRef.setData([
+            "fromUserId": currentUserID,
+            "toUserId": friendID,
+            "timestamp": timestamp,
+            "status": "pending"
+        ])
+    }
+    
+    // Function to fetch friend requests
+    func fetchFriendRequests(for userID: String) async throws -> [FriendRequest] {
+        let querySnapshot = try await db.collection("users").document(userID).collection("friendRequests").whereField("toUserId", isEqualTo: userID).getDocuments()
+        
+        return querySnapshot.documents.compactMap { document in
+            try? document.data(as: FriendRequest.self)
+        }
+    }
+    
+    // Function to accept a friend request
+    func acceptFriendRequest(_ request: FriendRequest) async throws {
+        guard let requestId = request.id else { throw NSError(domain: "", code: -1, userInfo: nil) }
+        
+        // Update the friend request status to 'accepted'
+        let requestRef = db.collection("users").document(request.toUserId).collection("friendRequests").document(requestId)
+        try await requestRef.updateData(["status": "accepted"])
+        
+        // Add each user to the other's friends collection
+        try await addFriend(currentUserID: request.toUserId, friendID: request.fromUserId)
+    }
+    
+    // Function to reject a friend request
+    func rejectFriendRequest(_ request: FriendRequest) async throws {
+        guard let requestId = request.id else { throw NSError(domain: "", code: -1, userInfo: nil) }
+        
+        // Delete the friend request document
+        let requestRef = db.collection("users").document(request.toUserId).collection("friendRequests").document(requestId)
+        try await requestRef.delete()
+    }
+}
+
+extension UserManager {
+    func acceptFriendRequest(currentUserID: String, requestingUserID: String) async throws {
+        // Code to accept the friend request, potentially involving:
+        // 1. Adding the requestingUserID to the current user's friends list
+        // 2. Removing the requestingUserID from the incomingRequests array
+    }
+
+    func declineFriendRequest(currentUserID: String, requestingUserID: String) async throws {
+        // Code to decline the friend request, which could just be removing
+        // the requestingUserID from the incomingRequests array
+    }
+}
+
+
     
 
 
