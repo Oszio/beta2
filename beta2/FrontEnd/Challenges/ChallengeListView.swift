@@ -64,12 +64,39 @@ struct CategoryChallengeListView: View {
         isLoading = true
         Task {
             do {
-                challenges = try await ChallengeManager.shared.fetchChallenges(inCategory: category.rawValue, upToSequence: 100) // Assuming 100 is the max sequence number for now
+                // Fetch challenges from the ChallengeManager
+                let allChallenges = try await ChallengeManager.shared.fetchChallenges(inCategory: category.rawValue)
+
+                // Filter challenges based on category and sort them by sequence
+                let filteredChallenges = allChallenges.filter { $0.categoryId == category.id }
+
+                let sortedChallenges = filteredChallenges.sorted { $0.sequence < $1.sequence }
+                
+                // Select one challenge based on the current date
+                if let challengeToShow = challengeForToday(from: sortedChallenges) {
+                    challenges = [challengeToShow]
+                } else {
+                    // Handle the case where no challenge is available for today
+                    challenges = []
+                }
             } catch {
                 alertMessage = "Failed to fetch challenges: \(error.localizedDescription)"
                 showAlert = true
             }
             isLoading = false
         }
+    }
+
+    
+    func challengeForToday(from challenges: [Challenge]) -> Challenge? {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let dayOfYear = calendar.ordinality(of: .day, in: .year, for: today)
+        
+        if let dayOfYear = dayOfYear, !challenges.isEmpty {
+            let index = (dayOfYear - 1) % challenges.count
+            return challenges[index]
+        }
+        return nil
     }
 }

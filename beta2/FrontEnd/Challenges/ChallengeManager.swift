@@ -12,6 +12,7 @@ final class ChallengeManager {
     static let shared = ChallengeManager()
     private let db = Firestore.firestore()
     
+    
     private init() {}
     
     // Fetch all categories
@@ -20,15 +21,21 @@ final class ChallengeManager {
         return querySnapshot.documents.compactMap { try? $0.data(as: ChallengeCategory.self) }
     }
     
-    // Fetch challenges for a specific category up to a certain sequence
-    func fetchChallenges(inCategory categoryID: String, upToSequence sequence: Int) async throws -> [Challenge] {
-        let query = db.collection("categories").document(categoryID).collection("challenges")
-            .whereField("sequence", isLessThanOrEqualTo: sequence)
-            .order(by: "sequence")
+    
+    
+    func fetchChallenges(inCategory categoryID: String, upToSequence sequence: Int? = nil) async throws -> [Challenge] {
+        var query: Query = db.collection("categories").document(categoryID).collection("challenges")
+        
+        if let sequence = sequence {
+            query = query.whereField("sequence", isLessThanOrEqualTo: sequence)
+        }
+        
+        query = query.order(by: "sequence")
         
         let querySnapshot = try await query.getDocuments()
         return querySnapshot.documents.compactMap { try? $0.data(as: Challenge.self) }
     }
+
     
     // Upload a new challenge to a specific category
     func uploadChallenge(_ challenge: Challenge, toCategory categoryID: String) async throws {
