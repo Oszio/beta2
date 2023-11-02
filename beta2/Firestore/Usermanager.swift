@@ -44,6 +44,7 @@ final class UserManager {
     
     private let db = Firestore.firestore()
     private init() {}
+    private let userCache = DataCache<String, DBUser>()
     
     // Create a new user in the database
     func createNewUser(user: DBUser) async throws {
@@ -74,21 +75,19 @@ final class UserManager {
         ])
     }
     
-    // Fetch a user from the database
-    func fetchUser(byUID uid: String) async throws -> DBUser? {
-        let documentRef = db.collection("users").document(uid)
-        let snapshot = try await documentRef.getDocument()
-        
-        // Debugging: Print the raw data
-        print("Raw data from Firestore: \(String(describing: snapshot.data()))")
-        
-        let user = try snapshot.data(as: DBUser.self)
-        
-        // Debugging: Print the decoded user
-        print("Decoded user: \(String(describing: user))")
-        
-        return user
-    }
+    func fetchUser(byUID uid: String) async throws -> DBUser {
+            if let cachedUser = userCache.value(forKey: uid) {
+                return cachedUser
+            }
+            let docRef = db.collection("users").document(uid)
+            let snapshot = try await docRef.getDocument()
+            guard let user = try? snapshot.data(as: DBUser.self) else {
+                throw NSError(domain: "UserManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to decode user"])
+            }
+            userCache.insert(user, forKey: uid)
+            return user
+        }
+
 }
     
 extension UserManager {

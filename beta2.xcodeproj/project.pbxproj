@@ -48,6 +48,7 @@
 		D7A017112ACC5BDB0097A989 /* ChallengeListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A017102ACC5BDB0097A989 /* ChallengeListView.swift */; };
 		D7A017142ACC5C730097A989 /* ChallengeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A017132ACC5C730097A989 /* ChallengeDetailView.swift */; };
 		D7FA3CBD2AF3E37D007E6DE4 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = D7FA3CBC2AF3E37D007E6DE4 /* FirebaseMessaging */; };
+		D7FA3CBF2AF4065B007E6DE4 /* DataCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA3CBE2AF4065B007E6DE4 /* DataCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,6 +106,7 @@
 		D7A0170E2ACC57E30097A989 /* imagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = imagePicker.swift; sourceTree = "<group>"; };
 		D7A017102ACC5BDB0097A989 /* ChallengeListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeListView.swift; sourceTree = "<group>"; };
 		D7A017132ACC5C730097A989 /* ChallengeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDetailView.swift; sourceTree = "<group>"; };
+		D7FA3CBE2AF4065B007E6DE4 /* DataCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,6 +182,7 @@
 				D7A0165E2ABF587C0097A989 /* beta2.entitlements */,
 				D7A016B62AC0692B0097A989 /* Info.plist */,
 				D7A016582ABF587B0097A989 /* beta2App.swift */,
+				D7FA3CBE2AF4065B007E6DE4 /* DataCache.swift */,
 				D760C2DF2AE17A5600538A8E /* Friends */,
 				D7A016E72AC0DCF40097A989 /* FrontEnd */,
 				D7A016DE2AC0DAC30097A989 /* SignInEmail */,
@@ -454,6 +457,7 @@
 				D7A016E02AC0DB000097A989 /* SignInEmailView.swift in Sources */,
 				D7A016592ABF587B0097A989 /* beta2App.swift in Sources */,
 				D760C2DC2AE1681100538A8E /* FriendListView.swift in Sources */,
+				D7FA3CBF2AF4065B007E6DE4 /* DataCache.swift in Sources */,
 				D760C2B72AD75EE000538A8E /* ChallengeModel.swift in Sources */,
 				D7A017042AC1F6F40097A989 /* FirebaseManager.swift in Sources */,
 				D7A0170F2ACC57E30097A989 /* imagePicker.swift in Sources */,
