@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct FriendProfileView: View {
     var friend: Friend
@@ -17,13 +18,25 @@ struct FriendProfileView: View {
     var body: some View {
         VStack(spacing: 20) {
             if let url = friend.photoUrl, let imageUrl = URL(string: url) {
-                AsyncImage(url: imageUrl) { image in
-                    image.resizable()
-                } placeholder: {
-                    ProgressView()
-                }
-                .frame(width: 100, height: 100)
-                .clipShape(Circle())
+                KFImage(imageUrl)
+                    .resizable()
+                    .loadDiskFileSynchronously() // Loads the image from the disk cache synchronously
+                    .cacheMemoryOnly() // Stores the image in memory cache only
+                    .fade(duration: 0.25) // Adds a fade animation when the image gets loaded
+                    .onProgress { receivedSize, totalSize in  // Handle progress
+                      // Optionally handle progress here
+                    }
+                    .onSuccess { result in  // Handle success
+                      // Optionally handle success here
+                    }
+                    .onFailure { error in  // Handle failure
+                      // Optionally handle failure here
+                    }
+                    .placeholder {
+                        ProgressView() // Placeholder while loading or if there's an error
+                    }
+                    .frame(width: 100, height: 100)
+                    .clipShape(Circle())
             } else {
                 Image(systemName: "person.circle.fill")
                     .resizable()
@@ -44,12 +57,15 @@ struct FriendProfileView: View {
                     VStack(alignment: .leading) {
                         Text(challenge.comment)
                         if let url = URL(string: challenge.imageUrl) {
-                            AsyncImage(url: url) { image in
-                                image.resizable()
-                            } placeholder: {
-                                ProgressView()
-                            }
-                            .frame(width: 100, height: 100)
+                            KFImage(url)
+                                .resizable()
+                                .loadDiskFileSynchronously() // Loads the image from the disk cache synchronously
+                                .cacheMemoryOnly() // Stores the image in memory cache only
+                                .fade(duration: 0.25) // Adds a fade animation when the image gets loaded
+                                .placeholder {
+                                    ProgressView() // Placeholder while loading or if there's an error
+                                }
+                                .frame(width: 100, height: 100)
                         }
                     }
                 }
