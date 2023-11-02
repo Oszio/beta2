@@ -38,3 +38,12 @@ struct ImagePicker: UIViewControllerRepresentable {
         }
     }
 }
+
+extension UIImage {
+    func resized(toWidth width: CGFloat) -> UIImage? {
+        let canvasSize = CGSize(width: width, height: CGFloat(ceil(width/size.width * size.height)))
+        return UIGraphicsImageRenderer(size: canvasSize, format: imageRendererFormat).image {
+            _ in draw(in: CGRect(origin: .zero, size: canvasSize))
+        }
+    }
+}

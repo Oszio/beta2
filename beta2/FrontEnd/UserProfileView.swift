@@ -175,7 +175,7 @@ struct UserProfileView: View {
             }
             
             // Update Profile Picture
-            if let selectedImage = selectedImage,
+            if let selectedImage = selectedImage?.resized(toWidth: 300),
                let imageData = selectedImage.jpegData(compressionQuality: 0.5) {
                 let photoUrl = try await UserManager.shared.uploadProfilePicture(uid: uid, imageData: imageData)
                 try await UserManager.shared.updateUserPhotoURL(uid: uid, photoUrl: photoUrl.absoluteString)
@@ -186,6 +186,7 @@ struct UserProfileView: View {
             print("Failed to update profile: \(error)")
         }
     }
+
 }
 
 struct ChallengeCard: View {

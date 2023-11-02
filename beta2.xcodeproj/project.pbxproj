@@ -47,6 +47,7 @@
 		D7A0170F2ACC57E30097A989 /* imagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A0170E2ACC57E30097A989 /* imagePicker.swift */; };
 		D7A017112ACC5BDB0097A989 /* ChallengeListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A017102ACC5BDB0097A989 /* ChallengeListView.swift */; };
 		D7A017142ACC5C730097A989 /* ChallengeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A017132ACC5C730097A989 /* ChallengeDetailView.swift */; };
+		D7FA3CBD2AF3E37D007E6DE4 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = D7FA3CBC2AF3E37D007E6DE4 /* FirebaseMessaging */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,6 +112,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D7FA3CBD2AF3E37D007E6DE4 /* FirebaseMessaging in Frameworks */,
 				D7A0169B2ABF61310097A989 /* FirebaseFirestoreSwift in Frameworks */,
 				D7A0168F2ABF5C5D0097A989 /* FirebaseAnalyticsSwift in Frameworks */,
 				D7A016A42ABF61E10097A989 /* GoogleSignInSwift in Frameworks */,
@@ -311,6 +313,7 @@
 				D7A016A12ABF61E10097A989 /* GoogleSignIn */,
 				D7A016A32ABF61E10097A989 /* GoogleSignInSwift */,
 				D7A017012AC1F0BB0097A989 /* FirebaseStorage */,
+				D7FA3CBC2AF3E37D007E6DE4 /* FirebaseMessaging */,
 			);
 			productName = beta2;
 			productReference = D7A016552ABF587B0097A989 /* beta2.app */;
@@ -877,6 +880,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D7A0168B2ABF5C5D0097A989 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		D7FA3CBC2AF3E37D007E6DE4 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D7A0168B2ABF5C5D0097A989 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
