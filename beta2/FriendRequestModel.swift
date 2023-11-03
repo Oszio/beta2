@@ -23,33 +23,111 @@ struct FriendRequest: Codable, Identifiable {
         case status
     }
 }
-
+@MainActor
 class FriendRequestViewModel: ObservableObject {
     @Published var incomingRequests: [DBUser] = []
     @Published var errorMessage: String?
-
+    private let db = Firestore.firestore()
+    
+    // Fetch incoming friend requests
     func fetchFriendRequests(userId: String) {
-        let db = Firestore.firestore()
-        let friendRequestsRef = db.collection("friendRequests").document(userId)
+        let friendRequestsRef = db.collection("users").document(userId).collection("friendRequests").whereField("toUserId", isEqualTo: userId).whereField("status", isEqualTo: "pending")
 
-        friendRequestsRef.getDocument { (document, error) in
+        friendRequestsRef.getDocuments { (querySnapshot, error) in
             if let error = error {
                 self.errorMessage = "There was an error fetching friend requests: \(error.localizedDescription)"
                 return
             }
 
-            if let document = document, document.exists, let requestData = document.data() {
-                let userIds = requestData["incomingRequests"] as? [String] ?? []
-                self.lookupUsersById(userIds: userIds)
-            } else {
-                self.errorMessage = "No friend requests found."
+            let group = DispatchGroup()
+            var users: [DBUser] = []
+
+            for document in querySnapshot!.documents {
+                group.enter()
+                let friendRequest = try? document.data(as: FriendRequest.self)
+                if let fromUserId = friendRequest?.fromUserId {
+                    self.db.collection("users").document(fromUserId).getDocument { (userDoc, error) in
+                        if let user = try? userDoc?.data(as: DBUser.self) {
+                            users.append(user)
+                        }
+                        group.leave()
+                    }
+                }
+            }
+
+            group.notify(queue: .main) {
+                self.incomingRequests = users
             }
         }
     }
 
+    // Accept a friend request
+    // Accept a friend request
+    func acceptFriendRequest(request: FriendRequest) async {
+        guard let requestId = request.id else {
+            self.errorMessage = "Invalid request ID."
+            return
+        }
+        
+        do {
+            let requestRef = db.collection("users").document(request.toUserId).collection("friendRequests").document(requestId)
+            
+            // Update the friend request status to 'accepted'
+            try await requestRef.updateData(["status": "accepted"])
+            
+            // Add each user to the other's friends collection
+            try await UserManager.shared.addFriend(currentUserID: request.toUserId, friendID: request.fromUserId)
+            
+            // Refresh the list after accepting
+            await fetchFriendRequests(userId: request.toUserId)
+        } catch {
+            self.errorMessage = "Error processing friend request: \(error.localizedDescription)"
+        }
+    }
+
+    // Reject a friend request
+    func rejectFriendRequest(request: FriendRequest) async {
+        guard let requestId = request.id else {
+            self.errorMessage = "Invalid request ID."
+            return
+        }
+
+        do {
+            let requestRef = db.collection("users").document(request.toUserId).collection("friendRequests").document(requestId)
+            
+            // Delete the friend request document
+            try await requestRef.delete()
+            
+            // Refresh the list after rejecting
+            await fetchFriendRequests(userId: request.toUserId)
+        } catch {
+            self.errorMessage = "Error processing friend request: \(error.localizedDescription)"
+        }
+    }
+
+    
+    // Reject a friend request
+    func rejectFriendRequest(request: FriendRequest) {
+        guard let requestId = request.id else {
+            self.errorMessage = "Invalid request ID."
+            return
+        }
+
+        let requestRef = db.collection("users").document(request.toUserId).collection("friendRequests").document(requestId)
+        
+        // Delete the friend request document
+        requestRef.delete() { error in
+            if let error = error {
+                self.errorMessage = "Error rejecting friend request: \(error.localizedDescription)"
+            } else {
+                // Refresh the list after rejecting
+                self.fetchFriendRequests(userId: request.toUserId)
+            }
+        }
+    }
+    
+    // Lookup users by their IDs
     private func lookupUsersById(userIds: [String]) {
-        // Lookup each user by ID and append to incomingRequests
-        // This might involve fetching each user document from your users collection
+        // Similar to above, fetch each user by their ID and add to the incomingRequests
     }
 }
-

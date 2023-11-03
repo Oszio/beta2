@@ -4,7 +4,6 @@
 //
 //  Created by Oskar Almå on 2023-10-17.
 //
-
 import SwiftUI
 import Firebase
 import FirebaseFirestore
@@ -24,48 +23,81 @@ struct FriendSearchView: View {
             VStack {
                 HStack {
                     TextField("Enter email or username", text: $searchText)
-                        .padding(10)
-                        .background(Color(.systemGray6))
-                        .cornerRadius(8)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding(.trailing, 10)
                     
                     Button(action: {
                         // Trigger the search
                         searchForUser()
                     }) {
                         Text("Search")
+                            .foregroundColor(.white)
+                            .padding(.vertical, 10)
+                            .padding(.horizontal, 20)
+                            .background(Color.blue)
+                            .cornerRadius(10)
                     }
                 }
-                .padding()
+                .padding([.leading, .trailing, .top])
+                
+                Spacer().frame(height: 20) // Add some spacing
                 
                 if isLoading {
                     ProgressView()
-                } else if let error = errorMessage {
+                }
+                
+                // Display the message in a banner-like style
+                if let error = errorMessage {
                     Text(error)
                         .foregroundColor(.red)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color(.systemPink).opacity(0.1))
+                        .cornerRadius(8)
                 } else if let success = successMessage {
                     Text(success)
                         .foregroundColor(.green)
-                } else {
-                    List(searchResults, id: \.uid) { user in
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color(.systemGreen).opacity(0.1))
+                        .cornerRadius(8)
+                }
+                
+                List {
+                    ForEach(searchResults, id: \.uid) { user in
                         HStack {
                             Text(user.email ?? "No Email")
                             Spacer()
                             if addedFriends.contains(user.uid) {
                                 Text("Added")
+                                    .foregroundColor(.green)
                             } else {
                                 Button("Add Friend") {
                                     addFriend(user)
                                 }
+                                .buttonStyle(BorderlessButtonStyle())
                             }
                         }
                     }
                 }
+                
+                NavigationLink(destination: PendingFriendRequestsView(viewModel: PendingFriendRequestsViewModel())) {
+                    Text("View Friend Requests")
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue)
+                        .cornerRadius(10)
+                }
+                .padding([.leading, .trailing, .bottom])
             }
             .onAppear {
                 getCurrentUser()
             }
+            .navigationBarTitle("Friend Search", displayMode: .inline)
         }
     }
+    
     
     func getCurrentUser() {
         do {
