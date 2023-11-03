@@ -9,51 +9,49 @@ struct FeedView: View {
 
     var body: some View {
         NavigationView {
-            Group {
-                if isLoading {
-                    ProgressView("Loading Friends...")
-                } else if let errorMessage = errorMessage {
-                    Text(errorMessage)
-                        .foregroundColor(.red)
-                        .padding()
-                } else {
-                    List(friends) { friend in
-                        NavigationLink(destination: FriendProfileView(friend: friend)) {
-                            FriendProfileInfoRow(friend: friend)
+            ScrollView {
+                VStack(spacing: 0) {
+                    ForEach(friends, id: \.id) { friend in
+                        VStack(spacing: 0) {
+                            ZStack{
+                                FriendRow(friend: friend)
+                                    .background(Color(UIColor.systemGroupedBackground))
+                                    .cornerRadius(16)
+                                    .padding(.bottom, 8)
+                                VStack{
+                                    NavigationLink(destination: FriendProfileView(friend: friend)) {
+                                        FriendProfileInfoRow(friend: friend)
+                                            .padding(.top, 13)
+                                    }
+                                    Spacer()
+                                }
+                            }
                         }
-                        FriendRow(friend: friend)
-                        .listRowBackground(Color(UIColor.systemGroupedBackground))
+                        .buttonStyle(PlainButtonStyle())
                     }
-                    .listStyle(InsetGroupedListStyle())
-                    .navigationBarTitleDisplayMode(.large)
                 }
+                .padding(16)
             }
             .onAppear(perform: loadFriends)
+            .background(Color(UIColor.systemGroupedBackground)) // Set background color for visibility
+            //.ignoresSafeArea(.all)
         }
     }
 
     func loadFriends() {
-        guard let currentUserID = Auth.auth().currentUser?.uid else {
-            errorMessage = "Error: Unable to get current user ID"
-            isLoading = false
-            return
-        }
-
+        guard let currentUserID = Auth.auth().currentUser?.uid else { return }
         Task {
             do {
                 let dbUsers = try await UserManager.shared.fetchFriends(for: currentUserID)
                 // Convert DBUser objects to Friend objects
-                friends = dbUsers.map {
-                    Friend(from: $0, friendDocument: FriendDocument(friendID: $0.uid, timestamp: Timestamp(date: Date())))
-                }
-                isLoading = false
+                self.friends = dbUsers.map { Friend(from: $0, friendDocument: FriendDocument(friendID: $0.uid, timestamp: Timestamp(date: Date()))) }
             } catch {
-                errorMessage = "Error fetching friends: \(error.localizedDescription)"
-                isLoading = false
+                print("Error fetching friends: \(error.localizedDescription)")
             }
         }
     }
 }
+
 
 
 
@@ -65,23 +63,23 @@ struct FriendRow: View {
     @State private var errorMessage: String?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 0) {
             if isLoading {
                 ProgressView()
             } else if let errorMessage = errorMessage {
                 Text(errorMessage)
                     .foregroundColor(.red)
             } else {
-                ForEach(completedChallenges) { challenge in
+                ForEach(completedChallenges.prefix(1).reversed()) { challenge in
                     CompletedChallengeRow(challenge: challenge)
+                        .padding(.horizontal, 0)
                 }
             }
         }
-        .padding(.horizontal, 16)
         .onAppear(perform: loadCompletedChallenges)
+        .listRowInsets(EdgeInsets())
     }
 
-    
     func loadCompletedChallenges() {
         Task {
             do {
@@ -94,6 +92,7 @@ struct FriendRow: View {
         }
     }
 }
+
 
 struct FriendProfileInfoRow: View {
     var friend: Friend
@@ -114,7 +113,7 @@ struct CompletedChallengeRow: View {
     var challenge: CompletedChallenge
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 0) {
             CompletedChallengeImage(url: challenge.imageUrl)
             Text(challenge.comment)
                 .font(.subheadline)
@@ -150,17 +149,24 @@ struct FriendProfilePicture: View {
 
 struct CompletedChallengeImage: View {
     var url: String
+    let dimention = UIScreen.main.bounds.width
 
     var body: some View {
         if let imageUrl = URL(string: url) {
-            KFImage(imageUrl)
-                .resizable()
-                .placeholder {
-                    ProgressView()
-                }
-                .fade(duration: 0.25) // Fade-in effect with duration
-                .cornerRadius(8)
-                .frame(height: 200)
+            ZStack {
+                Rectangle()
+                    .fill(Color.white)
+                    .frame(width: UIScreen.main.bounds.width, height: dimention + 125)
+                KFImage(imageUrl)
+                    .resizable()
+                    .placeholder {
+                        ProgressView()
+                    }
+                    .fade(duration: 0.25)
+                    .frame(width: dimention, height: dimention - 20) // Adjust the size as needed
+            }
         }
     }
 }
+
+
