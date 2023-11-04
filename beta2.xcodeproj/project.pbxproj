@@ -52,6 +52,7 @@
 		D7FA3CC72AF4322C007E6DE4 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA3CC62AF4322C007E6DE4 /* ImageCache.swift */; };
 		D7FA3CCA2AF435D2007E6DE4 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = D7FA3CC92AF435D2007E6DE4 /* Kingfisher */; };
 		D7FA3CCC2AF45D04007E6DE4 /* FriendRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA3CCB2AF45D04007E6DE4 /* FriendRequestModel.swift */; };
+		D7FA3CCE2AF4D599007E6DE4 /* FriendRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA3CCD2AF4D599007E6DE4 /* FriendRequestView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -112,6 +113,7 @@
 		D7FA3CBE2AF4065B007E6DE4 /* DataCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCache.swift; sourceTree = "<group>"; };
 		D7FA3CC62AF4322C007E6DE4 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		D7FA3CCB2AF45D04007E6DE4 /* FriendRequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestModel.swift; sourceTree = "<group>"; };
+		D7FA3CCD2AF4D599007E6DE4 /* FriendRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,6 +156,7 @@
 			children = (
 				D760C2D92ADF052E00538A8E /* FriendSearch.swift */,
 				D760C2DB2AE1681100538A8E /* FriendListView.swift */,
+				D7FA3CCD2AF4D599007E6DE4 /* FriendRequestView.swift */,
 				B88CDAD42AF30E6100C7980A /* FeedView.swift */,
 				B88CDAD22AF304AE00C7980A /* FriendView.swift */,
 				D760C2DD2AE16FD800538A8E /* FriendProfileView.swift */,
@@ -473,6 +476,7 @@
 				D7A017042AC1F6F40097A989 /* FirebaseManager.swift in Sources */,
 				D7A0170F2ACC57E30097A989 /* imagePicker.swift in Sources */,
 				D7A016DB2AC0DA4E0097A989 /* AppleSignInHelper.swift in Sources */,
+				D7FA3CCE2AF4D599007E6DE4 /* FriendRequestView.swift in Sources */,
 				D760C2B32AD75E3300538A8E /* CreateChallengeView.swift in Sources */,
 				D7FA3CC72AF4322C007E6DE4 /* ImageCache.swift in Sources */,
 				D7A016D52AC0D9B50097A989 /* AuthyViewModel.swift in Sources */,

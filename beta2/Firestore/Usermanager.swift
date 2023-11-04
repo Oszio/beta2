@@ -209,18 +209,7 @@ extension UserManager {
     }
 }
 
-extension UserManager {
-    func acceptFriendRequest(currentUserID: String, requestingUserID: String) async throws {
-        // Code to accept the friend request, potentially involving:
-        // 1. Adding the requestingUserID to the current user's friends list
-        // 2. Removing the requestingUserID from the incomingRequests array
-    }
 
-    func declineFriendRequest(currentUserID: String, requestingUserID: String) async throws {
-        // Code to decline the friend request, which could just be removing
-        // the requestingUserID from the incomingRequests array
-    }
-}
 
 
     
