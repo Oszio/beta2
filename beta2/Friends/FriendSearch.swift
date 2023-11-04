@@ -73,7 +73,7 @@ struct FriendSearchView: View {
                                     .foregroundColor(.green)
                             } else {
                                 Button("Add Friend") {
-                                    addFriend(user)
+                                    sendFriendRequest(user)
                                 }
                                 .buttonStyle(BorderlessButtonStyle())
                             }
@@ -160,6 +160,33 @@ struct FriendSearchView: View {
                 searchText = ""
             } catch {
                 errorMessage = "Failed to add friend: \(error.localizedDescription)"
+            }
+        }
+    }
+    func sendFriendRequest(_ user: DBUser) {
+        guard let currentUserID = currentUserId else {
+            errorMessage = "Failed to get current user ID."
+            return
+        }
+        
+        guard !addedFriends.contains(user.uid) else {
+            errorMessage = "Friend request already sent."
+            return
+        }
+        
+        Task {
+            do {
+                // Send friend request by email
+                try await UserManager.shared.sendFriendRequestByEmail(from: currentUserID, toEmail: user.email ?? "")
+                
+                successMessage = "Friend request sent successfully!"
+                addedFriends.insert(user.uid)
+                
+                // Reset search results and search text
+                searchResults = []
+                searchText = ""
+            } catch {
+                errorMessage = "Failed to send friend request: \(error.localizedDescription)"
             }
         }
     }

@@ -62,8 +62,15 @@ class PendingFriendRequestsViewModel: ObservableObject {
             do {
                 // Attempt to retrieve the current authenticated user
                 let authDataResult = try authManager.getAuthenticatedUser()
+                
+                // Clear the existing friendRequests array
+                friendRequests = []
+                
                 // Use the UID from the authenticated user
-                friendRequests = try await userManager.fetchFriendRequests(for: authDataResult.uid)
+                let allRequests = try await userManager.fetchFriendRequests(for: authDataResult.uid)
+                
+                // Filter only "pending" requests
+                friendRequests = allRequests.filter { $0.status == "pending" }
             } catch {
                 alertMessage = error.localizedDescription
                 showingAlert = true
@@ -71,7 +78,7 @@ class PendingFriendRequestsViewModel: ObservableObject {
             isLoading = false
         }
     }
-    
+
     func acceptFriendRequest(_ request: FriendRequest) {
         Task {
             do {

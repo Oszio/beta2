@@ -12,7 +12,7 @@ struct FriendView: View {
         NavigationView {
             VStack(spacing: 0) {
                 FriendSearchView()
-                    .frame(height: UIScreen.main.bounds.height * 0.2) // Adjust the percentage as needed
+                    .frame(height: UIScreen.main.bounds.height * 0.5) // Adjust the percentage as needed
                     .padding()
 
                 FriendListView()
