@@ -42,8 +42,9 @@ class FriendRequestViewModel: ObservableObject {
             let group = DispatchGroup()
             var users: [DBUser] = []
 
-            for document in querySnapshot!.documents {
+            for document in querySnapshot?.documents ?? [] {
                 group.enter()
+                defer { group.leave() } // Ensure we always leave the group
                 let friendRequest = try? document.data(as: FriendRequest.self)
                 if let fromUserId = friendRequest?.fromUserId {
                     self.db.collection("users").document(fromUserId).getDocument { (userDoc, error) in
@@ -85,7 +86,6 @@ class FriendRequestViewModel: ObservableObject {
         }
     }
 
-    // Reject a friend request
     func rejectFriendRequest(request: FriendRequest) async {
         guard let requestId = request.id else {
             self.errorMessage = "Invalid request ID."
@@ -94,10 +94,8 @@ class FriendRequestViewModel: ObservableObject {
 
         do {
             let requestRef = db.collection("users").document(request.toUserId).collection("friendRequests").document(requestId)
-            
             // Delete the friend request document
             try await requestRef.delete()
-            
             // Refresh the list after rejecting
             await fetchFriendRequests(userId: request.toUserId)
         } catch {
@@ -106,25 +104,7 @@ class FriendRequestViewModel: ObservableObject {
     }
 
     
-    // Reject a friend request
-    func rejectFriendRequest(request: FriendRequest) {
-        guard let requestId = request.id else {
-            self.errorMessage = "Invalid request ID."
-            return
-        }
-
-        let requestRef = db.collection("users").document(request.toUserId).collection("friendRequests").document(requestId)
-        
-        // Delete the friend request document
-        requestRef.delete() { error in
-            if let error = error {
-                self.errorMessage = "Error rejecting friend request: \(error.localizedDescription)"
-            } else {
-                // Refresh the list after rejecting
-                self.fetchFriendRequests(userId: request.toUserId)
-            }
-        }
-    }
+  
     
     // Lookup users by their IDs
     private func lookupUsersById(userIds: [String]) {

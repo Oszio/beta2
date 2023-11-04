@@ -210,6 +210,26 @@ extension UserManager {
 }
 
 
+extension UserManager {
+
+    // Function to search for a user by email
+    func searchUserByEmail(email: String) async throws -> DBUser? {
+        let querySnapshot = try await db.collection("users").whereField("email", isEqualTo: email).getDocuments()
+        
+        // Assuming there is only one user with this email
+        guard let document = querySnapshot.documents.first else { return nil }
+        return try document.data(as: DBUser.self)
+    }
+    
+    // High-level function to send a friend request by email
+    func sendFriendRequestByEmail(from currentUserID: String, toEmail: String) async throws {
+        guard let friendUser = try await searchUserByEmail(email: toEmail) else {
+            throw NSError(domain: "UserManager", code: 404, userInfo: [NSLocalizedDescriptionKey: "No user found with the given email"])
+        }
+        
+        try await sendFriendRequest(from: currentUserID, to: friendUser.uid)
+    }
+}
 
 
     
