@@ -10,13 +10,29 @@ import FirebaseStorage
 import UIKit
 
 struct CompletedChallenge: Codable, Identifiable {
-    var id: String { challengeID } // This makes CompletedChallenge conform to Identifiable
+    var id: String { challengeID }
     var categoryID: String
     var challengeID: String
     var comment: String
     var evidenceId: String
     var imageUrl: String
+    var dateCreated: Date
+
+    enum CodingKeys: String, CodingKey {
+        case categoryID, challengeID, comment, evidenceId, imageUrl, dateCreated
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        categoryID = try container.decode(String.self, forKey: .categoryID)
+        challengeID = try container.decode(String.self, forKey: .challengeID)
+        comment = try container.decode(String.self, forKey: .comment)
+        evidenceId = try container.decode(String.self, forKey: .evidenceId)
+        imageUrl = try container.decode(String.self, forKey: .imageUrl)
+        dateCreated = try container.decode(Date.self, forKey: .dateCreated)
+    }
 }
+
 
 class FirebaseManager {
     
@@ -24,7 +40,7 @@ class FirebaseManager {
     
     private let db = Firestore.firestore()
     private let storage = Storage.storage()
-    
+
     func uploadEvidence(userId: String, image: UIImage, comment: String, challengeID: String, categoryId: String,  completion: @escaping (Result<(String, String), Error>) -> Void) {
         // Use a unique identifier for image naming
         let uniqueImageName = "\(userId)_\(challengeID).jpg"
@@ -49,14 +65,15 @@ class FirebaseManager {
                     }
                     
                     if let downloadURL = url?.absoluteString {
-                        self.addEvidenceToFirestore(userId: userId, challengeID: challengeID, comment: comment, imageUrl: downloadURL, categoryId: categoryId, completion: completion)
+                        let dateCreated = Date()
+                        self.addEvidenceToFirestore(userId: userId, challengeID: challengeID, comment: comment, imageUrl: downloadURL, categoryId: categoryId, dateCreated: dateCreated, completion: completion)
                     }
                 }
             }
         }
     }
     
-    private func addEvidenceToFirestore(userId: String, challengeID: String, comment: String, imageUrl: String, categoryId: String, completion: @escaping (Result<(String, String), Error>) -> Void) {
+    private func addEvidenceToFirestore(userId: String, challengeID: String, comment: String, imageUrl: String, categoryId: String, dateCreated: Date, completion: @escaping (Result<(String, String), Error>) -> Void) {
         // Save to the "CompletedChallenges" sub-collection for consistency
         let evidenceCollectionRef = db.collection("users").document(userId).collection("CompletedChallenges")
 
@@ -65,7 +82,8 @@ class FirebaseManager {
             "challengeID": challengeID,
             "comment": comment,
             "imageUrl": imageUrl,
-            "categoryId": categoryId
+            "categoryId": categoryId,
+            "dateCreated": dateCreated
         ]
 
         evidenceCollectionRef.document(challengeID).setData(evidenceData) { error in
