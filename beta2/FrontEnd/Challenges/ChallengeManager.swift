@@ -59,7 +59,8 @@ final class ChallengeManager {
             "categoryID": categoryID,
             "evidenceId": evidenceId,
             "imageUrl": imageUrl,
-            "comment": comment
+            "comment": comment,
+            "completionTime": FieldValue.serverTimestamp() // Use Firestore's server timestamp
         ]
         
         try await documentRef.setData(completedChallengeData)

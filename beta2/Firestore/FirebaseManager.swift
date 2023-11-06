@@ -10,12 +10,13 @@ import FirebaseStorage
 import UIKit
 
 struct CompletedChallenge: Codable, Identifiable {
-    var id: String { challengeID } // This makes CompletedChallenge conform to Identifiable
+    var id: String { challengeID }
     var categoryID: String
     var challengeID: String
     var comment: String
     var evidenceId: String
     var imageUrl: String
+    var completionTime: Date // This will store the completion time
 }
 
 class FirebaseManager {
@@ -65,7 +66,8 @@ class FirebaseManager {
             "challengeID": challengeID,
             "comment": comment,
             "imageUrl": imageUrl,
-            "categoryId": categoryId
+            "categoryId": categoryId,
+            "completionTime": Timestamp(date: Date()) // Use Timestamp to store the current time
         ]
 
         evidenceCollectionRef.document(challengeID).setData(evidenceData) { error in
