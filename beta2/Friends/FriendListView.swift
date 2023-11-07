@@ -16,6 +16,7 @@ struct Friend: Identifiable, Codable {
     var timestamp: Timestamp
     var email: String?
     var photoUrl: String?
+    var username: String?
 }
 
 struct FriendDocument: Codable {
@@ -75,5 +76,6 @@ extension Friend {
         self.timestamp = friendDocument.timestamp
         self.email = dbUser.email
         self.photoUrl = dbUser.photoUrl
+        self.username = dbUser.username
     }
 }
