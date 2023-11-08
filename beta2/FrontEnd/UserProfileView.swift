@@ -8,6 +8,7 @@
 
 import SwiftUI
 import FirebaseStorage
+import FirebaseFirestore
 import Kingfisher
 
 struct UserProfileView: View {
@@ -104,10 +105,9 @@ struct UserProfileView: View {
                             .font(.headline)
                             .padding(.leading)
                         
-                        // Displaying each challenge in a card
-                        ForEach(completedChallengeInfos, id: \.challenge.id) { challengeInfo in
-                            ChallengeCard(challenge: challengeInfo.challenge, evidence: challengeInfo.evidence)
-                        }
+                        let date = Date()
+                        
+                        FriendRow(friend: user?.asFriend() ?? Friend(id: "", friendID: "", timestamp: Timestamp(date: Date()), email: "", photoUrl: "", username: ""))
                     }
                 }
                 
@@ -239,7 +239,18 @@ struct ChallengeCard: View {
     }
 }
 
-
+extension DBUser {
+    func asFriend() -> Friend {
+        return Friend(
+            id: self.uid,
+            friendID: self.uid,
+            timestamp: Timestamp(date: Date()), // Initialize timestamp with the current date
+            email: self.email,
+            photoUrl: self.photoUrl,
+            username: self.username
+        )
+    }
+}
 
 // A preview for your UserProfileView
 struct UserProfileView_Previews: PreviewProvider {

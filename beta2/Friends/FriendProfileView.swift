@@ -16,72 +16,57 @@ struct FriendProfileView: View {
     @State private var errorMessage: String? = nil
 
     var body: some View {
-        VStack(spacing: 20) {
-            if let url = friend.photoUrl, let imageUrl = URL(string: url) {
-                KFImage(imageUrl)
-                    .resizable()
-                    .loadDiskFileSynchronously() // Loads the image from the disk cache synchronously
-                    .cacheMemoryOnly() // Stores the image in memory cache only
-                    .fade(duration: 0.25) // Adds a fade animation when the image gets loaded
-                    .onProgress { receivedSize, totalSize in  // Handle progress
-                      // Optionally handle progress here
-                    }
-                    .onSuccess { result in  // Handle success
-                      // Optionally handle success here
-                    }
-                    .onFailure { error in  // Handle failure
-                      // Optionally handle failure here
-                    }
-                    .placeholder {
-                        ProgressView() // Placeholder while loading or if there's an error
-                    }
-                    .frame(width: 100, height: 100)
-                    .clipShape(Circle())
-            } else {
-                Image(systemName: "person.circle.fill")
-                    .resizable()
-                    .frame(width: 100, height: 100)
-                    .foregroundColor(.gray)
-            }
-            
-            Text(friend.email ?? "No Email")
-                .font(.title)
-            
-            if isLoading {
-                ProgressView()
-            } else if let error = errorMessage {
-                Text(error)
-                    .foregroundColor(.red)
-            } else {
-                List(completedChallenges) { challenge in
-                    VStack(alignment: .leading) {
-                        Text(challenge.comment)
-                        if let url = URL(string: challenge.imageUrl) {
-                            KFImage(url)
-                                .resizable()
-                                .loadDiskFileSynchronously() // Loads the image from the disk cache synchronously
-                                .cacheMemoryOnly() // Stores the image in memory cache only
-                                .fade(duration: 0.25) // Adds a fade animation when the image gets loaded
-                                .placeholder {
-                                    ProgressView() // Placeholder while loading or if there's an error
-                                }
-                                .frame(width: 100, height: 100)
+        ScrollView {
+            VStack(spacing: 20) {
+                if let url = friend.photoUrl, let imageUrl = URL(string: url) {
+                    KFImage(imageUrl)
+                        .resizable()
+                        .loadDiskFileSynchronously() // Loads the image from the disk cache synchronously
+                        .cacheMemoryOnly() // Stores the image in memory cache only
+                        .fade(duration: 0.25) // Adds a fade animation when the image gets loaded
+                        .onProgress { receivedSize, totalSize in  // Handle progress
+                            // Optionally handle progress here
                         }
-                    }
+                        .onSuccess { result in  // Handle success
+                            // Optionally handle success here
+                        }
+                        .onFailure { error in  // Handle failure
+                            // Optionally handle failure here
+                        }
+                        .placeholder {
+                            ProgressView() // Placeholder while loading or if there's an error
+                        }
+                        .frame(width: 100, height: 100)
+                        .clipShape(Circle())
+                } else {
+                    Image(systemName: "person.circle.fill")
+                        .resizable()
+                        .frame(width: 100, height: 100)
+                        .foregroundColor(.gray)
+                }
+                
+                
+                Button("Remove Friend") {
+                    // Prompt the user to confirm before removing
+                    // If confirmed, implement the remove friend functionality here
+                }
+                .padding()
+                .background(Color.red)
+                .foregroundColor(.white)
+                .cornerRadius(8)
+                
+                if isLoading {
+                    ProgressView()
+                } else if let error = errorMessage {
+                    Text(error)
+                        .foregroundColor(.red)
+                } else {
+                    FriendRow(friend: friend)
                 }
             }
-            
-            Button("Remove Friend") {
-                // Prompt the user to confirm before removing
-                // If confirmed, implement the remove friend functionality here
-            }
             .padding()
-            .background(Color.red)
-            .foregroundColor(.white)
-            .cornerRadius(8)
+            .onAppear(perform: loadCompletedChallenges)
         }
-        .padding()
-        .onAppear(perform: loadCompletedChallenges)
     }
     
     func loadCompletedChallenges() {

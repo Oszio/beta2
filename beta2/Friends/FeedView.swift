@@ -71,7 +71,7 @@ struct FriendRow: View {
                     .foregroundColor(.red)
             } else {
                 // Last 3 challenges per person in newest order
-                ForEach(completedChallenges.prefix(3).reversed()) { challenge in
+                ForEach(completedChallenges.reversed()) { challenge in
                     VStack(alignment: .leading){
                         // Other content related to friend, if needed
                         NavigationLink(destination: FriendProfileView(friend: friend)) {
