@@ -20,7 +20,7 @@ struct FeedView: View {
                     ScrollView {
                         VStack(spacing: 16) {
                             ForEach(friends, id: \.id) { friend in
-                                FriendRow(friend: friend)
+                                FriendRow(friend: friend, navigation: true)
                             }
                         }
                     }
@@ -56,6 +56,8 @@ struct FeedView: View {
 
 struct FriendRow: View {
     var friend: Friend
+    var navigation: Bool
+    
     let dimention = UIScreen.main.bounds.width
     
     @State private var completedChallenges: [CompletedChallenge] = []
@@ -74,10 +76,16 @@ struct FriendRow: View {
                 ForEach(completedChallenges.reversed()) { challenge in
                     VStack(alignment: .leading){
                         // Other content related to friend, if needed
-                        NavigationLink(destination: FriendProfileView(friend: friend)) {
+
+                        if navigation {
+                            NavigationLink(destination: FriendProfileView(friend: friend)) {
+                                FriendProfileInfoRow(friend: friend)
+                            }
+                                .padding(.leading, 13)
+                        } else {
                             FriendProfileInfoRow(friend: friend)
+                                .padding(.leading, 13)
                         }
-                            .padding(.leading, 13)
                         HStack {
                             Text("\(challenge.completionTime, formatter: dateFormatter)") // Display timestamp
                                 .font(.subheadline)

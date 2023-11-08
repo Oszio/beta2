@@ -61,7 +61,7 @@ struct FriendProfileView: View {
                     Text(error)
                         .foregroundColor(.red)
                 } else {
-                    FriendRow(friend: friend)
+                    FriendRow(friend: friend, navigation: false)
                 }
             }
             .padding()

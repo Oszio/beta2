@@ -107,7 +107,7 @@ struct UserProfileView: View {
                         
                         let date = Date()
                         
-                        FriendRow(friend: user?.asFriend() ?? Friend(id: "", friendID: "", timestamp: Timestamp(date: Date()), email: "", photoUrl: "", username: ""))
+                        FriendRow(friend: user?.asFriend() ?? Friend(id: "", friendID: "", timestamp: Timestamp(date: Date()), email: "", photoUrl: "", username: ""), navigation: false)
                     }
                 }
                 
