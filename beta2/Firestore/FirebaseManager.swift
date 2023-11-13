@@ -88,7 +88,6 @@ class FirebaseManager {
         guard let completedChallenge = try? snapshot.data(as: CompletedChallenge.self) else {
             throw NSError(domain: "DataError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to decode evidence data"])
         }
-        
         return completedChallenge
     }
 

@@ -19,6 +19,11 @@ struct FeedView: View {
                 } else {
                     ScrollView {
                         VStack(spacing: 16) {
+                            Text("SIDEQUEST")
+                                .font(.custom("Avenir", size: 20))
+                                //.bold()
+                                .kerning(2)
+                            Divider()
                             ForEach(friends, id: \.id) { friend in
                                 FriendRow(friend: friend, navigation: true)
                             }
@@ -76,29 +81,31 @@ struct FriendRow: View {
                 ForEach(completedChallenges.reversed()) { challenge in
                     VStack(alignment: .leading){
                         // Other content related to friend, if needed
-
-                        if navigation {
-                            NavigationLink(destination: FriendProfileView(friend: friend)) {
+                        ZStack{
+                            if navigation {
+                                NavigationLink(destination: FriendProfileView(friend: friend)) {
+                                    FriendProfileInfoRow(friend: friend)
+                                }
+                                .padding(.leading, 13)
+                            } else {
                                 FriendProfileInfoRow(friend: friend)
+                                    .padding(.leading, 13)
                             }
-                                .padding(.leading, 13)
-                        } else {
-                            FriendProfileInfoRow(friend: friend)
-                                .padding(.leading, 13)
-                        }
-                        HStack {
-                            Text("\(challenge.completionTime, formatter: dateFormatter)") // Display timestamp
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                            Spacer()
-                            Text("Points: 10")
-                            //Text("Points: \(challenge.points)") // Display points
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                        }
-                            .padding(.leading, 13)
+                            HStack {
+                                Text("\(challenge.completionTime, formatter: dateFormatter)") // Display timestamp
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                                Spacer()
+                                Text("Points: 10")
+                                //Text("Points: \(challenge.points)") // Display points
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                            }
+                            .padding(.leading, 70)
                             .padding(.trailing, 13)
-                        CompletedChallengeImage(url: challenge.imageUrl)
+                            .padding(.top, 35)
+                        }
+                        CompletedChallengeImage(url: challenge.imageUrl, challenge: challenge)
                         HStack {
                             Text(challenge.comment)
                                 .font(.subheadline)
@@ -110,6 +117,8 @@ struct FriendRow: View {
                             .padding(.top, 8) // Add padding between image and caption
                             .padding(.leading, 13)
                             .padding(.trailing, 13)
+                        Spacer()
+                        Divider()
                     }
                 }
             }
@@ -145,7 +154,7 @@ struct FriendChallengeRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            CompletedChallengeImage(url: challenge.imageUrl)
+            CompletedChallengeImage(url: challenge.imageUrl, challenge: challenge)
             Text(challenge.comment)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
@@ -174,7 +183,7 @@ struct CompletedChallengeRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            CompletedChallengeImage(url: challenge.imageUrl)
+            CompletedChallengeImage(url: challenge.imageUrl, challenge: challenge)
             Text(challenge.comment)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
@@ -202,29 +211,72 @@ struct FriendProfilePicture: View {
                     .foregroundColor(.gray)
             }
         }
-        .frame(width: 45, height: 45)
+        .frame(width: 48, height: 48)
         .clipShape(Circle())
         .background(
             Circle()
-                .foregroundColor(.green)
-                .frame(width: 48, height: 48) // Adjust the size of the background circle
+                .foregroundColor(.clear)
+                .frame(width: 51, height: 51) // Adjust the size of the background circle
         )
+    }
+}
+
+struct HeartMask: View {
+    var body: some View {
+        Image(systemName: "heart.fill")
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+    }
+}
+struct CircleMask: Shape {
+    func path(in rect: CGRect) -> Path {
+        return Path(ellipseIn: rect)
     }
 }
 
 struct CompletedChallengeImage: View {
     var url: String
+    var challenge: CompletedChallenge
+    
     let dimention = UIScreen.main.bounds.width
+    @State private var isTapped: Bool = false
 
     var body: some View {
-        if let imageUrl = URL(string: url) {
-            KFImage(imageUrl)
-                .resizable()
-                .placeholder {
-                    ProgressView()
+        ZStack(alignment: .bottom) {
+            if let imageUrl = URL(string: url) {
+                KFImage(imageUrl)
+                    .resizable()
+                    .placeholder {
+                        ProgressView()
+                    }
+                    .fade(duration: 0.25)
+                    .frame(width: dimention, height: dimention - 20) // Adjust the size as needed
+                    //.blur(radius: isTapped ? 10 : 0) // Apply blur if tapped
+            }
+
+            if isTapped {
+                Color.black.opacity(0.5)
+                    .edgesIgnoringSafeArea(.all)
+                VStack{
+                    Text(challenge.categoryID.uppercased() + " CHALLENGE:")
+                        .font(.custom("Avenir", size: 30))
+                        .foregroundColor(.white)
+                        .italic()
+                        .padding(.top, 10)
+                    Text(challenge.challengeID)
+                        .font(.custom("Avenir", size: 20))
+                        .foregroundColor(.white)
+                        .italic()
+                    Spacer()
                 }
-                .fade(duration: 0.25)
-                .frame(width: dimention, height: dimention - 20) // Adjust the size as needed
+            }
+        }
+        .onTapGesture {
+            withAnimation {
+                isTapped.toggle()
+            }
         }
     }
 }
+
+

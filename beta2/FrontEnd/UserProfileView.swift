@@ -32,10 +32,22 @@ struct UserProfileView: View {
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .center, spacing: 20) {
+            VStack(spacing: 16) {
                 // User Profile UI
-                
-                
+                ZStack {
+                    Text("SIDEQUEST")
+                        .font(.custom("Avenir", size: 20))
+                        //.bold()
+                        .kerning(2)
+                    HStack{
+                        Spacer()
+                        NavigationLink(destination: SettingsView(showSignInView: $showSignInView)){
+                            Image(systemName: "gear")
+                        }
+                    }
+                    .padding(.trailing, 30)
+                }
+                Divider()
                 Group {
                     if let photoUrl = user?.photoUrl, let url = URL(string: photoUrl) {
                         KFImage(url)
@@ -55,13 +67,15 @@ struct UserProfileView: View {
                             .placeholder { // Placeholder while loading or if there's an error
                                 ProgressView()
                             }
-                            .frame(width: 100, height: 100)
+                            .frame(width: 150, height: 150)
                             .clipShape(Circle())
                     } else {
                         Text("Loading user profile...")
                     }
                 }
-                .padding()
+                Text(username)
+                    .font(.headline)
+                    .foregroundColor(.primary)
                 
                 Divider()
                 
@@ -120,7 +134,6 @@ struct UserProfileView: View {
                 .foregroundColor(.white)
                 .cornerRadius(8)
             }
-            .padding()
             .navigationBarTitle("Profile", displayMode: .inline)
         }
         .task {

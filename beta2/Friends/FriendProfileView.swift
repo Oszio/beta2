@@ -67,6 +67,7 @@ struct FriendProfileView: View {
             .padding()
             .onAppear(perform: loadCompletedChallenges)
         }
+        .navigationBarTitle(friend.username ?? "No Username", displayMode: .inline)
     }
     
     func loadCompletedChallenges() {
