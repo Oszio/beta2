@@ -237,8 +237,11 @@ struct CircleMask: Shape {
 struct CompletedChallengeImage: View {
     var url: String
     var challenge: CompletedChallenge
+    @State private var isLoading: Bool = false
+    @State private var isChallengeInfoLoaded: Bool = false
+    @State private var challengeInfo: Challenge? // Declare challengeInfo as a property
     
-    let dimention = UIScreen.main.bounds.width
+    let dimension = UIScreen.main.bounds.width
     @State private var isTapped: Bool = false
 
     var body: some View {
@@ -250,23 +253,29 @@ struct CompletedChallengeImage: View {
                         ProgressView()
                     }
                     .fade(duration: 0.25)
-                    .frame(width: dimention, height: dimention - 20) // Adjust the size as needed
-                    //.blur(radius: isTapped ? 10 : 0) // Apply blur if tapped
+                    .frame(width: dimension, height: dimension - 20)
             }
 
             if isTapped {
                 Color.black.opacity(0.5)
                     .edgesIgnoringSafeArea(.all)
-                VStack{
+                VStack {
                     Text(challenge.categoryID.uppercased() + " CHALLENGE:")
                         .font(.custom("Avenir", size: 30))
                         .foregroundColor(.white)
                         .italic()
                         .padding(.top, 10)
-                    Text(challenge.challengeID)
-                        .font(.custom("Avenir", size: 20))
-                        .foregroundColor(.white)
-                        .italic()
+                    if isChallengeInfoLoaded, let challengeInfo = challengeInfo {
+                        Text(challengeInfo.description)
+                            .font(.custom("Avenir", size: 20))
+                            .foregroundColor(.white)
+                            .italic()
+                    } else if isChallengeInfoLoaded {
+                        Text("Challenge info not found")
+                            .font(.custom("Avenir", size: 20))
+                            .foregroundColor(.white)
+                            .italic()
+                    }
                     Spacer()
                 }
             }
@@ -275,6 +284,24 @@ struct CompletedChallengeImage: View {
             withAnimation {
                 isTapped.toggle()
             }
+        }
+        .onAppear(perform: fetchChallengeInfo)
+    }
+
+    func fetchChallengeInfo() {
+        isLoading = true
+        Task {
+            do {
+                // Fetch a single challenge based on challengeID
+                challengeInfo = try await ChallengeManager.shared.fetchChallenge(byID: challenge.challengeID, inCategory: challenge.categoryID)
+                if challengeInfo == nil {
+                    print("Challenge not found for ID: \(challenge.challengeID)")
+                }
+                isChallengeInfoLoaded = true
+            } catch {
+                print("Failed to fetch challenge: \(error.localizedDescription)")
+            }
+            isLoading = false
         }
     }
 }

@@ -20,6 +20,10 @@ struct UserProfileView: View {
     @State private var showingImagePicker = false
     @State private var completedChallengeInfos: [CompletedChallengeInfo] = []
     
+    @State private var isUpdatingUsername = false
+    @State private var isSelectingProfilePicture = false
+    
+    
     init(uid: String, showSignInView: Binding<Bool>) {
         self.uid = uid
         self._showSignInView = showSignInView
