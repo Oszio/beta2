@@ -256,7 +256,9 @@ struct CompletedChallengeImage: View {
                     .fade(duration: 0.25)
                     .aspectRatio(contentMode: .fill)
                     .frame(width: dimension, height: dimension)
-                    .clipped()
+                    .clipped() // Crop the image
+                    //.frame(width: dimension)
+                    //.scaledToFill() // Crop the image
             }
 
             if isTapped {
