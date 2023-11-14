@@ -19,6 +19,10 @@ struct ChallengeDetailView: View {
     @State private var currentUser: DBUser?
     @State private var isImagePickerPresented: Bool = false
     
+    @State private var showImagePicker: Bool = false
+    @State private var showImageSourceSelectionActionSheet: Bool = false
+    @State private var showImageSourceSelection: Bool = true
+    
     var body: some View {
         VStack(spacing: 20) {
             // Display challenge details
@@ -37,10 +41,26 @@ struct ChallengeDetailView: View {
             }
             
             Button("Select Image") {
-                isImagePickerPresented.toggle()
+                showImageSourceSelectionActionSheet = true
             }
-            .sheet(isPresented: $isImagePickerPresented) {
-                ImagePicker(selectedImage: $selectedImage)
+            .actionSheet(isPresented: $showImageSourceSelectionActionSheet) {
+                ActionSheet(
+                    title: Text("Select Image Source"),
+                    buttons: [
+                        .default(Text("Camera")) {
+                            showImagePicker = true
+                            showImageSourceSelection = false
+                        },
+                        .default(Text("Photo Album")) {
+                            showImagePicker = true
+                            showImageSourceSelection = true
+                        },
+                        .cancel()
+                    ]
+                )
+            }
+            .sheet(isPresented: $showImagePicker) {
+                ImagePicker(selectedImage: $selectedImage, showImageSourceSelection: $showImageSourceSelection)
             }
             .padding()
             .background(Color.blue)

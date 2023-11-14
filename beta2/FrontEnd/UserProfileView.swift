@@ -23,6 +23,10 @@ struct UserProfileView: View {
     @State private var isUpdatingUsername = false
     @State private var isSelectingProfilePicture = false
     
+    @State private var showImagePicker: Bool = false
+    @State private var showImageSourceSelectionActionSheet: Bool = false
+    @State private var showImageSourceSelection: Bool = true
+    
     
     init(uid: String, showSignInView: Binding<Bool>) {
         self.uid = uid
@@ -90,10 +94,26 @@ struct UserProfileView: View {
                 
                 // Profile Picture Selection
                 Button("Select Profile Picture") {
-                    showingImagePicker = true
+                    showImageSourceSelectionActionSheet = true
                 }
-                .sheet(isPresented: $showingImagePicker) {
-                    ImagePicker(selectedImage: $selectedImage)
+                .actionSheet(isPresented: $showImageSourceSelectionActionSheet) {
+                    ActionSheet(
+                        title: Text("Select Image Source"),
+                        buttons: [
+                            .default(Text("Camera")) {
+                                showImagePicker = true
+                                showImageSourceSelection = false
+                            },
+                            .default(Text("Photo Album")) {
+                                showImagePicker = true
+                                showImageSourceSelection = true
+                            },
+                            .cancel()
+                        ]
+                    )
+                }
+                .sheet(isPresented: $showImagePicker) {
+                    ImagePicker(selectedImage: $selectedImage, showImageSourceSelection: $showImageSourceSelection)
                 }
                 
                 

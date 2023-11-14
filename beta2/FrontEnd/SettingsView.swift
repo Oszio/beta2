@@ -12,6 +12,9 @@ struct SettingsView: View {
     @State private var username: String = ""
     @State private var selectedImage: UIImage?
     @State private var showingImagePicker = false
+    @State private var showImagePicker: Bool = false
+    @State private var showImageSourceSelectionActionSheet: Bool = false
+    @State private var showImageSourceSelection: Bool = true
 
     var body: some View {
         Form {
@@ -22,8 +25,24 @@ struct SettingsView: View {
                 Button("Select Profile Picture") {
                     showingImagePicker = true
                 }
-                .sheet(isPresented: $showingImagePicker) {
-                    ImagePicker(selectedImage: $selectedImage)
+                .actionSheet(isPresented: $showImageSourceSelectionActionSheet) {
+                    ActionSheet(
+                        title: Text("Select Image Source"),
+                        buttons: [
+                            .default(Text("Camera")) {
+                                showImagePicker = true
+                                showImageSourceSelection = false
+                            },
+                            .default(Text("Photo Album")) {
+                                showImagePicker = true
+                                showImageSourceSelection = true
+                            },
+                            .cancel()
+                        ]
+                    )
+                }
+                .sheet(isPresented: $showImagePicker) {
+                    ImagePicker(selectedImage: $selectedImage, showImageSourceSelection: $showImageSourceSelection)
                 }
                 
                 if let selectedImage = selectedImage {

@@ -18,7 +18,11 @@ struct UploadEvidenceView: View {
     @State private var errorMessage: String?
     @State private var userId: String?
     @State private var categoryId: String
-
+    
+    @State private var showImagePicker: Bool = false
+    @State private var showImageSourceSelectionActionSheet: Bool = false
+    @State private var showImageSourceSelection: Bool = true
+    
     @Binding var uploadedImage: UIImage?
 
     
@@ -40,7 +44,26 @@ struct UploadEvidenceView: View {
             }
             
             Button("Select Image") {
-                isImagePickerPresented = true
+                showImageSourceSelectionActionSheet = true
+            }
+            .actionSheet(isPresented: $showImageSourceSelectionActionSheet) {
+                ActionSheet(
+                    title: Text("Select Image Source"),
+                    buttons: [
+                        .default(Text("Camera")) {
+                            showImagePicker = true
+                            showImageSourceSelection = false
+                        },
+                        .default(Text("Photo Album")) {
+                            showImagePicker = true
+                            showImageSourceSelection = true
+                        },
+                        .cancel()
+                    ]
+                )
+            }
+            .sheet(isPresented: $showImagePicker) {
+                ImagePicker(selectedImage: $selectedImage, showImageSourceSelection: $showImageSourceSelection)
             }
             
             TextField("Add a comment...", text: $comment)
@@ -76,9 +99,6 @@ struct UploadEvidenceView: View {
             
         }
         .padding()
-        .sheet(isPresented: $isImagePickerPresented, content: {
-            ImagePicker(selectedImage: $selectedImage)
-        })
     }
     
     func uploadEvidence() {
