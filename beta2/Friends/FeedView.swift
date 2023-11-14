@@ -211,6 +211,7 @@ struct FriendProfilePicture: View {
                     .foregroundColor(.gray)
             }
         }
+        .aspectRatio(contentMode: .fill)
         .frame(width: 48, height: 48)
         .clipShape(Circle())
         .background(
@@ -253,7 +254,9 @@ struct CompletedChallengeImage: View {
                         ProgressView()
                     }
                     .fade(duration: 0.25)
-                    .frame(width: dimension, height: dimension - 20)
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: dimension, height: dimension)
+                    .clipped()
             }
 
             if isTapped {

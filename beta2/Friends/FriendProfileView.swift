@@ -36,25 +36,28 @@ struct FriendProfileView: View {
                         .placeholder {
                             ProgressView() // Placeholder while loading or if there's an error
                         }
-                        .frame(width: 100, height: 100)
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 150, height: 150)
                         .clipShape(Circle())
                 } else {
                     Image(systemName: "person.circle.fill")
                         .resizable()
-                        .frame(width: 100, height: 100)
+                        .frame(width: 150, height: 150)
                         .foregroundColor(.gray)
                 }
-                
+                Text(friend.username ?? "no username")
+                    .font(.headline)
+                    .foregroundColor(.primary)
                 
                 Button("Remove Friend") {
                     // Prompt the user to confirm before removing
                     // If confirmed, implement the remove friend functionality here
                 }
-                .padding()
-                .background(Color.red)
-                .foregroundColor(.white)
-                .cornerRadius(8)
-                
+                    .padding()
+                    .background(Color.red)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                Divider()
                 if isLoading {
                     ProgressView()
                 } else if let error = errorMessage {

@@ -39,6 +39,7 @@ struct FriendListView: View {
                                } placeholder: {
                                    ProgressView()
                                }
+                               .aspectRatio(contentMode: .fill)
                                .frame(width: 50, height: 50)
                                .clipShape(Circle())
                            } else {
