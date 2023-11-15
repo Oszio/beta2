@@ -10,6 +10,7 @@ import SwiftUI
 enum ChallengeCategoryOption: String, CaseIterable, Identifiable {
     case daily = "Daily"
     case exercise = "Exercise"
+    case XMAS = "Xmas"
     case nature = "Nature"
     case social = "Social"
     case food = "Food"

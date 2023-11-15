@@ -54,6 +54,7 @@
 		D7FA3CCA2AF435D2007E6DE4 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = D7FA3CC92AF435D2007E6DE4 /* Kingfisher */; };
 		D7FA3CCC2AF45D04007E6DE4 /* FriendRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA3CCB2AF45D04007E6DE4 /* FriendRequestModel.swift */; };
 		D7FA3CCE2AF4D599007E6DE4 /* FriendRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA3CCD2AF4D599007E6DE4 /* FriendRequestView.swift */; };
+		D7FA3CD02B050B32007E6DE4 /* XmasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA3CCF2B050B32007E6DE4 /* XmasView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -116,6 +117,7 @@
 		D7FA3CC62AF4322C007E6DE4 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		D7FA3CCB2AF45D04007E6DE4 /* FriendRequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestModel.swift; sourceTree = "<group>"; };
 		D7FA3CCD2AF4D599007E6DE4 /* FriendRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestView.swift; sourceTree = "<group>"; };
+		D7FA3CCF2B050B32007E6DE4 /* XmasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XmasView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -301,6 +303,7 @@
 				D760C2B42AD75E5A00538A8E /* ChallengeManager.swift */,
 				D760C2B62AD75EE000538A8E /* ChallengeModel.swift */,
 				D760C2B22AD75E3300538A8E /* CreateChallengeView.swift */,
+				D7FA3CCF2B050B32007E6DE4 /* XmasView.swift */,
 			);
 			path = Challenges;
 			sourceTree = "<group>";
@@ -482,6 +485,7 @@
 				D7FA3CCE2AF4D599007E6DE4 /* FriendRequestView.swift in Sources */,
 				D760C2B32AD75E3300538A8E /* CreateChallengeView.swift in Sources */,
 				D7FA3CC72AF4322C007E6DE4 /* ImageCache.swift in Sources */,
+				D7FA3CD02B050B32007E6DE4 /* XmasView.swift in Sources */,
 				B8EBCA9A2B02D575006449E6 /* SettingsView.swift in Sources */,
 				D7A016D52AC0D9B50097A989 /* AuthyViewModel.swift in Sources */,
 			);

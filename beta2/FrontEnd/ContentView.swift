@@ -23,7 +23,7 @@ struct ContentView: View {
                         Image(systemName: "magnifyingglass")
                         Text("Search")
                     }
-                ChallengeListView()
+                XmasChallengesView()
                     .tabItem {
                         Image(systemName: "plus")
                         Text("Challenges")
