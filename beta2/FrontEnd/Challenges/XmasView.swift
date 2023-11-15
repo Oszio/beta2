@@ -15,29 +15,25 @@ struct XmasChallengesView: View {
     let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2) // Adjust count for desired column number
     
     var body: some View {
-           NavigationView {
-               ZStack {
-                   // Festive background image
-                   Image("xmasImage")
-                       .resizable()
-                       .scaledToFill()
-                       .edgesIgnoringSafeArea(.all)
+        NavigationView {
+            ZStack {
+                AnimatedBackgroundView() // Animated background
 
-                   if isLoading {
-                                   ProgressView() // Standard progress view
-                                       .scaleEffect(1.5) // Optional: Scale up for visibility
-                                       .progressViewStyle(CircularProgressViewStyle(tint: .white)) // Optional: White tint for better visibility
-                               } else {
-                                   challengesGrid
-                               }
-                           }
-                           .onAppear(perform: loadXmasChallenges)
-                           .navigationTitle("Xmas Challenges")
-                           .alert(isPresented: $showAlert) { // Standard alert view
-                               Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
-                           }
-                       }
-                   }
+                if isLoading {
+                    ProgressView()
+                        .scaleEffect(1.5)
+                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                } else {
+                    challengesGrid
+                }
+            }
+            .onAppear(perform: loadXmasChallenges)
+            .navigationTitle("Xmas Challenges")
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+            }
+        }
+    }
 
        private var challengesGrid: some View {
            ScrollView {
@@ -74,11 +70,11 @@ struct ChallengeGridCell: View {
 
     var body: some View {
         VStack {
-            Image(systemName: "gift.fill")
+            Image(systemName: "gift.fill") // Consider replacing with a custom image if available
                 .resizable()
                 .scaledToFit()
                 .frame(height: 60)
-                .foregroundColor(.red) // Festive icon color
+                .foregroundColor(.red)
 
             Text(challenge.name)
                 .font(.headline)
@@ -92,8 +88,14 @@ struct ChallengeGridCell: View {
         .frame(maxWidth: .infinity)
         .background(
             RoundedRectangle(cornerRadius: 15)
-                .fill(Color.white.opacity(0.7)) // Slightly transparent background for readability
+                .fill(Color.white.opacity(0.7))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 15)
+                        .stroke(Color.red.opacity(0.5), lineWidth: 2) // Festive border
+                )
         )
         .shadow(radius: 5)
+        
+        
     }
 }

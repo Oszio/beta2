@@ -55,6 +55,7 @@
 		D7FA3CCC2AF45D04007E6DE4 /* FriendRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA3CCB2AF45D04007E6DE4 /* FriendRequestModel.swift */; };
 		D7FA3CCE2AF4D599007E6DE4 /* FriendRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA3CCD2AF4D599007E6DE4 /* FriendRequestView.swift */; };
 		D7FA3CD02B050B32007E6DE4 /* XmasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA3CCF2B050B32007E6DE4 /* XmasView.swift */; };
+		D7FA3CD22B057610007E6DE4 /* AnimatedBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA3CD12B057610007E6DE4 /* AnimatedBackground.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -118,6 +119,7 @@
 		D7FA3CCB2AF45D04007E6DE4 /* FriendRequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestModel.swift; sourceTree = "<group>"; };
 		D7FA3CCD2AF4D599007E6DE4 /* FriendRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestView.swift; sourceTree = "<group>"; };
 		D7FA3CCF2B050B32007E6DE4 /* XmasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XmasView.swift; sourceTree = "<group>"; };
+		D7FA3CD12B057610007E6DE4 /* AnimatedBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedBackground.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -304,6 +306,7 @@
 				D760C2B62AD75EE000538A8E /* ChallengeModel.swift */,
 				D760C2B22AD75E3300538A8E /* CreateChallengeView.swift */,
 				D7FA3CCF2B050B32007E6DE4 /* XmasView.swift */,
+				D7FA3CD12B057610007E6DE4 /* AnimatedBackground.swift */,
 			);
 			path = Challenges;
 			sourceTree = "<group>";
@@ -466,6 +469,7 @@
 				D7A0165B2ABF587B0097A989 /* ContentView.swift in Sources */,
 				D760C2D82ADEE33C00538A8E /* UserProfileView.swift in Sources */,
 				B88CDAD32AF304AE00C7980A /* FriendView.swift in Sources */,
+				D7FA3CD22B057610007E6DE4 /* AnimatedBackground.swift in Sources */,
 				D7A016D92AC0DA380097A989 /* AuthyManager.swift in Sources */,
 				B88CDAD52AF30E6100C7980A /* FeedView.swift in Sources */,
 				D7A016CD2AC0A4CD0097A989 /* Usermanager.swift in Sources */,
@@ -647,7 +651,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"beta2/Preview Content\"";
-				DEVELOPMENT_TEAM = 544W83Y9GS;
+				DEVELOPMENT_TEAM = 5DW6399WWG;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -687,7 +691,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"beta2/Preview Content\"";
-				DEVELOPMENT_TEAM = 544W83Y9GS;
+				DEVELOPMENT_TEAM = 5DW6399WWG;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
