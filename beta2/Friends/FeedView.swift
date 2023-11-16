@@ -62,10 +62,10 @@ struct FeedView: View {
 struct FriendRow: View {
     var friend: Friend
     var navigation: Bool
-    
-    let dimention = UIScreen.main.bounds.width
-    
-    @State private var completedChallenges: [CompletedChallenge] = []
+
+    let dimension = UIScreen.main.bounds.width
+
+    @State private var recentChallenges: [CompletedChallenge] = []
     @State private var isLoading: Bool = true
     @State private var errorMessage: String?
 
@@ -77,60 +77,20 @@ struct FriendRow: View {
                 Text(errorMessage)
                     .foregroundColor(.red)
             } else {
-                // Last 3 challenges per person in newest order
-                ForEach(completedChallenges.reversed()) { challenge in
-                    VStack(alignment: .leading){
-                        // Other content related to friend, if needed
-                        ZStack{
-                            if navigation {
-                                NavigationLink(destination: FriendProfileView(friend: friend)) {
-                                    FriendProfileInfoRow(friend: friend)
-                                }
-                                .padding(.leading, 13)
-                            } else {
-                                FriendProfileInfoRow(friend: friend)
-                                    .padding(.leading, 13)
-                            }
-                            HStack {
-                                Text("\(challenge.completionTime, formatter: dateFormatter)") // Display timestamp
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                                Spacer()
-                                Text("Points: 10")
-                                //Text("Points: \(challenge.points)") // Display points
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
-                            .padding(.leading, 70)
-                            .padding(.trailing, 13)
-                            .padding(.top, 35)
-                        }
-                        CompletedChallengeImage(url: challenge.imageUrl, challenge: challenge)
-                        HStack {
-                            Text(challenge.comment)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                            Spacer()
-                            Image(systemName: "message") // Assuming "message" is the name of the comment icon
-                                .foregroundColor(.secondary)
-                        }
-                            .padding(.top, 8) // Add padding between image and caption
-                            .padding(.leading, 13)
-                            .padding(.trailing, 13)
-                        Spacer()
-                        Divider()
-                    }
+                ForEach(recentChallenges.reversed()) { challenge in
+                    // Display each recent challenge
+                    FriendChallengeRow(friend: friend, challenge: challenge, navigation: navigation)
                 }
             }
         }
         .padding(.horizontal, 16)
-        .onAppear(perform: loadCompletedChallenges)
+        .onAppear(perform: loadRecentChallenges)
     }
 
-    func loadCompletedChallenges() {
+    func loadRecentChallenges() {
         Task {
             do {
-                completedChallenges = try await FirebaseManager.shared.fetchCompletedChallenges(forUID: friend.id)
+                recentChallenges = try await FirebaseManager.shared.fetchCompletedChallenges(forUID: friend.id)
                 isLoading = false
             } catch {
                 isLoading = false
@@ -138,7 +98,59 @@ struct FriendRow: View {
             }
         }
     }
-    
+}
+
+struct FriendChallengeRow: View {
+    var friend: Friend
+    var challenge: CompletedChallenge
+    var navigation: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            // Display a single challenge
+            ZStack {
+                if navigation {
+                    NavigationLink(destination: FriendProfileView(friend: friend)) {
+                        FriendProfileInfoRow(friend: friend)
+                    }
+                    .padding(.leading, 13)
+                } else {
+                    FriendProfileInfoRow(friend: friend)
+                        .padding(.leading, 13)
+                }
+
+                HStack {
+                    Text("\(challenge.completionTime, formatter: dateFormatter)") // Display timestamp
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    Spacer()
+                    Text("Points: 10")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                .padding(.leading, 70)
+                .padding(.trailing, 13)
+                .padding(.top, 35)
+            }
+
+            CompletedChallengeImage(url: challenge.imageUrl, challenge: challenge)
+
+            HStack {
+                Text(challenge.comment)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                Spacer()
+                Image(systemName: "message")
+                    .foregroundColor(.secondary)
+            }
+            .padding(.top, 8)
+            .padding(.leading, 13)
+
+            Spacer()
+            Divider()
+        }
+    }
+
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .short
@@ -147,22 +159,6 @@ struct FriendRow: View {
     }()
 }
 
-
-struct FriendChallengeRow: View {
-    var friend: Friend
-    var challenge: CompletedChallenge
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            CompletedChallengeImage(url: challenge.imageUrl, challenge: challenge)
-            Text(challenge.comment)
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .padding(.top, 8) // Add padding between image and caption
-                .padding(.leading, 13)
-        }
-    }
-}
 
 struct FriendProfileInfoRow: View {
     var friend: Friend
