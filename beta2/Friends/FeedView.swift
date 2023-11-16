@@ -2,40 +2,42 @@ import SwiftUI
 import Firebase
 import Kingfisher
 
+struct FriendChallenge: Identifiable {
+    var id: String { "\(friend.id)-\(challenge.id)" }
+    var friend: Friend
+    var challenge: CompletedChallenge
+}
+
 struct FeedView: View {
     @State private var friends: [Friend] = []
+    @State private var allChallenges: [FriendChallenge] = []  // Combine challenges from all friends
     @State private var isLoading: Bool = true
     @State private var errorMessage: String?
 
     var body: some View {
         NavigationView {
-            Group {
-                if isLoading {
-                    ProgressView("Loading Friends...")
-                } else if let errorMessage = errorMessage {
-                    Text(errorMessage)
-                        .foregroundColor(.red)
-                        .padding()
-                } else {
-                    ScrollView {
-                        VStack(spacing: 16) {
-                            Text("SIDEQUEST")
-                                .font(.custom("Avenir", size: 20))
-                                //.bold()
-                                .kerning(2)
-                            Divider()
-                            ForEach(friends, id: \.id) { friend in
-                                FriendRow(friend: friend, navigation: true)
-                            }
-                        }
+            ScrollView {
+                VStack(spacing: 16) {
+                    Text("SIDEQUEST")
+                        .font(.custom("Avenir", size: 20))
+                        .kerning(2)
+                    Divider()
+
+                    // Combine challenges from all friends
+                    let sortedChallenges = allChallenges.sorted(by: { $0.challenge.completionTime > $1.challenge.completionTime })
+
+                    // Display sorted challenges
+                    ForEach(sortedChallenges) { friendChallenge in
+                        FriendChallengeRow(friend: friendChallenge.friend, challenge: friendChallenge.challenge, navigation: true)
                     }
                 }
             }
-            .onAppear(perform: loadFriends)
+            .onAppear(perform: loadFeedData)
         }
     }
 
-    func loadFriends() {
+    func loadFeedData() {
+        allChallenges = []
         guard let currentUserID = Auth.auth().currentUser?.uid else {
             errorMessage = "Error: Unable to get current user ID"
             isLoading = false
@@ -45,18 +47,27 @@ struct FeedView: View {
         Task {
             do {
                 let dbUsers = try await UserManager.shared.fetchFriends(for: currentUserID)
-                // Convert DBUser objects to Friend objects
                 friends = dbUsers.map {
                     Friend(from: $0, friendDocument: FriendDocument(friendID: $0.uid, timestamp: Timestamp(date: Date())))
                 }
+
+                // Load completed challenges for each friend
+                for friend in friends {
+                    let challenges = try await FirebaseManager.shared.fetchCompletedChallenges(forUID: friend.id)
+                    let friendChallenges = challenges.map { FriendChallenge(friend: friend, challenge: $0) }
+                    allChallenges.append(contentsOf: friendChallenges)
+                }
+
                 isLoading = false
             } catch {
-                errorMessage = "Error fetching friends: \(error.localizedDescription)"
+                errorMessage = "Error fetching data: \(error.localizedDescription)"
                 isLoading = false
             }
         }
     }
 }
+
+
 
 
 struct FriendRow: View {
