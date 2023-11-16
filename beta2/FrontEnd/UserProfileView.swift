@@ -75,6 +75,7 @@ struct UserProfileView: View {
                             .placeholder { // Placeholder while loading or if there's an error
                                 ProgressView()
                             }
+                            .aspectRatio(contentMode: .fill)
                             .frame(width: 150, height: 150)
                             .clipShape(Circle())
                     } else {
