@@ -10,7 +10,7 @@ struct FriendChallenge: Identifiable {
 
 struct FeedView: View {
     @State private var friends: [Friend] = []
-    @State private var allChallenges: [FriendChallenge] = []  // Combine challenges from all friends
+    @State private var allChallenges: [FriendChallenge] = []
     @State private var isLoading: Bool = true
     @State private var errorMessage: String?
     
@@ -23,62 +23,68 @@ struct FeedView: View {
                         .kerning(2)
                     Divider()
                     
-                    // Combine challenges from all friends
-                    let sortedChallenges = allChallenges.sorted(by: { $0.challenge.completionTime > $1.challenge.completionTime })
-                    
-                    // Display sorted challenges
-                    ForEach(sortedChallenges) { friendChallenge in
-                        FriendChallengeRow(friend: friendChallenge.friend, challenge: friendChallenge.challenge, navigation: true)
+                    if isLoading {
+                        ProgressView()
+                    } else {
+                        let sortedChallenges = allChallenges.sorted(by: { $0.challenge.completionTime > $1.challenge.completionTime })
+                        ForEach(sortedChallenges) { friendChallenge in
+                            FriendChallengeRow(friend: friendChallenge.friend, challenge: friendChallenge.challenge, navigation: true)
+                        }
                     }
                 }
             }
-            .onAppear(perform: loadFeedData)
+            .onAppear {
+                Task {
+                    await loadFeedData()
+                }
+            }
         }
     }
     
-    func loadFeedData() {
+    func loadFeedData() async {
         allChallenges = []
+        isLoading = true
+        
         guard let currentUserID = Auth.auth().currentUser?.uid else {
             errorMessage = "Error: Unable to get current user ID"
             isLoading = false
             return
         }
         
-        Task {
-            var tempAllChallenges = [FriendChallenge]()
-            do {
-                let dbUsers = try await UserManager.shared.fetchFriends(for: currentUserID)
-                friends = dbUsers.map {
-                    Friend(from: $0, friendDocument: FriendDocument(friendID: $0.uid, timestamp: Timestamp(date: Date())))
-                }
-                
-                for friend in friends {
-                    let challenges = try await FirebaseManager.shared.fetchCompletedChallenges(forUID: friend.id)
-                    let friendChallenges = challenges.map { FriendChallenge(friend: friend, challenge: $0) }
-                    tempAllChallenges.append(contentsOf: friendChallenges)
-                }
-                
-                // Perform sorting in the background
-                DispatchQueue.global().async {
-                    let sortedChallenges = tempAllChallenges.sorted(by: { $0.challenge.completionTime > $1.challenge.completionTime })
-                    
-                    // Update the state variable on the main thread
-                    DispatchQueue.main.async {
-                        self.allChallenges = sortedChallenges
-                        self.isLoading = false
+        do {
+            let dbUsers = try await UserManager.shared.fetchFriends(for: currentUserID)
+            self.friends = dbUsers.map {
+                Friend(from: $0, friendDocument: FriendDocument(friendID: $0.uid, timestamp: Timestamp(date: Date())))
+            }
+            
+            await withTaskGroup(of: [FriendChallenge].self) { group in
+                for friend in self.friends {
+                    group.addTask {
+                        do {
+                            let challenges = try await FirebaseManager.shared.fetchCompletedChallenges(forUID: friend.id)
+                            return challenges.map { FriendChallenge(friend: friend, challenge: $0) }
+                        } catch {
+                            print("Error fetching challenges for friend \(friend.id): \(error)")
+                            return []
+                        }
                     }
                 }
-            } catch {
-                DispatchQueue.main.async {
-                    self.errorMessage = "Error fetching data: \(error.localizedDescription)"
-                    self.isLoading = false
+                
+                for await friendChallenges in group {
+                    self.allChallenges.append(contentsOf: friendChallenges)
                 }
+            }
+            
+            self.allChallenges.sort(by: { $0.challenge.completionTime > $1.challenge.completionTime })
+            self.isLoading = false
+        } catch {
+            DispatchQueue.main.async {
+                self.errorMessage = "Error fetching data: \(error.localizedDescription)"
+                self.isLoading = false
             }
         }
     }
 }
-    
-    
     
     struct FriendRow: View {
         var friend: Friend
@@ -327,6 +333,7 @@ struct FeedView: View {
             }
         }
     }
+    
     
     
 
