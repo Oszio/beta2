@@ -56,6 +56,7 @@
 		D7FA3CCE2AF4D599007E6DE4 /* FriendRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA3CCD2AF4D599007E6DE4 /* FriendRequestView.swift */; };
 		D7FA3CD02B050B32007E6DE4 /* XmasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA3CCF2B050B32007E6DE4 /* XmasView.swift */; };
 		D7FA3CD22B057610007E6DE4 /* AnimatedBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA3CD12B057610007E6DE4 /* AnimatedBackground.swift */; };
+		D7FA3CD42B0948FB007E6DE4 /* FriendComment.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA3CD32B0948FB007E6DE4 /* FriendComment.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -120,6 +121,7 @@
 		D7FA3CCD2AF4D599007E6DE4 /* FriendRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestView.swift; sourceTree = "<group>"; };
 		D7FA3CCF2B050B32007E6DE4 /* XmasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XmasView.swift; sourceTree = "<group>"; };
 		D7FA3CD12B057610007E6DE4 /* AnimatedBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedBackground.swift; sourceTree = "<group>"; };
+		D7FA3CD32B0948FB007E6DE4 /* FriendComment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendComment.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,6 +167,7 @@
 				D7FA3CCD2AF4D599007E6DE4 /* FriendRequestView.swift */,
 				B88CDAD42AF30E6100C7980A /* FeedView.swift */,
 				B88CDAD22AF304AE00C7980A /* FriendView.swift */,
+				D7FA3CD32B0948FB007E6DE4 /* FriendComment.swift */,
 				D760C2DD2AE16FD800538A8E /* FriendProfileView.swift */,
 			);
 			path = Friends;
@@ -464,6 +467,7 @@
 				D7A016D72AC0D9DD0097A989 /* GoogleSignInHelper.swift in Sources */,
 				D7A016CB2AC0991E0097A989 /* Utilities.swift in Sources */,
 				D760C2B52AD75E5A00538A8E /* ChallengeManager.swift in Sources */,
+				D7FA3CD42B0948FB007E6DE4 /* FriendComment.swift in Sources */,
 				D7A017142ACC5C730097A989 /* ChallengeDetailView.swift in Sources */,
 				D7A017112ACC5BDB0097A989 /* ChallengeListView.swift in Sources */,
 				D7A0165B2ABF587B0097A989 /* ContentView.swift in Sources */,

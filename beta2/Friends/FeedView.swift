@@ -132,8 +132,13 @@ struct FeedView: View {
         var challenge: CompletedChallenge
         var navigation: Bool
         
+        @State private var isShowingComments = false
+        @State private var isShowingCommentPostView = false
+        
         var body: some View {
             VStack(alignment: .leading, spacing: 8) {
+                
+                
                 // Display a single challenge
                 ZStack {
                     if navigation {
@@ -162,29 +167,35 @@ struct FeedView: View {
                 
                 CompletedChallengeImage(url: challenge.imageUrl, challenge: challenge)
                 
-                HStack {
-                    Text(challenge.comment)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                    Spacer()
-                    Image(systemName: "message")
-                        .foregroundColor(.secondary)
-                }
-                .padding(.top, 8)
-                .padding(.leading, 13)
-                
-                Spacer()
-                Divider()
-            }
-        }
-        
-        private let dateFormatter: DateFormatter = {
-            let formatter = DateFormatter()
-            formatter.dateStyle = .short
-            formatter.timeStyle = .short
-            return formatter
-        }()
-    }
+                Text(challenge.comment)
+                                   .font(.subheadline)
+                                   .foregroundColor(.secondary)
+                               Spacer()
+                               Image(systemName: "message")
+                                   .foregroundColor(.secondary)
+
+                               Button("Leave a Comment") {
+                                   isShowingCommentPostView = true
+                               }
+                               .sheet(isPresented: $isShowingCommentPostView) {
+                                   FriendCommentSectionView(challengeID: challenge.id)
+                               }
+                           }
+                           .padding(.top, 8)
+                           .padding(.leading, 13)
+
+                           Spacer()
+                           Divider()
+                       }
+                   
+
+               private let dateFormatter: DateFormatter = {
+                   let formatter = DateFormatter()
+                   formatter.dateStyle = .short
+                   formatter.timeStyle = .short
+                   return formatter
+               }()
+           }
     
     
     struct FriendProfileInfoRow: View {

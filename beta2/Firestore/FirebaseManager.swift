@@ -113,5 +113,21 @@ class FirebaseManager {
             print("Error fetching specific challenge: \(error)")
         }
     }
+    
+    func fetchFriendComments(forChallenge challengeID: String) async throws -> [FriendComment] {
+        let commentsCollection = db.collection("CompletedChallenges").document(challengeID).collection("FriendComments")
+            .order(by: "timestamp", descending: false)
+
+        let snapshot = try await commentsCollection.getDocuments()
+        return snapshot.documents.compactMap { document in
+            try? document.data(as: FriendComment.self)
+        }
+    }
+
+    func postFriendComment(challengeID: String, comment: FriendComment) async throws {
+        let commentRef = db.collection("CompletedChallenges").document(challengeID).collection("FriendComments").document()
+        try await commentRef.setData(from: comment)
+    }
+
 
 }
