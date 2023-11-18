@@ -93,12 +93,16 @@ class FirebaseManager {
 
     func fetchCompletedChallenges(forUID uid: String) async throws -> [CompletedChallenge] {
         let challengesCollection = db.collection("users").document(uid).collection("CompletedChallenges")
+            .order(by: "completionTime", descending: true) // Corrected to `order(by:)`
         let snapshots = try await challengesCollection.getDocuments()
-          for document in snapshots.documents {
-              print("Raw data for challenge: \(document.data())")
-          }
+
+        for document in snapshots.documents {
+            print("Raw data for challenge: \(document.data())")
+        }
+
         return snapshots.documents.compactMap { try? $0.data(as: CompletedChallenge.self) }
     }
+
     
     func fetchSpecificChallenge(forUID uid: String) async {
         let specificChallengeDocRef = db.collection("users").document(uid).collection("CompletedChallenges").document("487F57A5-24CE-4E63-B798-C3BDECBEAF80")
