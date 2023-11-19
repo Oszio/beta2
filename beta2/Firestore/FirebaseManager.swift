@@ -114,9 +114,10 @@ class FirebaseManager {
         }
     }
     
-    func fetchFriendComments(forChallenge challengeID: String) async throws -> [FriendComment] {
-        let commentsCollection = db.collection("CompletedChallenges").document(challengeID).collection("FriendComments")
-            .order(by: "timestamp", descending: false)
+    func fetchFriendComments(userId: String, completedChallengeID: String) async throws -> [FriendComment] {
+        let commentsCollection = db.collection("users").document(userId)
+                                   .collection("CompletedChallenges").document(completedChallengeID)
+                                   .collection("FriendComments").order(by: "timestamp", descending: false)
 
         let snapshot = try await commentsCollection.getDocuments()
         return snapshot.documents.compactMap { document in
@@ -124,10 +125,13 @@ class FirebaseManager {
         }
     }
 
-    func postFriendComment(challengeID: String, comment: FriendComment) async throws {
-        let commentRef = db.collection("CompletedChallenges").document(challengeID).collection("FriendComments").document()
+    func postFriendComment(userId: String, completedChallengeID: String, comment: FriendComment) async throws {
+        let commentRef = db.collection("users").document(userId)
+                           .collection("CompletedChallenges").document(completedChallengeID)
+                           .collection("FriendComments").document()
         try await commentRef.setData(from: comment)
     }
+
 
 
 }

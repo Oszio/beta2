@@ -6,9 +6,7 @@
 //
 
 import SwiftUI
-
 import Firebase
-
 
 struct FriendComment: Codable, Identifiable {
     var id: String
@@ -16,10 +14,12 @@ struct FriendComment: Codable, Identifiable {
     var username: String
     var text: String
     var timestamp: Date
+    var completedChallengeID: String
 }
 
 struct FriendCommentSectionView: View {
-    var challengeID: String
+    var completedChallengeID: String
+    var userId: String
     @State private var friendComments: [FriendComment] = []
     @State private var commentText: String = ""
 
@@ -30,10 +30,10 @@ struct FriendCommentSectionView: View {
                 TextField("Write a comment...", text: $commentText)
                 Button("Post") {
                     Task {
-                        let newComment = FriendComment(id: UUID().uuidString, userId: "UserID", username: "Username", text: commentText, timestamp: Date())
-                        try await FirebaseManager.shared.postFriendComment(challengeID: challengeID, comment: newComment)
+                        let newComment = FriendComment(id: UUID().uuidString, userId: userId, username: "Username", text: commentText, timestamp: Date(), completedChallengeID: completedChallengeID)
+                        try await FirebaseManager.shared.postFriendComment(userId: userId, completedChallengeID: completedChallengeID, comment: newComment)
                         commentText = ""
-                        loadComments() // Reload comments after posting
+                        loadComments()
                     }
                 }
             }
@@ -59,7 +59,7 @@ struct FriendCommentSectionView: View {
     func loadComments() {
         Task {
             do {
-                friendComments = try await FirebaseManager.shared.fetchFriendComments(forChallenge: challengeID)
+                friendComments = try await FirebaseManager.shared.fetchFriendComments(userId: userId, completedChallengeID: completedChallengeID)
             } catch {
                 print("Error fetching friend comments: \(error)")
             }

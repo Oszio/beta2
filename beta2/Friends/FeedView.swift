@@ -134,6 +134,7 @@ struct FeedView: View {
         
         @State private var isShowingComments = false
         @State private var isShowingCommentPostView = false
+        @State private var userId: String?
         
         var body: some View {
             VStack(alignment: .leading, spacing: 8) {
@@ -178,7 +179,7 @@ struct FeedView: View {
                                    isShowingCommentPostView = true
                                }
                                .sheet(isPresented: $isShowingCommentPostView) {
-                                   FriendCommentSectionView(challengeID: challenge.id)
+                                   FriendCommentSectionView(completedChallengeID: challenge.id, userId: friend.id)
                                }
                            }
                            .padding(.top, 8)
