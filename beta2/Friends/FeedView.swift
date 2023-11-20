@@ -171,33 +171,34 @@ struct FeedView: View {
                 CompletedChallengeImage(url: challenge.imageUrl, challenge: challenge)
                 
                 Text(challenge.comment)
-                                   .font(.subheadline)
-                                   .foregroundColor(.secondary)
-                               Spacer()
-                               Button("View all comments") {
-                                   isShowingCommentPostView = true
-                               }
-                               .sheet(isPresented: $isShowingCommentPostView) {
-                                   FriendCommentSectionView(completedChallengeID: challenge.id, userId: friend.id)
-                               }
-                                    .foregroundColor(.secondary)
-                                    .padding(.leading, 13)
-                           }
-                           .padding(.top, 8)
-                           //.padding(.leading, 13)
+                    .font(.subheadline)
+                   .foregroundColor(.secondary)
+                   .padding(.leading, 13)
+               Button("View all comments") {
+                   isShowingCommentPostView = true
+               }
+               .sheet(isPresented: $isShowingCommentPostView) {
+                   FriendCommentSectionView(completedChallengeID: challenge.id, userId: friend.id)
+               }
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .padding(.leading, 13)
+               }
+               .padding(.top, 8)
+               //.padding(.leading, 13)
 
-                           Spacer()
-                           Divider()
-                       }
-                   
-
-               private let dateFormatter: DateFormatter = {
-                   let formatter = DateFormatter()
-                   formatter.dateStyle = .short
-                   formatter.timeStyle = .short
-                   return formatter
-               }()
+               Spacer()
+               Divider()
            }
+           
+
+       private let dateFormatter: DateFormatter = {
+           let formatter = DateFormatter()
+           formatter.dateStyle = .short
+           formatter.timeStyle = .short
+           return formatter
+       }()
+    }
     
     
     struct FriendProfileInfoRow: View {
