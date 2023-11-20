@@ -9,11 +9,13 @@ import SwiftUI
 import Kingfisher
 
 struct FriendProfileView: View {
+    let uid: String
     var friend: Friend
     
     @State private var completedChallenges: [CompletedChallenge] = []
     @State private var isLoading: Bool = true
     @State private var errorMessage: String? = nil
+    @State private var isShowingRemoveConfirmation = false
 
     var body: some View {
         ScrollView {
@@ -49,25 +51,38 @@ struct FriendProfileView: View {
                     .font(.headline)
                     .foregroundColor(.primary)
                 
+
                 Button("Remove Friend") {
-                    // Prompt the user to confirm before removing
-                    // If confirmed, implement the remove friend functionality here
+                    isShowingRemoveConfirmation.toggle()
                 }
-                    .padding()
-                    .background(Color.red)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
+                .padding()
+                .background(Color.red)
+                .foregroundColor(.white)
+                .cornerRadius(8)
+                .alert(isPresented: $isShowingRemoveConfirmation) {
+                    Alert(
+                        title: Text("Remove Friend"),
+                        message: Text("Are you sure you want to remove \(friend.username ?? "this friend")?"),
+                        primaryButton: .destructive(Text("Remove")) {
+                            // Call the removeFriend function when confirmed
+                            removeFriend()
+                        },
+                        secondaryButton: .cancel()
+                    )
+                }
+
                 Divider()
+
                 if isLoading {
                     ProgressView()
                 } else if let error = errorMessage {
                     Text(error)
                         .foregroundColor(.red)
                 } else {
-                    FriendRow(friend: friend, navigation: false)
+                    FriendRow(uid: uid, friend: friend, navigation: false)
                 }
             }
-            .padding()
+            //.padding()
             .onAppear(perform: loadCompletedChallenges)
         }
         .navigationBarTitle(friend.username ?? "No Username", displayMode: .inline)
@@ -81,6 +96,19 @@ struct FriendProfileView: View {
             } catch {
                 self.isLoading = false
                 errorMessage = "Error fetching completed challenges: \(error.localizedDescription)"
+            }
+        }
+    }
+
+    func removeFriend() {
+        Task {
+            do {
+                try await UserManager.shared.removeFriend(currentUserID: uid, friendID: friend.id)
+                // Optionally, you can navigate back after removing the friend
+                // For example, using presentationMode or NavigationLink
+            } catch {
+                // Handle the error if removal fails
+                print("Error removing friend: \(error.localizedDescription)")
             }
         }
     }

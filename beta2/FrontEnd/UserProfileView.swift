@@ -43,7 +43,7 @@ struct UserProfileView: View {
             VStack(spacing: 16) {
                 // User Profile UI
                 ZStack {
-                    Text("SIDEQUEST")
+                    Text("getalife")
                         .font(.custom("Avenir", size: 20))
                         //.bold()
                         .kerning(2)
@@ -146,7 +146,7 @@ struct UserProfileView: View {
                         
                         let date = Date()
                         
-                        FriendRow(friend: user?.asFriend() ?? Friend(id: "", friendID: "", timestamp: Timestamp(date: Date()), email: "", photoUrl: "", username: ""), navigation: false)
+                        FriendRow(uid: uid, friend: user?.asFriend() ?? Friend(id: "", friendID: "", timestamp: Timestamp(date: Date()), email: "", photoUrl: "", username: ""), navigation: false)
                     }
                 }
                 

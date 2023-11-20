@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct FriendView: View {
+    let uid: String
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
@@ -15,10 +16,9 @@ struct FriendView: View {
                     .frame(height: UIScreen.main.bounds.height * 0.5) // Adjust the percentage as needed
                     .padding()
 
-                FriendListView()
+                FriendListView(uid: uid)
                     .background(Color(.systemGray6))
             }
         }
     }
 }
-

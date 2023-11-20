@@ -13,16 +13,32 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             TabView {
-                FeedView()
-                    .tabItem {
-                        Image(systemName: "house")
-                        Text("Feed")
-                    }
-                FriendView()
-                    .tabItem {
-                        Image(systemName: "magnifyingglass")
-                        Text("Search")
-                    }
+                if let userId = userId {
+                    FeedView(uid: userId)
+                        .tabItem {
+                            Image(systemName: "house")
+                            Text("Feed")
+                        }
+                } else {
+                    Text("Loading user profile...")
+                        .tabItem {
+                            Image(systemName: "person.circle")
+                            Text("Profile")
+                        }
+                }
+                if let userId = userId {
+                    FriendView(uid: userId)
+                        .tabItem {
+                            Image(systemName: "magnifyingglass")
+                            Text("Search")
+                        }
+                } else {
+                    Text("Loading user profile...")
+                        .tabItem {
+                            Image(systemName: "person.circle")
+                            Text("Profile")
+                        }
+                }
                 XmasChallengesView()
                     .tabItem {
                         Image(systemName: "plus")

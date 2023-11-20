@@ -9,6 +9,7 @@ struct FriendChallenge: Identifiable {
 }
 
 struct FeedView: View {
+    let uid: String
     @State private var friends: [Friend] = []
     @State private var allChallenges: [FriendChallenge] = []
     @State private var isLoading: Bool = true
@@ -18,7 +19,7 @@ struct FeedView: View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 16) {
-                    Text("SIDEQUEST")
+                    Text("getalife")
                         .font(.custom("Avenir", size: 20))
                         .kerning(2)
                     Divider()
@@ -28,7 +29,7 @@ struct FeedView: View {
                     } else {
                         let sortedChallenges = allChallenges.sorted(by: { $0.challenge.completionTime > $1.challenge.completionTime })
                         ForEach(sortedChallenges) { friendChallenge in
-                            FriendChallengeRow(friend: friendChallenge.friend, challenge: friendChallenge.challenge, navigation: true)
+                            FriendChallengeRow(uid: uid, friend: friendChallenge.friend, challenge: friendChallenge.challenge, navigation: true)
                         }
                     }
                 }
@@ -87,6 +88,7 @@ struct FeedView: View {
 }
     
     struct FriendRow: View {
+        let uid: String
         var friend: Friend
         var navigation: Bool
         
@@ -106,11 +108,11 @@ struct FeedView: View {
                 } else {
                     ForEach(recentChallenges.reversed()) { challenge in
                         // Display each recent challenge
-                        FriendChallengeRow(friend: friend, challenge: challenge, navigation: navigation)
+                        FriendChallengeRow(uid: uid, friend: friend, challenge: challenge, navigation: navigation)
                     }
                 }
             }
-            .padding(.horizontal, 16)
+            //.padding(.horizontal, 16)
             .onAppear(perform: loadRecentChallenges)
         }
         
@@ -128,13 +130,13 @@ struct FeedView: View {
     }
     
     struct FriendChallengeRow: View {
+        let uid: String
         var friend: Friend
         var challenge: CompletedChallenge
         var navigation: Bool
         
         @State private var isShowingComments = false
         @State private var isShowingCommentPostView = false
-        @State private var userId: String?
         
         var body: some View {
             VStack(alignment: .leading, spacing: 8) {
@@ -143,7 +145,7 @@ struct FeedView: View {
                 // Display a single challenge
                 ZStack {
                     if navigation {
-                        NavigationLink(destination: FriendProfileView(friend: friend)) {
+                        NavigationLink(destination: FriendProfileView(uid: uid, friend: friend)) {
                             FriendProfileInfoRow(friend: friend)
                         }
                         .padding(.leading, 13)
@@ -183,7 +185,7 @@ struct FeedView: View {
                                }
                            }
                            .padding(.top, 8)
-                           .padding(.leading, 13)
+                           //.padding(.leading, 13)
 
                            Spacer()
                            Divider()
@@ -290,10 +292,8 @@ struct FeedView: View {
                         }
                         .fade(duration: 0.25)
                         .aspectRatio(contentMode: .fill)
-                        .frame(width: dimension, height: dimension)
-                        .clipped() // Crop the image
-                    //.frame(width: dimension)
-                    //.scaledToFill() // Crop the image
+                        //.frame(width: dimension)
+                        //.scaledToFill() // Crop the image
                 }
                 
                 if isTapped {
@@ -348,4 +348,3 @@ struct FeedView: View {
     
     
     
-

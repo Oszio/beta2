@@ -25,13 +25,14 @@ struct FriendDocument: Codable {
 }
 
 struct FriendListView: View {
+    let uid: String
     @State private var friends: [Friend] = []
     @State private var isLoading: Bool = true
     
     var body: some View {
            NavigationView {
                List(friends) { friend in
-                   NavigationLink(destination: FriendProfileView(friend: friend)) {
+                   NavigationLink(destination: FriendProfileView(uid: uid, friend: friend)) {
                        HStack {
                            if let url = friend.photoUrl, let imageUrl = URL(string: url) {
                                AsyncImage(url: imageUrl) { image in
