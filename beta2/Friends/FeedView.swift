@@ -19,7 +19,7 @@ struct FeedView: View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 16) {
-                    Text("getalife")
+                    Text("UNPAUSE.")
                         .font(.custom("Avenir", size: 20))
                         .kerning(2)
                     Divider()
@@ -174,15 +174,14 @@ struct FeedView: View {
                                    .font(.subheadline)
                                    .foregroundColor(.secondary)
                                Spacer()
-                               Image(systemName: "message")
-                                   .foregroundColor(.secondary)
-
-                               Button("Leave a Comment") {
+                               Button("View all comments") {
                                    isShowingCommentPostView = true
                                }
                                .sheet(isPresented: $isShowingCommentPostView) {
                                    FriendCommentSectionView(completedChallengeID: challenge.id, userId: friend.id)
                                }
+                                    .foregroundColor(.secondary)
+                                    .padding(.leading, 13)
                            }
                            .padding(.top, 8)
                            //.padding(.leading, 13)
