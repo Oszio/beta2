@@ -57,6 +57,7 @@
 		D7FA3CD02B050B32007E6DE4 /* XmasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA3CCF2B050B32007E6DE4 /* XmasView.swift */; };
 		D7FA3CD22B057610007E6DE4 /* AnimatedBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA3CD12B057610007E6DE4 /* AnimatedBackground.swift */; };
 		D7FA3CD42B0948FB007E6DE4 /* FriendComment.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA3CD32B0948FB007E6DE4 /* FriendComment.swift */; };
+		D7FA3CD62B0BB0AC007E6DE4 /* testNotifcation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA3CD52B0BB0AC007E6DE4 /* testNotifcation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -122,6 +123,7 @@
 		D7FA3CCF2B050B32007E6DE4 /* XmasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XmasView.swift; sourceTree = "<group>"; };
 		D7FA3CD12B057610007E6DE4 /* AnimatedBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedBackground.swift; sourceTree = "<group>"; };
 		D7FA3CD32B0948FB007E6DE4 /* FriendComment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendComment.swift; sourceTree = "<group>"; };
+		D7FA3CD52B0BB0AC007E6DE4 /* testNotifcation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testNotifcation.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -200,6 +202,7 @@
 				D7A0165E2ABF587C0097A989 /* beta2.entitlements */,
 				D7A016B62AC0692B0097A989 /* Info.plist */,
 				D7A016582ABF587B0097A989 /* beta2App.swift */,
+				D7FA3CD52B0BB0AC007E6DE4 /* testNotifcation.swift */,
 				D7FA3CBE2AF4065B007E6DE4 /* DataCache.swift */,
 				D7FA3CCB2AF45D04007E6DE4 /* FriendRequestModel.swift */,
 				D7FA3CC62AF4322C007E6DE4 /* ImageCache.swift */,
@@ -479,6 +482,7 @@
 				D7A016CD2AC0A4CD0097A989 /* Usermanager.swift in Sources */,
 				D7A016E22AC0DB190097A989 /* SignInEmailViewModel.swift in Sources */,
 				D760C2DA2ADF052E00538A8E /* FriendSearch.swift in Sources */,
+				D7FA3CD62B0BB0AC007E6DE4 /* testNotifcation.swift in Sources */,
 				D7A016D12AC0AD530097A989 /* RootView.swift in Sources */,
 				D7A016DD2AC0DAAD0097A989 /* AuthyView.swift in Sources */,
 				D760C2DE2AE16FD800538A8E /* FriendProfileView.swift in Sources */,
@@ -660,6 +664,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = beta2/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Allow access camera";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Allow photo library access";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -700,6 +706,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = beta2/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Allow access camera";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Allow photo library access";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;

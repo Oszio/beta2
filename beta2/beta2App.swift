@@ -8,6 +8,7 @@
 import SwiftUI
 import Firebase
 import FirebaseMessaging
+import UserNotifications
 
 
 
@@ -15,9 +16,14 @@ import FirebaseMessaging
 
 @main
 struct beta2: App {
+    
+    
     // register app delegate for Firebase setup
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
+    init() {
+            scheduleDailyNotification()
+        }
     var body: some Scene {
         WindowGroup {
             NavigationStack {
@@ -56,14 +62,30 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 
     // MARK: - UNUserNotificationCenterDelegate Methods
     // Handle foreground notifications
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+    func application(_ application: UIApplication,
+                     didReceiveRemoteNotification userInfo: [AnyHashable : Any],
+                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        // Handle the notification and perform a background update
+        completionHandler(.newData)
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         completionHandler([.banner, .sound, .badge]) // Adjust based on your needs
     }
+
+
 
     // MARK: - MessagingDelegate Methods
     // Receive FCM token
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         print("Firebase registration token: \(String(describing: fcmToken))")
     }
+    
+    
+    
 }
+
+
 
