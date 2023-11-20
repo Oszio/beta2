@@ -5,6 +5,8 @@
 //  Created by Oskar Almå on 2023-10-03.
 //
 
+
+
 import SwiftUI
 
 struct ChallengeDetailView: View {
@@ -24,74 +26,73 @@ struct ChallengeDetailView: View {
     @State private var showImageSourceSelection: Bool = true
     
     var body: some View {
-        VStack(spacing: 20) {
-            // Display challenge details
-            Text(challenge.name)
-                .font(.title)
-                .padding()
-            
-            Text(challenge.description)
-                .padding()
-            
-            if let image = selectedImage {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 300, height: 300)
-            }
-            
-            Button("Select Image") {
-                showImageSourceSelectionActionSheet = true
-            }
-            .actionSheet(isPresented: $showImageSourceSelectionActionSheet) {
-                ActionSheet(
-                    title: Text("Select Image Source"),
-                    buttons: [
-                        .default(Text("Camera")) {
-                            showImagePicker = true
-                            showImageSourceSelection = false
-                        },
-                        .default(Text("Photo Album")) {
-                            showImagePicker = true
-                            showImageSourceSelection = true
-                        },
-                        .cancel()
-                    ]
-                )
-            }
-            .sheet(isPresented: $showImagePicker) {
-                ImagePicker(selectedImage: $selectedImage, showImageSourceSelection: $showImageSourceSelection)
+        ScrollView {
+            VStack(spacing: 20) {
+                // Display challenge details
+                Text(challenge.name)
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .padding()
+
+                Text(challenge.description)
+                    .padding()
+                
+                if let image = selectedImage {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 300, height: 300)
+                        .cornerRadius(10)
+                        .shadow(radius: 5)
+                }
+
+                Button(action: { showImageSourceSelectionActionSheet = true }) {
+                    Label("Select Image", systemImage: "photo.on.rectangle.angled")
+                }
+                .buttonStyle(FilledButtonStyle())
+
+                TextField("Comment", text: $comment)
+                    .padding()
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(8)
+                
+                Button(action: uploadEvidence) {
+                    Text("Upload Evidence")
+                }
+                .buttonStyle(FilledButtonStyle(backgroundColor: isUploading || selectedImage == nil ? .gray : .green))
+                .disabled(isUploading || selectedImage == nil)
+
+                if isUploading {
+                    ProgressView("Uploading...")
+                }
             }
             .padding()
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .cornerRadius(8)
-            
-            TextField("Comment", text: $comment)
-                .padding()
-                .background(Color.gray.opacity(0.2))
-                .cornerRadius(8)
-            
-            Button("Upload Evidence") {
-                uploadEvidence()
-            }
-            .disabled(isUploading || selectedImage == nil)
-            .padding()
-            .background(Color.green)
-            .foregroundColor(.white)
-            .cornerRadius(8)
-            
-            if isUploading {
-                ProgressView("Uploading...")
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
             }
         }
-        .onAppear {
-            fetchCurrentUserDetails()
+        .actionSheet(isPresented: $showImageSourceSelectionActionSheet) {
+            ActionSheet(
+                title: Text("Select Image Source"),
+                buttons: [
+                    .default(Text("Camera")) {
+                        showImagePicker = true
+                        showImageSourceSelection = false
+                    },
+                    .default(Text("Photo Album")) {
+                        showImagePicker = true
+                        showImageSourceSelection = true
+                    },
+                    .cancel()
+                ]
+            )
         }
-        .padding()
-        .alert(isPresented: $showAlert) {
-            Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+        .sheet(isPresented: $showImagePicker) {
+            ImagePicker(selectedImage: $selectedImage, showImageSourceSelection: $showImageSourceSelection)
         }
+        .navigationTitle("Challenge Details")
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear(perform: fetchCurrentUserDetails)
     }
     
     func uploadEvidence() {
@@ -132,4 +133,19 @@ struct ChallengeDetailView: View {
             }
         }
     }
+    
+
+
+struct FilledButtonStyle: ButtonStyle {
+    var backgroundColor: Color = .blue
+
+    func makeBody(configuration: Self.Configuration) -> some View {
+        configuration.label
+            .padding()
+            .background(backgroundColor)
+            .foregroundColor(.white)
+            .cornerRadius(8)
+            .scaleEffect(configuration.isPressed ? 0.95 : 1)
+    }
+}
 }

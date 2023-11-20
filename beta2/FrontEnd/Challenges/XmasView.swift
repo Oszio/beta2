@@ -25,29 +25,34 @@ struct XmasChallengesView: View {
                         .progressViewStyle(CircularProgressViewStyle(tint: .white))
                 } else {
                     challengesGrid
+                        .animation(.easeInOut, value: xmasChallenges)
                 }
             }
             .onAppear(perform: loadXmasChallenges)
             .navigationTitle("Xmas Challenges")
+            .navigationBarTitleDisplayMode(.inline)
             .alert(isPresented: $showAlert) {
                 Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
             }
         }
+        .accentColor(.red) // Festive accent color
     }
 
-       private var challengesGrid: some View {
-           ScrollView {
-               LazyVGrid(columns: columns, spacing: 20) {
-                   ForEach(xmasChallenges) { challenge in
-                       NavigationLink(destination: ChallengeDetailView(challenge: challenge)) {
-                           ChallengeGridCell(challenge: challenge)
-                       }
-                       .buttonStyle(PlainButtonStyle())
-                   }
-               }
-               .padding()
-           }
-       }
+    private var challengesGrid: some View {
+        ScrollView {
+            LazyVGrid(columns: columns, spacing: 20) {
+                ForEach(xmasChallenges) { challenge in
+                    NavigationLink(destination: ChallengeDetailView(challenge: challenge)) {
+                        ChallengeGridCell(challenge: challenge)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .scaleEffect(isLoading ? 0.95 : 1)
+                    .animation(.spring(response: 0.6, dampingFraction: 0.8, blendDuration: 0.5), value: isLoading)
+                }
+            }
+            .padding()
+        }
+    }
 
     func loadXmasChallenges() {
         isLoading = true
@@ -62,8 +67,6 @@ struct XmasChallengesView: View {
         }
     }
 }
-
-
 
 struct ChallengeGridCell: View {
     let challenge: Challenge
@@ -83,19 +86,18 @@ struct ChallengeGridCell: View {
             Text(challenge.description)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
+                .lineLimit(3)
         }
         .padding()
         .frame(maxWidth: .infinity)
         .background(
             RoundedRectangle(cornerRadius: 15)
                 .fill(Color.white.opacity(0.7))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 15)
-                        .stroke(Color.red.opacity(0.5), lineWidth: 2) // Festive border
-                )
+                .shadow(color: .gray, radius: 5, x: 0, y: 2)
         )
-        .shadow(radius: 5)
-        
-        
+        .overlay(
+            RoundedRectangle(cornerRadius: 15)
+                .stroke(Color.red.opacity(0.5), lineWidth: 2) // Festive border
+        )
     }
 }
