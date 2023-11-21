@@ -43,7 +43,7 @@ struct UserProfileView: View {
             VStack(spacing: 16) {
                 // User Profile UI
                 ZStack {
-                    Text("getalife")
+                    Text("UNPAUSE.")
                         .font(.custom("Avenir", size: 20))
                         //.bold()
                         .kerning(2)
