@@ -143,61 +143,16 @@ struct FeedView: View {
                 
                 
                 // Display a single challenge
-                ZStack {
-                    if navigation {
-                        NavigationLink(destination: FriendProfileView(uid: uid, friend: friend)) {
-                            FriendProfileInfoRow(friend: friend)
-                        }
-                        .padding(.leading, 13)
-                    } else {
-                        FriendProfileInfoRow(friend: friend)
-                            .padding(.leading, 13)
-                    }
-                    
-                    HStack {
-                        Text("\(challenge.completionTime, formatter: dateFormatter)") // Display timestamp
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                        Spacer()
-                        Text("Points: 10")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                    }
-                    .padding(.leading, 70)
-                    .padding(.trailing, 13)
-                    .padding(.top, 35)
-                }
                 
-                CompletedChallengeImage(url: challenge.imageUrl, challenge: challenge)
+                CompletedChallengeImage(uid: uid, friend: friend, url: challenge.imageUrl, challenge: challenge, navigation: navigation)
                 
-                Text(challenge.comment)
-                    .font(.subheadline)
-                   .foregroundColor(.secondary)
-                   .padding(.leading, 13)
-               Button("View all comments") {
-                   isShowingCommentPostView = true
-               }
-               .sheet(isPresented: $isShowingCommentPostView) {
-                   FriendCommentSectionView(completedChallengeID: challenge.id, userId: friend.id)
-               }
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                    .padding(.leading, 13)
-               }
-               .padding(.top, 8)
-               //.padding(.leading, 13)
-
-               Spacer()
-               Divider()
-           }
-           
-
-       private let dateFormatter: DateFormatter = {
-           let formatter = DateFormatter()
-           formatter.dateStyle = .short
-           formatter.timeStyle = .short
-           return formatter
-       }()
+                    .padding(.top, 8)
+                //.padding(.leading, 13)
+                
+                Spacer()
+                
+            }
+        }
     }
     
     
@@ -208,19 +163,25 @@ struct FeedView: View {
             HStack(spacing: 12) {
                 FriendProfilePicture(url: friend.photoUrl)
                 Text(friend.username ?? "No Username")
-                    .font(.headline)
-                    .foregroundColor(.primary)
+                    .font(.subheadline)
+                    .bold()
+                    //.foregroundColor(.primary)
+                    .foregroundColor(.white)
                 Spacer()
             }
         }
     }
     
     struct CompletedChallengeRow: View {
+        let uid: String
+        var friend: Friend
+
         var challenge: CompletedChallenge
+        var navigation: Bool
         
         var body: some View {
             VStack(alignment: .leading, spacing: 0) {
-                CompletedChallengeImage(url: challenge.imageUrl, challenge: challenge)
+                CompletedChallengeImage(uid: uid, friend: friend, url: challenge.imageUrl, challenge: challenge, navigation: navigation)
                 Text(challenge.comment)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
@@ -259,92 +220,182 @@ struct FeedView: View {
         }
     }
     
-    struct HeartMask: View {
-        var body: some View {
-            Image(systemName: "heart.fill")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-        }
-    }
-    struct CircleMask: Shape {
-        func path(in rect: CGRect) -> Path {
-            return Path(ellipseIn: rect)
-        }
-    }
+struct CompletedChallengeImage: View {
+    let uid: String
+    var friend: Friend
+    var url: String
+    var challenge: CompletedChallenge
+    @State private var isLoading: Bool = false
+    @State private var isChallengeInfoLoaded: Bool = false
+    @State private var challengeInfo: Challenge? // Declare challengeInfo as a property
+    @State private var isShowingComments = false
+    @State private var isShowingCommentPostView = false
+    var navigation: Bool
     
-    struct CompletedChallengeImage: View {
-        var url: String
-        var challenge: CompletedChallenge
-        @State private var isLoading: Bool = false
-        @State private var isChallengeInfoLoaded: Bool = false
-        @State private var challengeInfo: Challenge? // Declare challengeInfo as a property
-        
-        let dimension = UIScreen.main.bounds.width
-        @State private var isTapped: Bool = false
-        
-        var body: some View {
-            ZStack(alignment: .bottom) {
-                if let imageUrl = URL(string: url) {
-                    KFImage(imageUrl)
-                        .resizable()
-                        .placeholder {
-                            ProgressView()
+    let dimension = UIScreen.main.bounds.width
+    @State private var isTapped: Bool = false
+    @State private var isTappedSecond: Bool = false
+    @State private var isTappedThird: Bool = true
+    
+    var body: some View {
+        ZStack(alignment: .bottom) {
+            if let imageUrl = URL(string: url) {
+                KFImage(imageUrl)
+                    .placeholder {
+                        ProgressView()
+                            .frame(width: dimension, height: dimension)
+                    }
+                    .fade(duration: 0.25)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: dimension, height: dimension)
+                    .clipShape(Rectangle()) // Crop the image
+                    .onTapGesture {
+                        withAnimation {
+                            isTappedSecond.toggle()
                         }
-                        .fade(duration: 0.25)
-                        .aspectRatio(contentMode: .fill)
-                        //.frame(width: dimension)
-                        //.scaledToFill() // Crop the image
-                }
-                
+                    }
+                    /*
+                    .onLongPressGesture {
+                        withAnimation {
+                            isTappedThird.toggle()
+                        }
+                    }
+                     */
+            }
+            ZStack{
                 if isTapped {
-                    Color.black.opacity(0.5)
-                        .edgesIgnoringSafeArea(.all)
+                    VStack{
+                        LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0.7), Color.black.opacity(0.0)]), startPoint: .top, endPoint: .center)
+                            .frame(height: 190)
+                            .opacity(0.8)
+                        Spacer()
+                        LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0.0), Color.black.opacity(0.7)]), startPoint: .center, endPoint: .bottom)
+                            .frame(height: 190)
+                            .opacity(0.8)
+                    }
+                }
+            }
+            if isTappedThird{
                     VStack {
-                        Text(challenge.categoryID.uppercased() + " CHALLENGE:")
-                            .font(.custom("Avenir", size: 30))
-                            .foregroundColor(.white)
-                            .italic()
-                            .padding(.top, 10)
-                        if isChallengeInfoLoaded, let challengeInfo = challengeInfo {
-                            Text(challengeInfo.description)
-                                .font(.custom("Avenir", size: 20))
-                                .foregroundColor(.white)
-                                .italic()
-                        } else if isChallengeInfoLoaded {
-                            Text("Challenge info not found")
-                                .font(.custom("Avenir", size: 20))
-                                .foregroundColor(.white)
-                                .italic()
+                        if navigation {
+                            NavigationLink(destination: FriendProfileView(uid: uid, friend: friend)) {
+                                FriendProfileInfoRow(friend: friend)
+                            }
+                            .padding(.leading, 13)
+                            .padding(.top, 13)
+                        } else {
+                            FriendProfileInfoRow(friend: friend)
+                                .padding(.leading, 13)
+                                .padding(.top, 13)
+                        }
+                        if isTapped {
+                            HStack{
+                                Spacer()
+                                Text("\(challenge.completionTime, formatter: dateFormatter)") // Display timestamp
+                                    .font(.subheadline)
+                                    .foregroundColor(.white)
+                            }
+                            .padding(.trailing, 40)
+                            HStack{
+                                Spacer()
+                                Text("Points: 10")
+                                    .font(.subheadline)
+                                    .foregroundColor(.white)
+                            }
+                            .padding(.trailing, 40)
+                            HStack{
+                                Spacer()
+                                if isChallengeInfoLoaded, let challengeInfo = challengeInfo {
+                                    Text(challengeInfo.description)
+                                        .font(.subheadline)
+                                        .foregroundColor(.white)
+                                        .italic()
+                                } else {
+                                    Text("")
+                                        .font(.subheadline)
+                                        .foregroundColor(.white)
+                                }
+                            }
+                            .padding(.trailing, 40)
                         }
                         Spacer()
+                        
+                        HStack{
+                            Text("Caption: \(challenge.comment)")
+                                .font(.subheadline)
+                                .foregroundColor(.white)
+                            Spacer()
+                            Button {
+                                isShowingCommentPostView.toggle()
+                            } label: {
+                                Image(systemName: "message")
+                            }
+                            .font(.subheadline)
+                            .foregroundColor(.white)
+                            .padding(.leading, 13)
+                        }
+                        .padding(.leading, 13)
+                        .padding(.trailing, 13)
+                        .sheet(isPresented: $isShowingCommentPostView) {
+                            FriendCommentSectionView(completedChallengeID: challenge.id, userId: friend.id)
+                        }
+                        .padding(.bottom, 20)
                     }
-                }
-            }
-            .onTapGesture {
-                withAnimation {
-                    isTapped.toggle()
-                }
-            }
-            .onAppear(perform: fetchChallengeInfo)
-        }
-        
-        func fetchChallengeInfo() {
-            isLoading = true
-            Task {
-                do {
-                    // Fetch a single challenge based on challengeID
-                    challengeInfo = try await ChallengeManager.shared.fetchChallenge(byID: challenge.challengeID, inCategory: challenge.categoryID)
-                    if challengeInfo == nil {
-                        print("Challenge not found for ID: \(challenge.challengeID)")
+                .onAppear(perform: fetchChallengeInfo)
+                .overlay(
+                    Button(action: {
+                        withAnimation {
+                            isTapped.toggle()
+                        }
+                    }, label: {
+                        Image(systemName: "checkmark.square")
+                            .foregroundColor(.white)
+                        Text("\(challenge.categoryID)")
+                            .foregroundColor(.white)
+                            .font(.subheadline)
+                        Image(systemName: "chevron.down")
+                            .frame(width: 10)
+                            .foregroundColor(.white)
+                            .padding()
+                    })
+                    .padding(.top, 16)
+                    .padding(.trailing, 16)
+                    .onTapGesture {
+                        withAnimation {
+                            isTapped.toggle()
+                        }
                     }
-                    isChallengeInfoLoaded = true
-                } catch {
-                    print("Failed to fetch challenge: \(error.localizedDescription)")
-                }
-                isLoading = false
+                    , alignment: .topTrailing
+                )
             }
         }
     }
+
+    func fetchChallengeInfo() {
+        isLoading = true
+        Task {
+            do {
+                // Fetch a single challenge based on challengeID
+                challengeInfo = try await ChallengeManager.shared.fetchChallenge(byID: challenge.challengeID, inCategory: challenge.categoryID)
+                if challengeInfo == nil {
+                    print("Challenge not found for ID: \(challenge.challengeID)")
+                }
+                isChallengeInfoLoaded = true
+            } catch {
+                print("Failed to fetch challenge: \(error.localizedDescription)")
+            }
+            isLoading = false
+        }
+    }
+    private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM d, HH:mm"
+        return formatter
+    }()
+}
+
+
     
     
     
