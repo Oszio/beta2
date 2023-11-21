@@ -8,28 +8,29 @@
 import SwiftUI
 
 struct XmasChallengesView: View {
-    @State private var xmasChallenges: [Challenge] = []
+    @State private var todaysChallenge: Challenge?
     @State private var isLoading: Bool = false
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
-    let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2) // Adjust count for desired column number
     
     var body: some View {
         NavigationView {
             ZStack {
                 AnimatedBackgroundView() // Animated background
-
+                
                 if isLoading {
                     ProgressView()
                         .scaleEffect(1.5)
                         .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                } else if let challenge = todaysChallenge {
+                    ChallengeDetailView(challenge: challenge)
                 } else {
-                    challengesGrid
-                        .animation(.easeInOut, value: xmasChallenges)
+                    Text("No Challenge for Today")
+                        .foregroundColor(.gray)
                 }
             }
-            .onAppear(perform: loadXmasChallenges)
-            .navigationTitle("Xmas Challenges")
+            .onAppear(perform: loadTodaysChallenge)
+            .navigationTitle("Today's Xmas Challenge")
             .navigationBarTitleDisplayMode(.inline)
             .alert(isPresented: $showAlert) {
                 Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
@@ -37,28 +38,14 @@ struct XmasChallengesView: View {
         }
         .accentColor(.red) // Festive accent color
     }
-
-    private var challengesGrid: some View {
-        ScrollView {
-            LazyVGrid(columns: columns, spacing: 20) {
-                ForEach(xmasChallenges) { challenge in
-                    NavigationLink(destination: ChallengeDetailView(challenge: challenge)) {
-                        ChallengeGridCell(challenge: challenge)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .scaleEffect(isLoading ? 0.95 : 1)
-                    .animation(.spring(response: 0.6, dampingFraction: 0.8, blendDuration: 0.5), value: isLoading)
-                }
-            }
-            .padding()
-        }
-    }
-
-    func loadXmasChallenges() {
+    
+    func loadTodaysChallenge() {
         isLoading = true
         Task {
             do {
-                xmasChallenges = try await ChallengeManager.shared.fetchChallenges(inCategory: ChallengeCategoryOption.XMAS.rawValue)
+                let xmasChallenges = try await ChallengeManager.shared.fetchChallenges(inCategory: ChallengeCategoryOption.XMAS.rawValue)
+                let sortedChallenges = xmasChallenges.sorted(by: { $1.sequence < $1.sequence })
+                todaysChallenge = selectChallengeForToday(from: sortedChallenges)
             } catch {
                 alertMessage = "Failed to load challenges: \(error.localizedDescription)"
                 showAlert = true
@@ -66,38 +53,18 @@ struct XmasChallengesView: View {
             isLoading = false
         }
     }
-}
-
-struct ChallengeGridCell: View {
-    let challenge: Challenge
-
-    var body: some View {
-        VStack {
-            Image(systemName: "gift.fill") // Consider replacing with a custom image if available
-                .resizable()
-                .scaledToFit()
-                .frame(height: 60)
-                .foregroundColor(.red)
-
-            Text(challenge.name)
-                .font(.headline)
-                .foregroundColor(.primary)
-            
-            Text(challenge.description)
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .lineLimit(3)
+    
+    func selectChallengeForToday(from challenges: [Challenge]) -> Challenge? {
+        let calendar = Calendar.current
+        let today = calendar.component(.day, from: Date())
+        let currentMonth = calendar.component(.month, from: Date())
+        
+        // Ensure it's December
+        guard currentMonth == 11 else {
+            return nil
         }
-        .padding()
-        .frame(maxWidth: .infinity)
-        .background(
-            RoundedRectangle(cornerRadius: 15)
-                .fill(Color.white.opacity(0.7))
-                .shadow(color: .gray, radius: 5, x: 0, y: 2)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 15)
-                .stroke(Color.red.opacity(0.5), lineWidth: 2) // Festive border
-        )
+        
+        // Find the challenge whose sequence matches today's date in December
+        return challenges.first(where: { $0.sequence == today })
     }
 }
