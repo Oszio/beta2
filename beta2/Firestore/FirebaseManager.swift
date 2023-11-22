@@ -31,7 +31,7 @@ class FirebaseManager {
         let uniqueImageName = "\(userId)_\(challengeID).jpg"
         let storageRef = storage.reference().child("evidence/\(uniqueImageName)")
         
-        if let imageData = image.jpegData(compressionQuality: 0.8) {
+        if let imageData = image.jpegData(compressionQuality: 0.5) {
             let metadata = StorageMetadata()
             metadata.contentType = "image/jpeg"
             
