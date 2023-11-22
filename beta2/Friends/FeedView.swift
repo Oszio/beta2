@@ -18,7 +18,7 @@ struct FeedView: View {
     var body: some View {
         NavigationView {
             ScrollView {
-                VStack(spacing: 16) {
+                LazyVStack(spacing: 16) {
                     Text("UNPAUSE.")
                         .font(.custom("Avenir", size: 20))
                         .kerning(2)
