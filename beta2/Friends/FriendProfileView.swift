@@ -16,11 +16,14 @@ struct FriendProfileView: View {
     @State private var isLoading: Bool = true
     @State private var errorMessage: String? = nil
     @State private var isShowingRemoveConfirmation = false
+    
+    @State private var userInfo: UserInfo?
+    @State private var usernameFromInfo: String = ""
 
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 20) {
-                if let url = friend.photoUrl, let imageUrl = URL(string: url) {
+                if let url = userInfo?.photoUrl, let imageUrl = URL(string: url) {
                     KFImage(imageUrl)
                         .resizable()
                         .loadDiskFileSynchronously() // Loads the image from the disk cache synchronously
@@ -47,7 +50,7 @@ struct FriendProfileView: View {
                         .frame(width: 150, height: 150)
                         .foregroundColor(.gray)
                 }
-                Text(friend.username ?? "no username")
+                Text(userInfo?.username ?? "no username")
                     .font(.headline)
                     .foregroundColor(.primary)
                 
@@ -84,8 +87,26 @@ struct FriendProfileView: View {
             }
             //.padding()
             .onAppear(perform: loadCompletedChallenges)
+            .task {
+                do {
+                    userInfo = try await UserManager.shared.fetchUserInfo(byUID: friend.friendID)
+                    usernameFromInfo = userInfo?.username ?? ""
+                    print(userInfo?.username ?? "No username found")
+                } catch {
+                    print("Error fetching user info: \(error.localizedDescription)")
+                }
+            }
         }
-        .navigationBarTitle(friend.username ?? "No Username", displayMode: .inline)
+        .navigationBarTitle(userInfo?.username ?? "no username", displayMode: .inline)
+    }
+    
+    func fetchUserInfo() async {
+        do {
+            userInfo = try await UserManager.shared.fetchUserInfo(byUID: uid)
+            print(userInfo?.username ?? "No username found")
+        } catch {
+            print("Error fetching user info: \(error.localizedDescription)")
+        }
     }
     
     func loadCompletedChallenges() {

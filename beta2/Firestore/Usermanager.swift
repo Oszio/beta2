@@ -41,6 +41,16 @@ struct DBUser: Codable, Hashable {
     }
 }
 
+struct UserInfo: Codable {
+    var username: String?
+    var photoUrl: String?
+
+    enum CodingKeys: String, CodingKey {
+        case username
+        case photoUrl
+    }
+}
+
 final class UserManager {
     static let shared = UserManager()
     
@@ -66,12 +76,9 @@ final class UserManager {
     
     
     
-    
-    
-    
     // Update user's photo URL
     func updateUserPhotoURL(uid: String, photoUrl: String) async throws {
-        let documentRef = db.collection("users").document(uid)
+        let documentRef = db.collection("users").document(uid).collection("info").document("usernameDocument")
         try await documentRef.updateData([
             "photoUrl": photoUrl
         ])
@@ -89,6 +96,7 @@ final class UserManager {
             userCache.insert(user, forKey: uid)
             return user
         }
+
 
 }
     
@@ -138,29 +146,44 @@ extension UserManager {
         try await db.collection("users").document(friendID).collection("friends").document(currentUserID).delete()
     }
     
-    
-    
 }
-        extension UserManager {
-            
-            // Update user's username
-            func updateUsername(uid: String, username: String) async throws {
-                let documentRef = db.collection("users").document(uid)
-                try await documentRef.updateData([
-                    "username": username
-                ])
-            }
-            
-            // Upload profile picture to Firebase Storage
-            func uploadProfilePicture(uid: String, imageData: Data) async throws -> URL {
-                let storageRef = Storage.storage().reference().child("profile_pictures/\(uid).jpg")
-                let metadata = StorageMetadata()
-                metadata.contentType = "image/jpeg"
-                
-                let _ = try await storageRef.putDataAsync(imageData, metadata: metadata)
-                return try await storageRef.downloadURL()
-            }
+
+extension UserManager {
+    
+    // Update user's username
+    
+    func updateUsername(uid: String, username: String) async throws {
+        let documentRef = db.collection("users").document(uid).collection("info").document("usernameDocument")
+        try await documentRef.setData([
+            "username": username
+        ])
+    }
+    
+    // Upload profile picture to Firebase Storage
+    
+    func uploadProfilePicture(uid: String, imageData: Data) async throws -> URL {
+        let storageRef = Storage.storage().reference().child("profile_pictures/\(uid).jpg")
+        let metadata = StorageMetadata()
+        metadata.contentType = "image/jpeg"
+        
+        let _ = try await storageRef.putDataAsync(imageData, metadata: metadata)
+        return try await storageRef.downloadURL()
+    }
+}
+
+extension UserManager {
+    func fetchUserInfo(byUID uid: String) async throws -> UserInfo? {
+        let documentRef = db.collection("users").document(uid).collection("info").document("usernameDocument")
+        let snapshot = try await documentRef.getDocument()
+
+        guard let userInfo = try? snapshot.data(as: UserInfo.self) else {
+            throw NSError(domain: "UserManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to decode user info"])
         }
+
+        return userInfo
+    }
+}
+
 
 // Extension of your UserManager to handle friend requests
 extension UserManager {

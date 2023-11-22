@@ -29,12 +29,15 @@ struct FriendListView: View {
     @State private var friends: [Friend] = []
     @State private var isLoading: Bool = true
     
+    @State private var userInfo: UserInfo?
+    @State private var usernameFromInfo: String = ""
+    
     var body: some View {
            NavigationView {
                List(friends) { friend in
                    NavigationLink(destination: FriendProfileView(uid: uid, friend: friend)) {
                        HStack {
-                           if let url = friend.photoUrl, let imageUrl = URL(string: url) {
+                           if let url = userInfo?.photoUrl, let imageUrl = URL(string: url) {
                                AsyncImage(url: imageUrl) { image in
                                    image.resizable()
                                } placeholder: {
@@ -52,10 +55,28 @@ struct FriendListView: View {
                            Text(friend.email ?? "No Email")
                        }
                    }
+                   .task {
+                       do {
+                           userInfo = try await UserManager.shared.fetchUserInfo(byUID: friend.friendID)
+                           usernameFromInfo = userInfo?.username ?? ""
+                           print(userInfo?.username ?? "No username found")
+                       } catch {
+                           print("Error fetching user info: \(error.localizedDescription)")
+                       }
+                   }
                }
+
                .onAppear(perform: loadFriends)
            }
        }
+    func fetchUserInfo() async {
+        do {
+            userInfo = try await UserManager.shared.fetchUserInfo(byUID: uid)
+            print(userInfo?.username ?? "No username found")
+        } catch {
+            print("Error fetching user info: \(error.localizedDescription)")
+        }
+    }
     
     func loadFriends() {
         guard let currentUserID = Auth.auth().currentUser?.uid else { return }

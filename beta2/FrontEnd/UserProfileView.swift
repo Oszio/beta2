@@ -27,6 +27,8 @@ struct UserProfileView: View {
     @State private var showImageSourceSelectionActionSheet: Bool = false
     @State private var showImageSourceSelection: Bool = true
     
+    @State private var userInfo: UserInfo?
+    @State private var usernameFromInfo: String = ""
     
     init(uid: String, showSignInView: Binding<Bool>) {
         self.uid = uid
@@ -43,7 +45,7 @@ struct UserProfileView: View {
             LazyVStack(spacing: 16) {
                 // User Profile UI
                 ZStack {
-                    Text("getalife")
+                    Text("UNPAUSE.")
                         .font(.custom("Avenir", size: 20))
                         //.bold()
                         .kerning(2)
@@ -57,7 +59,7 @@ struct UserProfileView: View {
                 }
                 Divider()
                 Group {
-                    if let photoUrl = user?.photoUrl, let url = URL(string: photoUrl) {
+                    if let photoUrl = userInfo?.photoUrl, let url = URL(string: photoUrl) {
                         KFImage(url)
                             .resizable()
                             .loadDiskFileSynchronously() // This will load the image from the disk if available, synchronously.
@@ -82,14 +84,14 @@ struct UserProfileView: View {
                         Text("Loading user profile...")
                     }
                 }
-                Text(username)
+                Text(userInfo?.username ?? "No username")
                     .font(.headline)
                     .foregroundColor(.primary)
                 
                 Divider()
-                
+
                 // Update Username TextField
-                TextField("Update Username", text: $username)
+                TextField("Update Username", text: $usernameFromInfo)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding()
                 
@@ -163,6 +165,24 @@ struct UserProfileView: View {
         }
         .task {
             await loadUserProfile()
+        }
+        .task {
+            do {
+                userInfo = try await UserManager.shared.fetchUserInfo(byUID: uid)
+                usernameFromInfo = userInfo?.username ?? ""
+                print(userInfo?.username ?? "No username found")
+            } catch {
+                print("Error fetching user info: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    func fetchUserInfo() async {
+        do {
+            userInfo = try await UserManager.shared.fetchUserInfo(byUID: uid)
+            print(userInfo?.username ?? "No username found")
+        } catch {
+            print("Error fetching user info: \(error.localizedDescription)")
         }
     }
     

@@ -158,19 +158,33 @@ struct FeedView: View {
     
     struct FriendProfileInfoRow: View {
         var friend: Friend
-        
+        @State private var userInfo: UserInfo?
+
         var body: some View {
             HStack(spacing: 12) {
-                FriendProfilePicture(url: friend.photoUrl)
-                Text(friend.username ?? "No Username")
+                FriendProfilePicture(url: userInfo?.photoUrl)
+                Text(userInfo?.username ?? "No Username")
                     .font(.subheadline)
                     .bold()
-                    //.foregroundColor(.primary)
                     .foregroundColor(.white)
                 Spacer()
             }
+            .task {
+                await fetchUserInfo()
+            }
+        }
+
+        func fetchUserInfo() async {
+            do {
+                userInfo = try await UserManager.shared.fetchUserInfo(byUID: friend.friendID)
+                print(userInfo?.username ?? "No username found")
+            } catch {
+                print("Error fetching user info: \(error.localizedDescription)")
+            }
         }
     }
+
+
     
     struct CompletedChallengeRow: View {
         let uid: String
