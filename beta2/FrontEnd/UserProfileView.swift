@@ -40,7 +40,7 @@ struct UserProfileView: View {
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 16) {
+            LazyVStack(spacing: 16) {
                 // User Profile UI
                 ZStack {
                     Text("getalife")

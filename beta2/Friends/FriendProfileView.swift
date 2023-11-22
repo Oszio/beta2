@@ -19,7 +19,7 @@ struct FriendProfileView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 20) {
+            LazyVStack(spacing: 20) {
                 if let url = friend.photoUrl, let imageUrl = URL(string: url) {
                     KFImage(imageUrl)
                         .resizable()

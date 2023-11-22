@@ -99,7 +99,7 @@ struct FeedView: View {
         @State private var errorMessage: String?
         
         var body: some View {
-            VStack(alignment: .leading, spacing: 16) {
+            LazyVStack(alignment: .leading, spacing: 16) {
                 if isLoading {
                     ProgressView()
                 } else if let errorMessage = errorMessage {
@@ -139,7 +139,7 @@ struct FeedView: View {
         @State private var isShowingCommentPostView = false
         
         var body: some View {
-            VStack(alignment: .leading, spacing: 8) {
+            LazyVStack(alignment: .leading, spacing: 8) {
                 
                 
                 // Display a single challenge
@@ -180,7 +180,7 @@ struct FeedView: View {
         var navigation: Bool
         
         var body: some View {
-            VStack(alignment: .leading, spacing: 0) {
+            LazyVStack(alignment: .leading, spacing: 0) {
                 CompletedChallengeImage(uid: uid, friend: friend, url: challenge.imageUrl, challenge: challenge, navigation: navigation)
                 Text(challenge.comment)
                     .font(.subheadline)
