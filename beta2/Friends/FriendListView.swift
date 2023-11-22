@@ -36,47 +36,13 @@ struct FriendListView: View {
            NavigationView {
                List(friends) { friend in
                    NavigationLink(destination: FriendProfileView(uid: uid, friend: friend)) {
-                       HStack {
-                           if let url = userInfo?.photoUrl, let imageUrl = URL(string: url) {
-                               AsyncImage(url: imageUrl) { image in
-                                   image.resizable()
-                               } placeholder: {
-                                   ProgressView()
-                               }
-                               .aspectRatio(contentMode: .fill)
-                               .frame(width: 50, height: 50)
-                               .clipShape(Circle())
-                           } else {
-                               Image(systemName: "person.circle.fill")
-                                   .resizable()
-                                   .frame(width: 50, height: 50)
-                                   .foregroundColor(.gray)
-                           }
-                           Text(friend.email ?? "No Email")
-                       }
-                   }
-                   .task {
-                       do {
-                           userInfo = try await UserManager.shared.fetchUserInfo(byUID: friend.friendID)
-                           usernameFromInfo = userInfo?.username ?? ""
-                           print(userInfo?.username ?? "No username found")
-                       } catch {
-                           print("Error fetching user info: \(error.localizedDescription)")
-                       }
+                       FriendProfileInfoRow (friend: friend)
                    }
                }
 
                .onAppear(perform: loadFriends)
            }
        }
-    func fetchUserInfo() async {
-        do {
-            userInfo = try await UserManager.shared.fetchUserInfo(byUID: uid)
-            print(userInfo?.username ?? "No username found")
-        } catch {
-            print("Error fetching user info: \(error.localizedDescription)")
-        }
-    }
     
     func loadFriends() {
         guard let currentUserID = Auth.auth().currentUser?.uid else { return }

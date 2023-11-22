@@ -15,7 +15,9 @@ struct PendingFriendRequestsView: View {
             List(viewModel.friendRequests) { request in
                 // Assuming 'fromUsername' is a property you have added
                 HStack {
-                    Text(request.fromUserId)
+                    
+                    FriendRowFromID(uid: request.fromUserId)
+                    
                     Spacer()
                     Button("Accept") {
                         viewModel.acceptFriendRequest(request)
@@ -45,6 +47,37 @@ struct PendingFriendRequestsView: View {
         }
     }
 }
+
+struct FriendRowFromID: View {
+    var uid: String
+    
+    @State private var user: DBUser?
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            if let user = user {
+                FriendProfileInfoRow(friend: user.asFriend())
+            } else {
+                ProgressView("Loading...")
+                    .onAppear {
+                        loadUser()
+                    }
+            }
+        }
+    }
+    
+    private func loadUser() {
+        Task {
+            do {
+                // Fetch user information using the uid
+                user = try await UserManager.shared.fetchUser(byUID: uid)
+            } catch {
+                print("Error fetching user info: \(error.localizedDescription)")
+            }
+        }
+    }
+}
+
 
 @MainActor
 class PendingFriendRequestsViewModel: ObservableObject {
@@ -105,3 +138,4 @@ class PendingFriendRequestsViewModel: ObservableObject {
         }
     }
 }
+
