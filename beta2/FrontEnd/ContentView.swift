@@ -13,6 +13,13 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             TabView {
+                
+                XmasChallengesView()
+                    .tabItem {
+                        Image(systemName: "checkmark.square")
+                        Text("Challenges")
+                    }
+                
                 if let userId = userId {
                     FeedView(uid: userId)
                         .tabItem {
@@ -40,11 +47,7 @@ struct ContentView: View {
                             Text("Find Friends")
                         }
                 }
-                XmasChallengesView()
-                    .tabItem {
-                        Image(systemName: "checkmark.square")
-                        Text("Challenges")
-                    }
+              
                 /*
                 CreateChallengeView()
                     .tabItem {
