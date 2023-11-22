@@ -121,7 +121,7 @@ struct FriendSearchView: View {
         
         _ = searchText.lowercased()
         db.collection("users")
-            .whereField("email", isEqualTo: searchText)
+            .whereField("username", isEqualTo: searchText)
           .getDocuments { (snapshot, error) in
             isLoading = false
             if let error = error {
