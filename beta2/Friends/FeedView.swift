@@ -106,7 +106,7 @@ struct FeedView: View {
                     Text(errorMessage)
                         .foregroundColor(.red)
                 } else {
-                    ForEach(recentChallenges.reversed()) { challenge in
+                    ForEach(recentChallenges) { challenge in
                         // Display each recent challenge
                         FriendChallengeRow(uid: uid, friend: friend, challenge: challenge, navigation: navigation)
                     }
