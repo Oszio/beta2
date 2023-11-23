@@ -230,10 +230,10 @@ struct UserProfileView: View {
     func updateProfile() async {
         do {
             // Update Username
-            if !username.isEmpty && username != user?.username {
-                try await UserManager.shared.updateUsername(uid: uid, username: username)
-                // Reload user to reflect the change
-                user = try await UserManager.shared.fetchUser(byUID: uid)
+            if !usernameFromInfo.isEmpty && usernameFromInfo != userInfo?.username {
+                try await UserManager.shared.updateUsername(uid: uid, username: usernameFromInfo)
+                // Reload user info to reflect the change
+                userInfo = try await UserManager.shared.fetchUserInfo(byUID: uid)
             }
             
             // Update Profile Picture

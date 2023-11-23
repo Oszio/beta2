@@ -153,8 +153,7 @@ extension UserManager {
     // Update user's username
     
     func updateUsername(uid: String, username: String) async throws {
-        let documentRef = db.collection("users").document(uid).collection("info").document("usernameDocument")
-        try await documentRef.setData([
+        try await db.collection("users").document(uid).collection("info").document("usernameDocument").setData([
             "username": username
         ])
     }
