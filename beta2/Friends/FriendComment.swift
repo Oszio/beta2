@@ -23,6 +23,7 @@ struct FriendCommentSectionView: View {
     @State private var friendComments: [FriendComment] = []
     @State private var commentText: String = ""
 
+    
     var body: some View {
         VStack {
             // Section for posting a new comment
@@ -42,8 +43,7 @@ struct FriendCommentSectionView: View {
             // Section for displaying existing comments
             List(friendComments) { comment in
                 VStack(alignment: .leading) {
-                    Text(comment.username)
-                        .font(.headline)
+                    FriendRowFromID(uid: comment.userId)
                     Text(comment.text)
                         .font(.subheadline)
                     Text("Posted on \(comment.timestamp.formatted())")
