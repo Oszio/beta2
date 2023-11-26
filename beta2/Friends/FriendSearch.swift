@@ -109,32 +109,61 @@ struct FriendSearchView: View {
     }
     
     func searchForUser() {
-        guard searchText.count > 2 else {
+        guard searchText.count > 3 else {
             errorMessage = "Please enter at least 3 characters for search."
             return
         }
         
         isLoading = true
         errorMessage = nil
-        successMessage = nil // Clear previous success message if any
+        successMessage = nil
         let db = Firestore.firestore()
         
-        _ = searchText.lowercased()
-        db.collection("users")
-            .whereField("username", isEqualTo: searchText)
-          .getDocuments { (snapshot, error) in
-            isLoading = false
+        let lowercasedSearchText = searchText.lowercased()
+        db.collection("users").getDocuments { (snapshot, error) in
+            self.isLoading = false
             if let error = error {
-                errorMessage = "Error searching for user: \(error.localizedDescription)"
+                self.errorMessage = "Error fetching users: \(error.localizedDescription)"
                 return
             }
             
-            guard let documents = snapshot?.documents, !documents.isEmpty else {
-                errorMessage = "No users found with the given search term."
+            guard let documents = snapshot?.documents else {
+                self.errorMessage = "No users found."
                 return
             }
-            
-            searchResults = documents.compactMap { try? $0.data(as: DBUser.self) }
+
+            var foundUsers: [DBUser] = []
+            let group = DispatchGroup()
+
+            for document in documents {
+                group.enter()
+                let usernameDocRef = document.reference.collection("info").document("usernameDocument")
+                usernameDocRef.getDocument { (usernameDoc, err) in
+                    if let err = err {
+                        print("Error getting username document: \(err)")
+                        group.leave()
+                        return
+                    }
+
+                    if let usernameDoc = usernameDoc, usernameDoc.exists,
+                       let username = usernameDoc.data()?["username"] as? String,
+                       username.lowercased() == lowercasedSearchText {
+                        // Assuming you can create a DBUser instance from the parent document
+                        if let user = try? document.data(as: DBUser.self) {
+                            foundUsers.append(user)
+                        }
+                    }
+                    group.leave()
+                }
+            }
+
+            group.notify(queue: .main) {
+                if foundUsers.isEmpty {
+                    self.errorMessage = "No users found with the given search term."
+                } else {
+                    self.searchResults = foundUsers
+                }
+            }
         }
     }
     
