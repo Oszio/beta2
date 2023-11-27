@@ -12,6 +12,7 @@ import FirebaseFirestore
 import Kingfisher
 
 struct UserProfileView: View {
+    
     let uid: String
     @Binding var showSignInView: Bool
     @State private var user: DBUser?
@@ -19,6 +20,12 @@ struct UserProfileView: View {
     @State private var selectedImage: UIImage?
     @State private var showingImagePicker = false
     @State private var completedChallengeInfos: [CompletedChallengeInfo] = []
+    
+    var totalPoints: Int {
+           completedChallengeInfos.reduce(0) { sum, info in
+               sum + info.challenge.points
+           }
+       }
     
     @State private var isUpdatingUsername = false
     @State private var isSelectingProfilePicture = false
@@ -30,6 +37,9 @@ struct UserProfileView: View {
     @State private var userInfo: UserInfo?
     @State private var usernameFromInfo: String = ""
     
+    
+    
+    
     init(uid: String, showSignInView: Binding<Bool>) {
         self.uid = uid
         self._showSignInView = showSignInView
@@ -38,9 +48,12 @@ struct UserProfileView: View {
     struct CompletedChallengeInfo {
         var challenge: Challenge
         var evidence: CompletedChallenge
+        
+        
     }
     
     var body: some View {
+        
         ScrollView {
             LazyVStack(spacing: 16) {
                 // User Profile UI
@@ -83,7 +96,20 @@ struct UserProfileView: View {
                     } else {
                         Text("Loading user profile...")
                     }
+                    
+                    HStack(spacing: 10) {
+                        Image(systemName: "star.fill") // Icon for points
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                            .foregroundColor(.yellow)
+                        
+                        Text("Points: \(totalPoints)")
+                            .font(.headline)
+                            .foregroundColor(.primary)
+                    }
+                    .padding(.vertical, 10)
                 }
+                
                 Text(userInfo?.username ?? "No username")
                     .font(.headline)
                     .foregroundColor(.primary)

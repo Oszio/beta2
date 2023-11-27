@@ -50,8 +50,13 @@ final class ChallengeManager {
         return snapshots.documents.compactMap { try? $0.data(as: CompletedChallenge.self) }
     }
     
-    // Mark a challenge as completed for a user with evidence details
     func completeChallenge(_ challengeID: String, for userID: String, inCategory categoryID: String, evidenceId: String, imageUrl: String, comment: String) async throws {
+        // Fetch the challenge to get the points
+        guard let challenge = try await fetchChallenge(byID: challengeID, inCategory: categoryID) else {
+            // Handle the error if the challenge is not found
+            return
+        }
+
         let documentRef = db.collection("users").document(userID).collection("CompletedChallenges").document(challengeID)
 
         let completedChallengeData: [String: Any] = [
@@ -60,7 +65,8 @@ final class ChallengeManager {
             "evidenceId": evidenceId,
             "imageUrl": imageUrl,
             "comment": comment,
-            "completionTime": FieldValue.serverTimestamp() // Use Firestore's server timestamp
+            "completionTime": FieldValue.serverTimestamp(), // Use Firestore's server timestamp
+            "points": challenge.points // Add the points from the challenge
         ]
         
         try await documentRef.setData(completedChallengeData)

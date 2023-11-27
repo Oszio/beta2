@@ -17,6 +17,7 @@ struct CompletedChallenge: Codable, Identifiable {
     var evidenceId: String
     var imageUrl: String
     var completionTime: Date // This will store the completion time
+    var points: Int // Add this line
 }
 
 class FirebaseManager {
