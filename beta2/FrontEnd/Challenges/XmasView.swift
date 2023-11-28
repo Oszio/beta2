@@ -25,12 +25,12 @@ struct XmasChallengesView: View {
                 } else if let challenge = todaysChallenge {
                     ChallengeDetailView(challenge: challenge)
                 } else {
-                    Text("No Challenge for Today")
+                    Text("Come back on Friday")
                         .foregroundColor(.gray)
                 }
             }
             .onAppear(perform: loadTodaysChallenge)
-            .navigationTitle("Today's Xmas Challenge")
+            .navigationTitle("Today's Christmas Challenge")
             .navigationBarTitleDisplayMode(.inline)
             .alert(isPresented: $showAlert) {
                 Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
@@ -60,7 +60,7 @@ struct XmasChallengesView: View {
         let currentMonth = calendar.component(.month, from: Date())
         
         // Ensure it's December
-        guard currentMonth == 11 else {
+        guard currentMonth == 12 else {
             return nil
         }
         
