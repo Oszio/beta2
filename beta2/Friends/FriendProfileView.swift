@@ -19,6 +19,12 @@ struct FriendProfileView: View {
     
     @State private var userInfo: UserInfo?
     @State private var usernameFromInfo: String = ""
+    
+    var totalPoints: Int {
+        completedChallenges.reduce(0) { sum, completedChallenge in
+            sum + completedChallenge.points
+        }
+    }
 
     var body: some View {
         ScrollView {
@@ -54,6 +60,18 @@ struct FriendProfileView: View {
                     .font(.headline)
                     .foregroundColor(.primary)
                 
+                HStack(spacing: 10) {
+                    Image(systemName: "star.fill") // Icon for points
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                        .foregroundColor(.yellow)
+
+                    Text("Points: \(totalPoints)")
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                }
+                .padding(.vertical, 10)
+
 
                 Button("Remove Friend") {
                     isShowingRemoveConfirmation.toggle()
