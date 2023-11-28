@@ -56,7 +56,7 @@ struct FriendRowFromID: View {
     var body: some View {
         HStack(spacing: 12) {
             if let user = user {
-                FriendProfileInfoRow(friend: user.asFriend())
+                FriendProfileInfoRow(friend: user.asFriend(), color: .primary)
             } else {
                 ProgressView("Loading...")
                     .onAppear {

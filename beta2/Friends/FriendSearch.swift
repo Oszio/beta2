@@ -94,7 +94,7 @@ struct FriendSearchView: View {
             .onAppear {
                 getCurrentUser()
             }
-            .navigationBarTitle("Friend Search", displayMode: .inline)
+            .navigationBarTitle("Find Friends", displayMode: .inline)
         }
     }
     

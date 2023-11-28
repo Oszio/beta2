@@ -158,6 +158,7 @@ struct FeedView: View {
     
     struct FriendProfileInfoRow: View {
         var friend: Friend
+        var color: Color
         @State private var userInfo: UserInfo?
 
         var body: some View {
@@ -166,7 +167,7 @@ struct FeedView: View {
                 Text(userInfo?.username ?? "No Username")
                     .font(.subheadline)
                     .bold()
-                    .foregroundColor(.white)
+                    .foregroundColor(color)
                 Spacer()
             }
             .task {
@@ -294,12 +295,12 @@ struct CompletedChallengeImage: View {
                     VStack {
                         if navigation {
                             NavigationLink(destination: FriendProfileView(uid: uid, friend: friend)) {
-                                FriendProfileInfoRow(friend: friend)
+                                FriendProfileInfoRow(friend: friend, color: .white)
                             }
                             .padding(.leading, 13)
                             .padding(.top, 13)
                         } else {
-                            FriendProfileInfoRow(friend: friend)
+                            FriendProfileInfoRow(friend: friend, color: .white)
                                 .padding(.leading, 13)
                                 .padding(.top, 13)
                         }

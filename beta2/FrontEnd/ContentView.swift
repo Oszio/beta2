@@ -28,25 +28,31 @@ struct ContentView: View {
                         }
                 }
 
-                if let userId = userId {
-                    FriendView(uid: userId)
-                        .tabItem {
-                            Image(systemName: "magnifyingglass")
-                            Text("Find Friends")
-                        }
-                } else {
-                    Text("Loading user profile...")
-                        .tabItem {
-                            Image(systemName: "magnifyingglass")
-                            Text("Find Friends")
-                        }
-                }
+                FriendSearchView()
+                    .tabItem {
+                        Image(systemName: "magnifyingglass")
+                        Text("Find Friends")
+                    }
                 
                 XmasChallengesView()
                     .tabItem {
                         Image(systemName: "checkmark.square")
                         Text("Challenges")
                     }
+                
+                if let userId = userId {
+                    FriendListView(uid: userId)
+                        .tabItem {
+                            Image(systemName: "person.2.circle")
+                            Text("Friends")
+                        }
+                } else {
+                    Text("Loading user profile...")
+                        .tabItem {
+                            Image(systemName: "person.2.circle")
+                            Text("Friends")
+                        }
+                }
               
                 /*
                 CreateChallengeView()

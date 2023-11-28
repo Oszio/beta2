@@ -36,11 +36,12 @@ struct FriendListView: View {
            NavigationView {
                List(friends) { friend in
                    NavigationLink(destination: FriendProfileView(uid: uid, friend: friend)) {
-                       FriendProfileInfoRow (friend: friend)
+                       FriendProfileInfoRow (friend: friend, color: .primary)
                    }
                }
 
                .onAppear(perform: loadFriends)
+               .navigationBarTitle("Friends", displayMode: .inline)
            }
        }
     

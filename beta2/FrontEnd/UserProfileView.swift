@@ -64,9 +64,10 @@ struct UserProfileView: View {
                         .kerning(2)
                     HStack{
                         Spacer()
-                        NavigationLink(destination: SettingsView(showSignInView: $showSignInView)){
+                        /*NavigationLink(destination: SettingsView(showSignInView: $showSignInView)){
                             Image(systemName: "gear")
                         }
+                         */
                     }
                     .padding(.trailing, 30)
                 }
