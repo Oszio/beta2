@@ -13,8 +13,8 @@ func scheduleDailyNotification() {
     content.body = "Check out today's new challenge!"
 
     var dateComponents = DateComponents()
-    dateComponents.hour = 17  // Set to your desired hour
-    dateComponents.minute = 28 // Set to your desired minute
+    dateComponents.hour = 12  // Set to your desired hour
+    dateComponents.minute = 00 // Set to your desired minute
 
     let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
 
