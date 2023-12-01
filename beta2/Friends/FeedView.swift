@@ -282,11 +282,11 @@ struct CompletedChallengeImage: View {
                 if isTapped {
                     VStack{
                         LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0.7), Color.black.opacity(0.7)]), startPoint: .top, endPoint: .center)
-                            .frame(height: 150)
+                            .frame(height: 160)
                             .opacity(0.8)
                         Spacer()
-                        LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0.0), Color.black.opacity(0.7)]), startPoint: .center, endPoint: .bottom)
-                            .frame(height: 150)
+                        LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0.7), Color.black.opacity(0.7)]), startPoint: .center, endPoint: .bottom)
+                            .frame(height: 60)
                             .opacity(0.8)
                     }
                 }
@@ -344,14 +344,16 @@ struct CompletedChallengeImage: View {
                             Button {
                                 isShowingCommentPostView.toggle()
                             } label: {
-                                Image(systemName: "message")
+                                Image(systemName: "message.fill")
+                                    .resizable()
+                                    .frame(width: 24, height: 24)
                             }
                             .font(.subheadline)
                             .foregroundColor(.white)
                             .padding(.leading, 13)
                         }
                         .padding(.leading, 13)
-                        .padding(.trailing, 13)
+                        .padding(.trailing, 25)
                         .sheet(isPresented: $isShowingCommentPostView) {
                             FriendCommentSectionView(completedChallengeID: challenge.id, userId: friend.id, uid: uid)
                         }
