@@ -281,12 +281,12 @@ struct CompletedChallengeImage: View {
             ZStack{
                 if isTapped {
                     VStack{
-                        LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0.7), Color.black.opacity(0.0)]), startPoint: .top, endPoint: .center)
-                            .frame(height: 190)
+                        LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0.7), Color.black.opacity(0.7)]), startPoint: .top, endPoint: .center)
+                            .frame(height: 150)
                             .opacity(0.8)
                         Spacer()
                         LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0.0), Color.black.opacity(0.7)]), startPoint: .center, endPoint: .bottom)
-                            .frame(height: 190)
+                            .frame(height: 150)
                             .opacity(0.8)
                     }
                 }
