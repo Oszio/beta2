@@ -20,6 +20,7 @@ struct FriendComment: Codable, Identifiable {
 struct FriendCommentSectionView: View {
     var completedChallengeID: String
     var userId: String
+    let uid: String
     @State private var friendComments: [FriendComment] = []
     @State private var commentText: String = ""
 
@@ -31,7 +32,7 @@ struct FriendCommentSectionView: View {
                 TextField("Write a comment...", text: $commentText)
                 Button("Post") {
                     Task {
-                        let newComment = FriendComment(id: UUID().uuidString, userId: userId, username: "Username", text: commentText, timestamp: Date(), completedChallengeID: completedChallengeID)
+                        let newComment = FriendComment(id: UUID().uuidString, userId: userId, username: uid, text: commentText, timestamp: Date(), completedChallengeID: completedChallengeID)
                         try await FirebaseManager.shared.postFriendComment(userId: userId, completedChallengeID: completedChallengeID, comment: newComment)
                         commentText = ""
                         loadComments()
@@ -43,7 +44,7 @@ struct FriendCommentSectionView: View {
             // Section for displaying existing comments
             List(friendComments) { comment in
                 VStack(alignment: .leading) {
-                    FriendRowFromID(uid: comment.userId)
+                    FriendRowFromID(uid: comment.username)
                     Text(comment.text)
                         .font(.subheadline)
                     Text("Posted on \(comment.timestamp.formatted())")

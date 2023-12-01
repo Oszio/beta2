@@ -353,7 +353,7 @@ struct CompletedChallengeImage: View {
                         .padding(.leading, 13)
                         .padding(.trailing, 13)
                         .sheet(isPresented: $isShowingCommentPostView) {
-                            FriendCommentSectionView(completedChallengeID: challenge.id, userId: friend.id)
+                            FriendCommentSectionView(completedChallengeID: challenge.id, userId: friend.id, uid: uid)
                         }
                         .padding(.bottom, 20)
                     }
