@@ -263,7 +263,7 @@ struct CompletedChallengeImage: View {
                     .fade(duration: 0.25)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .frame(width: dimension, height: dimension)
+                    .frame(width: dimension)
                     .clipShape(Rectangle()) // Crop the image
                     .onTapGesture {
                         withAnimation {
