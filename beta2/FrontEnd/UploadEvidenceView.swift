@@ -89,7 +89,7 @@ struct UploadEvidenceView: View {
             }
             
             if uploadSuccess {
-                Text("Evidence uploaded successfully!")
+                Text("Evidence uploaded successfully ! (you can view it in your profile)")
                     .foregroundColor(.green)
             }
             
