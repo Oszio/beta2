@@ -34,7 +34,7 @@ struct ContentView: View {
                         Text("Find Friends")
                     }
                 
-                XmasChallengesView()
+                ChallengeListView()
                     .tabItem {
                         Image(systemName: "checkmark.square")
                         Text("Challenges")
